@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- BACKEND — TicketBookingApplicatonApplicationTests.java             -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- Section 1: Spring Context Load Test -->
+    <property name="contextLoads" value="test Spring Application Context Loads Successfully"/>
+
+    <!-- Section 2: BookingValidationService Unit Tests -->
+    <property name="bookingValidation_HasEnoughSeats_ReturnsTrue" value="test BookingValidationService Has Enough Available Seats Returns True"/>
+    <property name="bookingValidation_HasEnoughSeats_ReturnsFalse" value="test BookingValidationService Has Enough Available Seats Returns False"/>
+    <property name="bookingValidation_AreSeatsAvailable_ReturnsTrue" value="test BookingValidationService Are Seats Available Returns True"/>
+    <property name="bookingValidation_AreSeatsAvailable_ReturnsFalse" value="test BookingValidationService Are Seats Available Returns False"/>
+
+    <!-- Section 3: BookingService Unit Tests -->
+    <property name="bookingService_BookFlight_ReturnsConfirmedBooking" value="test BookingService Book Flight Returns Confirmed Booking"/>
+    <property name="bookingService_GetBookingsByUser_ReturnsList" value="test BookingService Get Bookings By User Returns List"/>
+    <property name="bookingService_CancelBooking_DeletesRecord" value="test BookingService Cancel Booking Deletes Record"/>
+    <property name="bookingService_GenerateTicketPdf_ReturnsPdfBytes" value="test BookingService Generate Ticket PDF Returns PDF Bytes"/>
+    <property name="bookingService_UpdateBookingStatus_ChangesStatus" value="test BookingService Update Booking Status Changes Status"/>
+    <property name="bookingService_UpdateBookingStatus_NotFound_ThrowsException" value="test BookingService Update Booking Status Not Found Throws Exception"/>
+    <property name="bookingService_GetBookingListUser_ReturnsAll" value="test BookingService Get Booking List Returns All Bookings"/>
+    <property name="bookingService_BookSeats_Success_SetsPnrAndPaymentStatus" value="test BookingService Book Seats Success Sets PNR And Payment Status"/>
+    <property name="bookingService_BookSeats_AlreadyBooked_ThrowsException" value="test BookingService Book Seats Already Booked Throws Exception"/>
+
+    <!-- Section 4: FlightsService Unit Tests -->
+    <property name="flightsService_SearchFlights_ReturnsMatchingFlights" value="test FlightsService Search Flights Returns Matching Flights"/>
+    <property name="flightsService_GetAllFlights_ReturnsList" value="test FlightsService Get All Flights Returns List"/>
+    <property name="flightsService_GetFlightById_ReturnsCorrectFlight" value="test FlightsService Get Flight By ID Returns Correct Flight"/>
+    <property name="flightsService_SaveFlight_ReturnsSavedFlight" value="test FlightsService Save Flight Returns Saved Flight"/>
+    <property name="flightsService_DeleteFlight_InvokesRepository" value="test FlightsService Delete Flight Invokes Repository"/>
+    <property name="flightsService_UpdateFlightStatus_ChangesStatus" value="test FlightsService Update Flight Status Changes Status"/>
+    <property name="flightsService_GetSuggestionsForSource_ReturnsList" value="test FlightsService Get Suggestions For Source Returns List"/>
+    <property name="flightsService_GetSuggestionsForDestination_ReturnsList" value="test FlightsService Get Suggestions For Destination Returns List"/>
+    <property name="flightsService_IsSeatsAvailable_ReturnsTrue" value="test FlightsService Is Seats Available Returns True"/>
+    <property name="flightsService_IsSeatsAvailable_ReturnsFalse" value="test FlightsService Is Seats Available Returns False"/>
+
+    <!-- Section 5: FlightScheduleService Unit Tests -->
+    <property name="scheduleService_GetAllSchedules_ReturnsList" value="test ScheduleService Get All Schedules Returns List"/>
+    <property name="scheduleService_UpdateStatus_SetsStatusAndAssignStatus" value="test ScheduleService Update Status Sets Status And AssignStatus"/>
+    <property name="scheduleService_UpdateStatus_NotFound_ThrowsEntityNotFoundException" value="test ScheduleService Update Status Not Found Throws EntityNotFoundException"/>
+    <property name="scheduleService_AssignPilot_Success_ReturnsSchedule" value="test ScheduleService Assign Pilot Success Returns Schedule"/>
+    <property name="scheduleService_AssignPilot_AlreadyAssigned_ThrowsIllegalState" value="test ScheduleService Assign Pilot Already Assigned Throws IllegalStateException"/>
+    <property name="scheduleService_AssignPilot_FlightNotFound_ThrowsEntityNotFoundException" value="test ScheduleService Assign Pilot Flight Not Found Throws EntityNotFoundException"/>
+    <property name="scheduleService_GetAssignmentsForPilot_ReturnsList" value="test ScheduleService Get Assignments For Pilot Returns List"/>
+    <property name="scheduleService_FindByPilot_ReturnsList" value="test ScheduleService Find By Pilot Returns List"/>
+
+    <!-- Section 6: Auth Controller Integration Tests -->
+    <property name="register_ValidUser_Returns201" value="test Register Valid User Returns 201"/>
+    <property name="register_MissingUsername_Returns400" value="test Register Missing Username Returns 400 With Validation Error"/>
+    <property name="register_InvalidEmail_Returns400" value="test Register Invalid Email Returns 400 With Validation Error"/>
+    <property name="register_MissingRole_Returns400" value="test Register Missing Role Returns 400 With Validation Error"/>
+    <property name="login_ValidAdmin_ReturnsTokenAndRole" value="test Login Valid Admin Returns Token And Role"/>
+    <property name="login_ValidPassenger_ReturnsToken" value="test Login Valid Passenger Returns Token"/>
+    <property name="login_ValidPilot_ReturnsToken" value="test Login Valid Pilot Returns Token"/>
+    <property name="login_WrongPassword_Returns401" value="test Login Wrong Password Returns 401"/>
+    <property name="getLoggedInUser_ValidToken_ReturnsUser" value="test Get Logged In User With Valid Token Returns User"/>
+    <property name="getLoggedInUser_NoToken_Returns403" value="test Get Logged In User No Token Returns 403"/>
+
+    <!-- Section 6: Flight Controller Integration Tests -->
+    <property name="createFlight_ValidData_AsAdmin_Returns201" value="test Create Flight Valid Data As Admin Returns 201"/>
+    <property name="createFlight_MissingFlightNumber_Returns400" value="test Create Flight Missing Flight Number Returns 400"/>
+    <property name="createFlight_InvalidPrice_Returns400" value="test Create Flight Invalid Price Returns 400"/>
+    <property name="createFlight_AsPassenger_Returns403" value="test Create Flight As Passenger Returns 403"/>
+    <property name="getAllFlights_AsAdmin_ReturnsFlightList" value="test Get All Flights As Admin Returns Flight List"/>
+    <property name="getAllFlights_NoToken_Returns403" value="test Get All Flights No Token Returns 403"/>
+    <property name="searchFlights_ValidParams_ReturnsResults" value="test Search Flights Valid Params Returns Results"/>
+    <property name="checkFlightAvailability_ReturnsAvailabilityFlag" value="test Check Flight Availability Returns Availability Flag"/>
+
+    <!-- Section 6: Booking Controller Integration Tests -->
+    <property name="bookSeats_AsPassenger_ReturnsSuccess" value="test Book Seats As Passenger Returns Success"/>
+    <property name="getMyBookings_AsPassenger_ReturnsBookingList" value="test Get My Bookings As Passenger Returns Booking List"/>
+    <property name="getAllBookings_AsAdmin_ReturnsAllBookings" value="test Get All Bookings As Admin Returns All Bookings"/>
+    <property name="updateBookingStatus_AsPassenger_Returns200" value="test Update Booking Status As Passenger Returns 200"/>
+    <property name="cancelBooking_AsPassenger_Returns200" value="test Cancel Booking As Passenger Returns 200"/>
+
+    <!-- Section 6: Flight Schedule Controller Integration Tests -->
+    <property name="assignPilot_AsAdmin_Returns200" value="test Assign Pilot As Admin Returns 200"/>
+    <property name="assignPilot_SameDateConflict_Returns409" value="test Assign Pilot Same Date Conflict Returns 409"/>
+    <property name="updateScheduleStatus_AsPilot_Returns200" value="test Update Schedule Status As Pilot Returns 200"/>
+
+    <!-- Section 6: Global Exception Handler Integration Tests -->
+    <property name="globalHandler_Returns400_WithFullErrorStructure" value="test Global Handler Returns 400 With Full Error Structure"/>
+    <property name="globalHandler_EmptyBody_ReturnsAllValidationErrors" value="test Global Handler Empty Body Returns All Validation Errors"/>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- FRONTEND — Karma/Jasmine Spec Files                                -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- booking.service.spec.ts — BookingsService -->
+    <property name="BookingsService should book a flight" value="test BookingsService Book A Flight"/>
+    <property name="BookingsService should get all bookings" value="test BookingsService Get All Bookings"/>
+    <property name="BookingsService should get my bookings" value="test BookingsService Get My Bookings"/>
+    <property name="BookingsService should get my bookings list user" value="test BookingsService Get My Bookings List User"/>
+    <property name="BookingsService should check seat availability" value="test BookingsService Check Seat Availability"/>
+    <property name="BookingsService should validate seat availability" value="test BookingsService Validate Seat Availability"/>
+    <property name="BookingsService should download ticket" value="test BookingsService Download Ticket"/>
+    <property name="BookingsService should update booking status" value="test BookingsService Update Booking Status"/>
+    <property name="BookingsService should book seats" value="test BookingsService Book Seats"/>
+
+    <!-- flight.service.spec.ts — FlightService -->
+    <property name="FlightService should get all flights" value="test FlightService Get All Flights"/>
+    <property name="FlightService should search flights" value="test FlightService Search Flights"/>
+    <property name="FlightService should create a flight" value="test FlightService Create A Flight"/>
+    <property name="FlightService should update a flight" value="test FlightService Update A Flight"/>
+    <property name="FlightService should assign a pilot" value="test FlightService Assign A Pilot"/>
+    <property name="FlightService should get pilots" value="test FlightService Get Pilots"/>
+    <property name="FlightService should get assign pilot details for user" value="test FlightService Get Assign Pilot Details For User"/>
+    <property name="FlightService should get all assign pilot details" value="test FlightService Get All Assign Pilot Details"/>
+    <property name="FlightService should update flight status" value="test FlightService Update Flight Status"/>
+    <property name="FlightService should check availability" value="test FlightService Check Availability"/>
+
+    <!-- flight-search.service.spec.ts — FlightSearchService -->
+    <property name="FlightSearchService should search flights" value="test FlightSearchService Search Flights"/>
+    <property name="FlightSearchService should suggest source cities" value="test FlightSearchService Suggest Source Cities"/>
+
+    <!-- bookings.component.spec.ts — BookingsComponent -->
+    <property name="BookingsComponent should create the component" value="test BookingsComponent Create Component"/>
+    <property name="BookingsComponent should load bookings on init" value="test BookingsComponent Load Bookings On Init"/>
+    <property name="BookingsComponent should set showError to true when loadBookings fails" value="test BookingsComponent Set ShowError When LoadBookings Fails"/>
+    <property name="BookingsComponent should cancel booking and show success message" value="test BookingsComponent Cancel Booking And Show Success Message"/>
+    <property name="BookingsComponent should set showError when cancelBooking fails" value="test BookingsComponent Set ShowError When CancelBooking Fails"/>
+    <property name="BookingsComponent should initialize with empty bookings array" value="test BookingsComponent Initialize With Empty Bookings Array"/>
+
+    <!-- flight.component.spec.ts — FlightComponent -->
+    <property name="FlightComponent should create the component" value="test FlightComponent Create Component"/>
+    <property name="FlightComponent should initialize form and load flights on ngOnInit" value="test FlightComponent Initialize Form And Load Flights On Init"/>
+    <property name="FlightComponent should add a seat to the seats FormArray" value="test FlightComponent Add A Seat To Seats FormArray"/>
+    <property name="FlightComponent should remove a seat from the seats FormArray" value="test FlightComponent Remove A Seat From Seats FormArray"/>
+    <property name="FlightComponent should not submit form if invalid and not call createFlight" value="test FlightComponent Not Submit Invalid Form"/>
+    <property name="FlightComponent should call createFlight and show success on valid submit" value="test FlightComponent Call CreateFlight And Show Success On Valid Submit"/>
+    <property name="FlightComponent should set showError when loadFlights fails" value="test FlightComponent Set ShowError When LoadFlights Fails"/>
+
+    <!-- flight-search.component.spec.ts — FlightSearchComponent -->
+    <property name="FlightSearchComponent should create the component" value="test FlightSearchComponent Create Component"/>
+    <property name="FlightSearchComponent should load source and destination suggestions on ngOnInit" value="test FlightSearchComponent Load Source And Destination Suggestions On Init"/>
+    <property name="FlightSearchComponent should initialize searchForm with default values" value="test FlightSearchComponent Initialize SearchForm With Default Values"/>
+    <property name="FlightSearchComponent should not search if form is invalid" value="test FlightSearchComponent Not Search If Form Is Invalid"/>
+    <property name="FlightSearchComponent should search flights and populate results on valid form" value="test FlightSearchComponent Search Flights And Populate Results On Valid Form"/>
+    <property name="FlightSearchComponent should set selectedFlight and totalPrice when viewFlight is called" value="test FlightSearchComponent Set SelectedFlight And TotalPrice When ViewFlight Called"/>
+    <property name="FlightSearchComponent should update seatNumbers when onSeatSelected is called" value="test FlightSearchComponent Update SeatNumbers When OnSeatSelected Called"/>
+    <property name="FlightSearchComponent should increment and decrement traveler count" value="test FlightSearchComponent Increment And Decrement Traveler Count"/>
+    <property name="FlightSearchComponent should toggle dropdown open/close" value="test FlightSearchComponent Toggle Dropdown Open Close"/>
+    <property name="FlightSearchComponent should call bookSeats and show success message on bookSelectedFlight" value="test FlightSearchComponent Call BookSeats And Show Success On BookSelectedFlight"/>
+    <property name="FlightSearchComponent should set showError when searchFlights fails" value="test FlightSearchComponent Set ShowError When SearchFlights Fails"/>
+
+    <!-- seat.component.spec.ts — SeatSelectionComponent -->
+    <property name="SeatSelectionComponent should fetch and create seat map on init" value="test SeatSelectionComponent Fetch And Create Seat Map On Init"/>
+    <property name="SeatSelectionComponent should create seat map from input seats on ngOnChanges" value="test SeatSelectionComponent Create Seat Map From Input Seats On NgOnChanges"/>
+    <property name="SeatSelectionComponent should emit selected seat number when seat is not booked" value="test SeatSelectionComponent Emit Selected Seat Number When Seat Is Not Booked"/>
+    <property name="SeatSelectionComponent should NOT emit when seat is already booked" value="test SeatSelectionComponent Not Emit When Seat Is Already Booked"/>
+
+    <!-- seat.service.spec.ts — HttpService - Seat Methods -->
+    <property name="HttpService - Seat Methods should fetch seats for a flight" value="test HttpService Fetch Seats For A Flight"/>
+    <property name="HttpService - Seat Methods should book seats via bookSeats method" value="test HttpService Book Seats Via BookSeats Method"/>
+
+    <!-- assign-pilot.component.spec.ts — AssignPilotComponent -->
+    <property name="AssignPilotComponent should initialize form and load data on ngOnInit" value="test AssignPilotComponent Initialize Form And Load Data On Init"/>
+    <property name="AssignPilotComponent should not submit if form is invalid" value="test AssignPilotComponent Not Submit If Form Is Invalid"/>
+    <property name="AssignPilotComponent should update schedule status and reload" value="test AssignPilotComponent Update Schedule Status And Reload"/>
+    <property name="AssignPilotComponent should show error when updateStatus fails" value="test AssignPilotComponent Show Error When UpdateStatus Fails"/>
+
+    <!-- viewuser.component.spec.ts — ViewuserComponent -->
+    <property name="ViewuserComponent should create the component" value="test ViewuserComponent Create Component"/>
+    <property name="ViewuserComponent should load all bookings on ngOnInit" value="test ViewuserComponent Load All Bookings On Init"/>
+    <property name="ViewuserComponent should initialize with empty bookings list" value="test ViewuserComponent Initialize With Empty Bookings List"/>
+    <property name="ViewuserComponent should set showError and errorMessage when loadBookings fails" value="test ViewuserComponent Set ShowError And ErrorMessage When LoadBookings Fails"/>
+    <property name="ViewuserComponent should call loadBookings when ngOnInit is called" value="test ViewuserComponent Call LoadBookings When NgOnInit Is Called"/>
+
+</properties>

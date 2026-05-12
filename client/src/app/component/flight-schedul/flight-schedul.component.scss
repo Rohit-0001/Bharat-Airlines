@@ -1,0 +1,42 @@
+.air-india-schedule {
+  max-width: 600px;
+  margin: auto;
+  background: #fff8f0;
+  padding: 20px;
+  border-radius: 10px;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+}
+
+button {
+  background-color: #d32f2f;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 5px;
+}
+
+.result {
+  margin-top: 20px;
+  background: #e0f7fa;
+  padding: 15px;
+  border-radius: 8px;
+}

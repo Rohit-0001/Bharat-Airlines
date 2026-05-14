@@ -9,7 +9,6 @@ import com.edutech.entity.Role;
 
 public class UserDTO {
 
-	
-	   //Add the required code here!
-	    
+	// Add the required code here!
+
 }

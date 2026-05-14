@@ -18,8 +18,46 @@ import com.edutech.entity.User;
 import com.edutech.service.UserService;
 import com.edutech.util.JwtUtil;
 
-
+@RestController
+@RequestMapping("/api/auth")
+@CrossOrigin(origins = "*")
 public class AuthController {
 
-     //Add the required code here!
+    // Injecting service
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    // Register a new user (ADMIN / PASSENGER / PILOT)
+    @PostMapping("/register")
+    public ResponseEntity<User> register(@Valid @RequestBody User user) {
+        User saved = userService.registerUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    }
+
+    // Authenticate and return a JWT token
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+
+        User user = userService.findByUsername(request.getUsername());
+        String token = jwtUtil.generateToken(request.getUsername());
+
+        LoginResponse response = new LoginResponse(
+                token, user.getUsername(), user.getEmail(), user.getRole(), user.getId());
+        return ResponseEntity.ok(response);
+    }
+
+    // Return the currently authenticated user's profile
+    @GetMapping("/user")
+    public ResponseEntity<User> getLoggedInUser(@AuthenticationPrincipal UserDetails userDetails) {
+        User user = userService.findByUsername(userDetails.getUsername());
+        return ResponseEntity.ok(user);
+    }
 }

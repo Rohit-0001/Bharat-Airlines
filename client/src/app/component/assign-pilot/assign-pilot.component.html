@@ -1,1 +1,64 @@
-//write required code here!
+<div class="card shadow-sm p-4">
+  <h4 class="mb-3">Pilot Assignment</h4>
+  <div *ngIf="showError" class="alert alert-danger">{{ errorMessage }}</div>
+  <div *ngIf="showMessage" class="alert alert-success">Pilot assignment updated successfully.</div>
+  <form [formGroup]="assignForm" (ngSubmit)="onSubmit()" *ngIf="roleName === 'ADMIN'">
+    <div class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label">Flight</label>
+        <select class="form-select" formControlName="flightId" (change)="onFlightChange()">
+          <option value="">Select flight</option>
+          <option *ngFor="let flight of flights" [value]="flight.id">{{ flight.flight_number }} - {{ flight.source }} → {{ flight.destination }}</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Pilot</label>
+        <select class="form-select" formControlName="pilotId">
+          <option value="">Select pilot</option>
+          <option *ngFor="let pilot of pilots" [value]="pilot.id">{{ pilot.username }}</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Scheduled Date</label>
+        <input type="date" class="form-control" formControlName="scheduledDate" />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Status</label>
+        <input class="form-control" formControlName="assignStatus" />
+      </div>
+    </div>
+    <div class="mt-3">
+      <button class="btn btn-primary" type="submit">Assign Pilot</button>
+    </div>
+  </form>
+  <div class="mt-4">
+    <h5>Schedule List</h5>
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Flight</th>
+            <th>Pilot</th>
+            <th>Scheduled Date</th>
+            <th>Status</th>
+            <th>Assign Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let schedule of schedules">
+            <td>{{ schedule.flight?.flight_number }}</td>
+            <td>{{ schedule.pilot?.username || 'Unassigned' }}</td>
+            <td>{{ schedule.scheduledDate }}</td>
+            <td>{{ schedule.status }}</td>
+            <td>{{ schedule.assignStatus }}</td>
+            <td>
+              <button class="btn btn-sm btn-success me-2" (click)="updateStatus(schedule.id, 'CONFIRMED')">Confirm</button>
+              <button class="btn btn-sm btn-secondary" (click)="updateStatus(schedule.id, 'COMPLETED')">Complete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

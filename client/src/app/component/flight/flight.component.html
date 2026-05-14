@@ -1,1 +1,144 @@
-//write required code here!
+<div class="row">
+  <div class="col-lg-6 mb-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h4 class="card-title mb-3">Create Flight</h4>
+        <form [formGroup]="flightForm" (ngSubmit)="onSubmit()">
+          <div class="row g-3">
+            <div class="col-6">
+              <label class="form-label">Flight Number</label>
+              <input class="form-control" formControlName="flight_number" />
+            </div>
+            <div class="col-6">
+              <label class="form-label">Flight Name</label>
+              <input class="form-control" formControlName="flight_name" />
+            </div>
+            <div class="col-6">
+              <label class="form-label">Source</label>
+              <input class="form-control" formControlName="source" />
+            </div>
+            <div class="col-6">
+              <label class="form-label">Destination</label>
+              <input class="form-control" formControlName="destination" />
+            </div>
+            <div class="col-6">
+              <label class="form-label">Departure Date</label>
+              <input type="date" class="form-control" formControlName="departureDate" />
+            </div>
+            <div class="col-6">
+              <label class="form-label">Departure Time</label>
+              <input type="time" class="form-control" formControlName="departureTime" />
+            </div>
+            <div class="col-6">
+              <label class="form-label">Arrival Time</label>
+              <input type="time" class="form-control" formControlName="arrivalTime" />
+            </div>
+            <div class="col-6">
+              <label class="form-label">Total Seats</label>
+              <input type="number" class="form-control" formControlName="totalSeats" />
+            </div>
+            <div class="col-6">
+              <label class="form-label">Available Seats</label>
+              <input type="number" class="form-control" formControlName="available_seats" />
+            </div>
+            <div class="col-6">
+              <label class="form-label">Ticket Price</label>
+              <input type="number" class="form-control" formControlName="price" />
+            </div>
+            <div class="col-6">
+              <label class="form-label">Status</label>
+              <select class="form-select" formControlName="status">
+                <option value="SCHEDULED">SCHEDULED</option>
+                <option value="DELAYED">DELAYED</option>
+                <option value="CANCELLED">CANCELLED</option>
+              </select>
+            </div>
+          </div>
+          <hr />
+          <h5>Seats</h5>
+          <div formArrayName="seats">
+            <div class="card mb-3 p-3" *ngFor="let seat of seats.controls; let i = index" [formGroupName]="i">
+              <div class="row g-3 align-items-end">
+                <div class="col-4">
+                  <label class="form-label">Seat Number</label>
+                  <input class="form-control" formControlName="seatNumber" />
+                </div>
+                <div class="col-2">
+                  <label class="form-label">Row</label>
+                  <input class="form-control" formControlName="rowLabel" />
+                </div>
+                <div class="col-2">
+                  <label class="form-label">Column</label>
+                  <input type="number" class="form-control" formControlName="columnNumber" />
+                </div>
+                <div class="col-2">
+                  <label class="form-label">Price</label>
+                  <input type="number" class="form-control" formControlName="price" />
+                </div>
+                <div class="col-2 text-end">
+                  <button type="button" class="btn btn-danger" (click)="removeSeat(i)">Remove</button>
+                </div>
+              </div>
+              <div class="row g-3 mt-2">
+                <div class="col-3 form-check">
+                  <input class="form-check-input" type="checkbox" formControlName="isAvailable" id="available{{i}}" />
+                  <label class="form-check-label" for="available{{i}}">Available</label>
+                </div>
+                <div class="col-3 form-check">
+                  <input class="form-check-input" type="checkbox" formControlName="isXL" id="xl{{i}}" />
+                  <label class="form-check-label" for="xl{{i}}">XL</label>
+                </div>
+                <div class="col-3 form-check">
+                  <input class="form-check-input" type="checkbox" formControlName="isBlocked" id="blocked{{i}}" />
+                  <label class="form-check-label" for="blocked{{i}}">Blocked</label>
+                </div>
+                <div class="col-3 form-check">
+                  <input class="form-check-input" type="checkbox" formControlName="isEmergencyExist" id="emergency{{i}}" />
+                  <label class="form-check-label" for="emergency{{i}}">Emergency</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <button type="button" class="btn btn-secondary me-2" (click)="addSeat()">Add Seat</button>
+            <button type="submit" class="btn btn-primary">Create Flight</button>
+          </div>
+        </form>
+        <div class="alert alert-success" *ngIf="showMessage">Flight created successfully.</div>
+        <div class="alert alert-danger" *ngIf="showError">{{ errorMessage }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6 mb-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h4 class="card-title mb-3">Flights</h4>
+        <div *ngIf="flights.length; else noFlights">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Flight</th>
+                  <th>Route</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let flight of flights">
+                  <td>{{ flight.flight_number }}<br /><small>{{ flight.flight_name }}</small></td>
+                  <td>{{ flight.source }} → {{ flight.destination }}</td>
+                  <td>{{ flight.departureDate }}</td>
+                  <td>{{ flight.status }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <ng-template #noFlights>
+          <p>No flights available.</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

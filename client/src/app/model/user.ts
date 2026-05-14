@@ -1,8 +1,14 @@
 export enum Role {
-  
-  //write required code here!
+  ADMIN = 'ADMIN',
+  PASSENGER = 'PASSENGER',
+  PILOT = 'PILOT'
 }
 
 export interface User {
-  //write required code here!
+  id?: number;
+  username: string;
+  password?: string;
+  email: string;
+  contactNumber?: string;
+  role: Role;
 }

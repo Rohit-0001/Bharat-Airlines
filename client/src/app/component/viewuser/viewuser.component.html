@@ -1,1 +1,33 @@
-//write required code here!
+<div class="card shadow-sm p-4">
+  <h4 class="mb-3">All Passenger Bookings</h4>
+  <div *ngIf="showError" class="alert alert-danger">{{ errorMessage }}</div>
+  <div *ngIf="bookingsListUser.length; else emptyState">
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Passenger</th>
+            <th>Flight</th>
+            <th>PNR</th>
+            <th>Seats</th>
+            <th>Payment</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let booking of bookingsListUser">
+            <td>{{ booking.user?.username || booking.user?.email }}</td>
+            <td>{{ booking.flight?.flight_number || booking.flight?.flight_name }}</td>
+            <td>{{ booking.pnr }}</td>
+            <td>{{ booking.seatNumbers }}</td>
+            <td>{{ booking.paymentStatus }}</td>
+            <td>{{ booking.status }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <ng-template #emptyState>
+    <p>No bookings found.
+  </ng-template>
+</div>

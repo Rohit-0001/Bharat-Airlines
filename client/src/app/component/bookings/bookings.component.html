@@ -1,1 +1,37 @@
-//write required code here!
+<div class="card shadow-sm p-4">
+  <h4 class="mb-3">My Bookings</h4>
+  <div *ngIf="showError" class="alert alert-danger">{{ errorMessage }}</div>
+  <div *ngIf="showMessage" class="alert alert-success">{{ responseMessage }}</div>
+  <div *ngIf="bookings.length; else noBookings">
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>PNR</th>
+            <th>Flight</th>
+            <th>Seats</th>
+            <th>Booking Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let booking of bookings">
+            <td>{{ booking.pnr }}</td>
+            <td>{{ booking.flight?.flight_number || booking.flight?.flight_name }}</td>
+            <td>{{ booking.seatNumbers }}</td>
+            <td>{{ booking.bookingDate }}</td>
+            <td>{{ booking.status }}</td>
+            <td>
+              <button class="btn btn-sm btn-danger me-2" (click)="cancelBooking(booking.id)">Cancel</button>
+              <button class="btn btn-sm btn-secondary" (click)="downloadTicket(booking.id)">Download Ticket</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <ng-template #noBookings>
+    <p>No bookings found.</p>
+  </ng-template>
+</div>

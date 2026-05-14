@@ -1,1 +1,101 @@
-//write required code here!
+<div class="card shadow-sm p-4">
+  <h4 class="mb-3">Search Flights</h4>
+  <form [formGroup]="searchForm" (ngSubmit)="search()">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">Source</label>
+        <input class="form-control" list="source-list" formControlName="source" />
+        <datalist id="source-list"><option *ngFor="let item of sourceList" [value]="item"></option></datalist>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Destination</label>
+        <input class="form-control" list="destination-list" formControlName="destination" />
+        <datalist id="destination-list"><option *ngFor="let item of destinationList" [value]="item"></option></datalist>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Departure Date</label>
+        <input type="date" class="form-control" formControlName="date" />
+      </div>
+    </div>
+    <div class="row g-3 mt-3">
+      <div class="col-md-4">
+        <button class="btn btn-primary w-100" type="submit">Search</button>
+      </div>
+      <div class="col-md-8">
+        <div class="btn btn-outline-secondary w-100 text-start" (click)="toggleDropdown()">
+          {{ searchForm.value.adult }} Adults, {{ searchForm.value.child }} Child, {{ searchForm.value.infant }} Infant - {{ searchForm.value.travelClass }}
+        </div>
+        <div class="card mt-2 p-3" *ngIf="dropdownOpen">
+          <div class="row g-2">
+            <div class="col-4">
+              <label class="form-label">Adults</label>
+              <div class="input-group">
+                <button type="button" class="btn btn-outline-secondary" (click)="updateTravelerCount('adult', -1)">-</button>
+                <input type="number" class="form-control text-center" [value]="searchForm.value.adult" readonly />
+                <button type="button" class="btn btn-outline-secondary" (click)="updateTravelerCount('adult', 1)">+</button>
+              </div>
+            </div>
+            <div class="col-4">
+              <label class="form-label">Children</label>
+              <div class="input-group">
+                <button type="button" class="btn btn-outline-secondary" (click)="updateTravelerCount('child', -1)">-</button>
+                <input type="number" class="form-control text-center" [value]="searchForm.value.child" readonly />
+                <button type="button" class="btn btn-outline-secondary" (click)="updateTravelerCount('child', 1)">+</button>
+              </div>
+            </div>
+            <div class="col-4">
+              <label class="form-label">Infants</label>
+              <div class="input-group">
+                <button type="button" class="btn btn-outline-secondary" (click)="updateTravelerCount('infant', -1)">-</button>
+                <input type="number" class="form-control text-center" [value]="searchForm.value.infant" readonly />
+                <button type="button" class="btn btn-outline-secondary" (click)="updateTravelerCount('infant', 1)">+</button>
+              </div>
+            </div>
+            <div class="col-12 mt-2">
+              <label class="form-label">Class</label>
+              <select class="form-select" formControlName="travelClass">
+                <option value="Economy">Economy</option>
+                <option value="Business">Business</option>
+                <option value="First">First</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="alert alert-danger mt-3" *ngIf="showError">{{ errorMessage }}</div>
+  <div class="alert alert-success mt-3" *ngIf="showMessage">Booking completed successfully.</div>
+</div>
+<div class="row mt-4">
+  <div class="col-lg-6 mb-4" *ngIf="flights.length">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5>Search Results</h5>
+        <div *ngFor="let flight of flights" class="card mb-3">
+          <div class="card-body">
+            <h6>{{ flight.flight_number }} - {{ flight.flight_name }}</h6>
+            <p>{{ flight.source }} → {{ flight.destination }} on {{ flight.departureDate }}</p>
+            <p>Price: {{ flight.price | currency }}</p>
+            <button class="btn btn-outline-primary" type="button" (click)="viewFlight(flight)">Select</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6 mb-4" *ngIf="selectedFlight">
+    <div class="card shadow-sm p-3">
+      <h5>Selected Flight</h5>
+      <p><strong>{{ selectedFlight.flight_number }}</strong> {{ selectedFlight.flight_name }}</p>
+      <p>{{ selectedFlight.source }} → {{ selectedFlight.destination }}</p>
+      <p>Departure: {{ selectedFlight.departureDate }} {{ selectedFlight.departureTime }}</p>
+      <p>Total Price: {{ totalPrice | currency }}</p>
+      <app-seat [flightId]="selectedFlight.id" (seatSelected)="onSeatSelected($event)"></app-seat>
+      <div class="mt-3">
+        <label class="form-label">Chosen Seat</label>
+        <input class="form-control" [value]="seatNumbers" readonly />
+      </div>
+      <button class="btn btn-primary mt-3" (click)="bookSelectedFlight()">Book Flight</button>
+    </div>
+  </div>
+</div>

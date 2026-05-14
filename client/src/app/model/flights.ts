@@ -1,10 +1,24 @@
-import { Seat } from "./seat";
+import { Seat } from './seat';
 
 export enum FlightStatus {
-  //write required code here!
-
+  SCHEDULED = 'SCHEDULED',
+  DELAYED = 'DELAYED',
+  CANCELLED = 'CANCELLED'
 }
 
 export interface Flights {
-  //write required code here!
+  id?: number;
+  flight_number: string;
+  flight_name: string;
+  source: string;
+  destination: string;
+  departureDate: string;
+  departureTime: string;
+  arrivalTime: string;
+  totalSeats: number;
+  available_seats: number;
+  isAvailable: boolean;
+  price: number;
+  status: FlightStatus;
+  seats: Seat[];
 }

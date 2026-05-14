@@ -1,5 +1,7 @@
 export interface LoginResponse {
-  //write required code here!
+  token: string;
+  username: string;
+  email: string;
+  role: string;
+  userId?: string | number;
 }
-
-

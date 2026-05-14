@@ -1,1 +1,7 @@
-//write required code here!
+<div class="card">
+  <div class="card-body">
+    <h3>Welcome, {{ authService.getUsername || 'Traveler' }}</h3>
+    <p>Your role: {{ authService.getRole || 'Guest' }}</p>
+    <p>Use the navigation bar to manage flights, bookings, pilot assignments, or view your profile.</p>
+  </div>
+</div>

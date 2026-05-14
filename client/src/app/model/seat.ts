@@ -1,3 +1,12 @@
 export interface Seat {
-  //write required code here!    // Reference to the flight (assuming you use flight ID)
+  id?: number;
+  flightId?: number;
+  seatNumber: string;
+  rowLabel?: string;
+  columnNumber?: number;
+  price?: number;
+  isAvailable?: boolean;
+  isXL?: boolean;
+  isBlocked?: boolean;
+  isEmergencyExist?: boolean;
 }

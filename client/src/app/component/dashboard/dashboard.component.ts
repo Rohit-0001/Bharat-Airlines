@@ -7,6 +7,5 @@ import { AuthService } from '../../../services/auth.service';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent {
- 
-  //write required code here!
+  constructor(public authService: AuthService) {}
 }

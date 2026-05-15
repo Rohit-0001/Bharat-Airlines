@@ -1,37 +1,63 @@
 <div class="card shadow-sm p-4">
   <h4 class="mb-3">My Bookings</h4>
+
   <div *ngIf="showError" class="alert alert-danger">{{ errorMessage }}</div>
   <div *ngIf="showMessage" class="alert alert-success">{{ responseMessage }}</div>
+
   <div *ngIf="bookings.length; else noBookings">
     <div class="table-responsive">
       <table class="table table-bordered">
-        <thead>
+        <thead class="table-light">
           <tr>
             <th>PNR</th>
             <th>Flight</th>
             <th>Seats</th>
             <th>Booking Date</th>
+            <th>Payment</th>      
             <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
+          <!-- bookings[] is populated by GET /api/booking/bookings -->
+          <!-- backend field names: pnr, flight.flight_number, seatNumbers,
+               bookingDate, paymentStatus, status - all match Bookings entity -->
           <tr *ngFor="let booking of bookings">
             <td>{{ booking.pnr }}</td>
             <td>{{ booking.flight?.flight_number || booking.flight?.flight_name }}</td>
             <td>{{ booking.seatNumbers }}</td>
-            <td>{{ booking.bookingDate }}</td>
-            <td>{{ booking.status }}</td>
+            <td>{{ booking.bookingDate | date: 'medium' }}</td>
+            <td>{{ booking.paymentStatus }}</td>  
             <td>
-              <button class="btn btn-sm btn-danger me-2" (click)="cancelBooking(booking.id)">Cancel</button>
-              <button class="btn btn-sm btn-secondary" (click)="downloadTicket(booking.id)">Download Ticket</button>
+              <span
+                [ngClass]="{
+                  'badge bg-success':  booking.status === 'CONFIRMED',
+                  'badge bg-danger':   booking.status === 'CANCELLED',
+                  'badge bg-secondary': booking.status !== 'CONFIRMED' && booking.status !== 'CANCELLED'
+                }">
+                {{ booking.status }}
+              </span>
+            </td>
+            <td class="d-flex gap-1 flex-wrap">
+              <button
+                class="btn btn-sm btn-danger"
+                [disabled]="booking.status === 'CANCELLED'"
+                (click)="cancelBooking(booking.id)">
+                Cancel
+              </button>
+              <button
+                class="btn btn-sm btn-secondary"
+                (click)="downloadTicket(booking.id)">
+                Download Ticket
+              </button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
+
   <ng-template #noBookings>
-    <p>No bookings found.</p>
+    <p class="text-muted">No bookings found.</p>
   </ng-template>
 </div>

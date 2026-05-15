@@ -28,7 +28,6 @@ export class SeatSelectionComponent implements OnChanges, OnInit {
 
   constructor(private seatService: SeatService) {}
 
-  // ✅ FIX 1: ADD THIS
   ngOnInit(): void {
     if (this.flightId) {
       this.loadSeats();
@@ -87,25 +86,21 @@ export class SeatSelectionComponent implements OnChanges, OnInit {
       );
   }
 
- selectSeat(seat: any): void {
+  selectSeat(seat: any): void {
+    const isBooked = seat.booked ?? false;
+    const isAvailable = seat.isAvailable ?? !isBooked;
+    const isBlocked = seat.isBlocked ?? false;
 
-  const isBooked = seat.booked ?? false;
-  const isAvailable = seat.isAvailable ?? !isBooked;
-  const isBlocked = seat.isBlocked ?? false;
+    if (isBooked || !isAvailable || isBlocked) {
+      return;
+    }
 
- 
-  if (isBooked || !isAvailable || isBlocked) {
-    this.selectedSeatNumber = null;
-    return;
+    this.selectedSeatNumber = seat.seatNumber;
+
+    if (this.selectedSeatNumber) {
+      this.seatSelected.emit(this.selectedSeatNumber);
+    }
   }
-
-  
-  this.selectedSeatNumber = seat.seatNumber;
-
-  if (this.selectedSeatNumber) {
-    this.seatSelected.emit(this.selectedSeatNumber);
-  }
-}
 
   isSelected(seat: Seat): boolean {
     return seat.seatNumber === this.selectedSeatNumber;

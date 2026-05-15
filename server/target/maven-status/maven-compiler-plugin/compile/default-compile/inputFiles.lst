@@ -8,7 +8,6 @@
 /home/coder/app/server/src/main/java/com/edutech/TicketBookingApplicatonApplication.java
 /home/coder/app/server/src/main/java/com/edutech/util/JwtUtil.java
 /home/coder/app/server/src/main/java/com/edutech/service/BookingValidationService.java
-/home/coder/app/server/src/main/java/com/edutech/entity/PaymentStatus.java
 /home/coder/app/server/src/main/java/com/edutech/repository/UserRepository.java
 /home/coder/app/server/src/main/java/com/edutech/repository/FlightsRepository.java
 /home/coder/app/server/src/main/java/com/edutech/repository/SeatRepository.java

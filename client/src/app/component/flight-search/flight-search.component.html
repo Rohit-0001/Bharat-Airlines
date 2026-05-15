@@ -95,7 +95,7 @@
         <label class="form-label">Chosen Seat</label>
         <input class="form-control" [value]="seatNumbers" readonly />
       </div>
-      <button class="btn btn-primary mt-3" (click)="bookSelectedFlight()">Book Flight</button>
+      <button class="btn btn-primary mt-3" (click)="bookSelectedFlight()" [disabled]="isBooking">{{ isBooking ? 'Booking...': 'Book Flight' }}</button>
     </div>
   </div>
 </div>

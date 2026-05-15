@@ -20,6 +20,7 @@ export class FlightSearchComponent implements OnInit {
   showError = false;
   errorMessage = '';
   totalPrice = 0;
+  isBooking = false;  // prevents double-click submissions
 
   constructor(
     private fb: FormBuilder,
@@ -75,6 +76,8 @@ export class FlightSearchComponent implements OnInit {
   viewFlight(flight: any): void {
     this.selectedFlight = flight;
     this.seatNumbers = '';
+    this.showMessage = false;
+    this.showError = false;
     this.calculatePrice();
   }
 
@@ -132,13 +135,24 @@ export class FlightSearchComponent implements OnInit {
       return;
     }
 
+    // Prevent duplicate submissions
+    if (this.isBooking) {
+      return;
+    }
+    this.isBooking = true;
+
     const seats = this.seatNumbers.split(',').map((s: string) => s.trim()).filter((s: string) => !!s);
     this.httpService.bookSeats(this.selectedFlight.id, seats, Number(userId)).subscribe({
       next: () => {
+        this.isBooking = false;
         this.showMessage = true;
         this.showError = false;
+        // Reset seat selection after successful booking
+        this.seatNumbers = '';
+        this.selectedFlight = null;
       },
       error: () => {
+        this.isBooking = false;
         this.showError = true;
         this.errorMessage = 'Booking failed. Please try again.';
       }

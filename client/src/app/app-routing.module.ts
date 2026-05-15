@@ -12,17 +12,16 @@ import { ViewuserComponent } from './component/viewuser/viewuser.component';
 import { AuthGuard } from './auth.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
-  { path: 'add_flights', component: FlightComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
-  { path: 'search_flight', component: FlightSearchComponent, canActivate: [AuthGuard], data: { roles: ['PASSENGER'] } },
-  { path: 'my_booking', component: BookingsComponent, canActivate: [AuthGuard], data: { roles: ['PASSENGER'] } },
-  { path: 'assign_pilot', component: AssignPilotComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN', 'PILOT'] } },
-  { path: 'view_all_user', component: ViewuserComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+  { path: 'add_flights', component: FlightComponent, canActivate: [AuthGuard] },
+  { path: 'view_all_user', component: ViewuserComponent, canActivate: [AuthGuard] },
+  { path: 'assign_pilot', component: AssignPilotComponent, canActivate: [AuthGuard] },
+  { path: 'search_flight', component: FlightSearchComponent, canActivate: [AuthGuard] },
+  { path: 'my_booking', component: BookingsComponent, canActivate: [AuthGuard] },
   { path: 'my_profile', component: ProfilComponent, canActivate: [AuthGuard] },
-  { path: '**', redirectTo: '/dashboard' }
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' }
 ];
 
 @NgModule({

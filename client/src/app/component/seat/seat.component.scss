@@ -1,27 +1,90 @@
-.seat {
-  width: 50px;
-  height: 50px;
-  margin: 5px;
-  text-align: center;
-  line-height: 50px;
-  border-radius: 5px;
-  font-weight: bold;
+// ============================================================
+// SEAT MAP — Interactive cabin seat selection
+// ============================================================
+
+.mt-3 {
+  h6 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ai-text-secondary);
+    margin-bottom: 1rem;
+  }
+}
+
+// Seat row
+.d-flex.gap-2.mb-2 {
+  flex-wrap: wrap;
+  gap: 6px !important;
+  margin-bottom: 6px !important;
+}
+
+// Individual seat button
+.btn.btn-sm {
+  width: 44px;
+  height: 40px;
+  padding: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: var(--ai-r-xs) !important;
+  border-width: 2px;
   cursor: pointer;
-  border: 1px solid #ccc;
+  transition: all 0.14s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.03em;
+
+  // Override global button hover lift for seats
+  &:hover:not(:disabled) { transform: scale(1.1); }
+  &:active              { transform: scale(0.95) !important; }
 }
 
-.available {
-  background-color: yellow;
-  color: black;
+// Available — green
+.btn.btn-success {
+  background: linear-gradient(135deg, #166534, #14532D) !important;
+  border-color: #14532D !important;
+  color: #FFF !important;
+  box-shadow: 0 2px 4px rgba(22,101,52,0.2);
+
+  &:hover {
+    background: linear-gradient(135deg, #14532D, #0F3F21) !important;
+    box-shadow: 0 3px 8px rgba(22,101,52,0.35);
+  }
 }
 
-.selected {
-  background-color: green;
-  color: white;
+// Selected — gold
+.btn.btn-warning {
+  background: linear-gradient(135deg, var(--ai-gold), var(--ai-gold-dark)) !important;
+  border-color: var(--ai-gold-dark) !important;
+  color: #1A0F0F !important;
+  box-shadow: 0 2px 6px rgba(201,168,76,0.4);
+  transform: scale(1.08);
 }
 
-.booked {
-  background-color: red;
-  color: white;
+// Booked — red/muted
+.btn.btn-danger {
+  background: linear-gradient(135deg, #991B1B, #7F1D1D) !important;
+  border-color: #7F1D1D !important;
+  color: rgba(255,255,255,0.65) !important;
+  opacity: 0.65;
   cursor: not-allowed;
+
+  &:hover { transform: none !important; box-shadow: none; }
+}
+
+// Legend badges
+small.text-muted {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+
+  .badge {
+    font-size: 0.7rem;
+    padding: 0.3em 0.7em;
+    border-radius: var(--ai-r-full);
+  }
 }

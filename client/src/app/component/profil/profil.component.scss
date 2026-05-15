@@ -1,0 +1,70 @@
+// ============================================================
+// MY PROFILE — Premium profile card
+// ============================================================
+
+h3 { margin-bottom: 1.5rem; }
+
+// Profile card
+.card {
+  border-top: 3px solid var(--ai-primary) !important;
+  position: relative;
+  overflow: visible;
+
+  // Avatar initial circle
+  &::before {
+    content: '✈';
+    position: absolute;
+    top: -1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3rem;
+    height: 3rem;
+    background: linear-gradient(135deg, var(--ai-primary), var(--ai-primary-dark));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: #FFF;
+    box-shadow: 0 4px 12px rgba(140,29,24,0.3);
+    line-height: 3rem;
+    text-align: center;
+  }
+}
+
+// Profile detail table
+.table-borderless {
+  margin-top: 0.5rem;
+
+  tbody tr {
+    border: none;
+
+    th {
+      width: 40%;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ai-text-muted);
+      padding: 0.75rem 0.5rem;
+      vertical-align: middle;
+    }
+
+    td {
+      font-weight: 500;
+      color: var(--ai-text);
+      padding: 0.75rem 0.5rem;
+      vertical-align: middle;
+    }
+
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--ai-border-light) !important;
+    }
+  }
+}
+
+// Role badge inside table
+.badge.bg-primary {
+  font-size: 0.72rem;
+  padding: 0.35em 0.875em;
+}

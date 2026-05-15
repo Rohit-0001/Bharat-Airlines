@@ -1,0 +1,33 @@
+// App shell — navbar brand polish + layout wrapper
+// Global nav styles live in styles.scss; this adds brand-specific details
+
+:host {
+  display: block;
+}
+
+// Brand icon glyph
+.navbar-brand {
+  position: relative;
+  padding-left: 0.25rem;
+
+  // Gold underline on hover
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--ai-gold), transparent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  &:hover::after { opacity: 1; }
+}
+
+// Gold separator between nav links and logout
+.navbar-nav {
+  align-items: center;
+  gap: 0.125rem;
+}

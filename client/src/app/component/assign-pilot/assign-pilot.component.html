@@ -1,64 +1,76 @@
-<div class="card shadow-sm p-4">
-  <h4 class="mb-3">Pilot Assignment</h4>
-  <div *ngIf="showError" class="alert alert-danger">{{ errorMessage }}</div>
-  <div *ngIf="showMessage" class="alert alert-success">Pilot assignment updated successfully.</div>
-  <form [formGroup]="assignForm" (ngSubmit)="onSubmit()" *ngIf="roleName === 'ADMIN'">
-    <div class="row g-3">
-      <div class="col-md-3">
-        <label class="form-label">Flight</label>
-        <select class="form-select" formControlName="flightId" (change)="onFlightChange()">
-          <option value="">Select flight</option>
-          <option *ngFor="let flight of flights" [value]="flight.id">{{ flight.flight_number }} - {{ flight.source }} → {{ flight.destination }}</option>
-        </select>
+<div class="container">
+  <h3 class="mb-3">{{ roleName === 'ADMIN' ? 'Assign Pilot to Flight' : 'My Schedule' }}</h3>
+
+  <div class="alert alert-success" *ngIf="showMessage">{{ responseMessage || 'Operation successful!' }}</div>
+  <div class="alert alert-danger" *ngIf="showError">{{ errorMessage }}</div>
+
+  <!-- Admin: Assign Form -->
+  <div class="card p-3 mb-4" *ngIf="roleName === 'ADMIN'">
+    <h6>Assign Pilot</h6>
+    <form [formGroup]="assignForm" (ngSubmit)="onSubmit()">
+      <div class="row g-2">
+        <div class="col-md-4">
+          <label class="form-label">Flight</label>
+          <select class="form-select" formControlName="flightId">
+            <option value="">Select flight</option>
+            <option *ngFor="let f of flights" [value]="f.id">{{ f.flight_number }} – {{ f.source }} → {{ f.destination }}</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Pilot</label>
+          <select class="form-select" formControlName="pilotId">
+            <option value="">Select pilot</option>
+            <option *ngFor="let p of pilots" [value]="p.id">{{ p.username }}</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Scheduled Date</label>
+          <input type="date" class="form-control" formControlName="scheduledDate">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Assign Status</label>
+          <select class="form-select" formControlName="assignStatus">
+            <option value="ASSIGNED">ASSIGNED</option>
+            <option value="CONFIRMED">CONFIRMED</option>
+          </select>
+        </div>
       </div>
-      <div class="col-md-3">
-        <label class="form-label">Pilot</label>
-        <select class="form-select" formControlName="pilotId">
-          <option value="">Select pilot</option>
-          <option *ngFor="let pilot of pilots" [value]="pilot.id">{{ pilot.username }}</option>
-        </select>
-      </div>
-      <div class="col-md-3">
-        <label class="form-label">Scheduled Date</label>
-        <input type="date" class="form-control" formControlName="scheduledDate" />
-      </div>
-      <div class="col-md-3">
-        <label class="form-label">Status</label>
-        <input class="form-control" formControlName="assignStatus" />
-      </div>
-    </div>
-    <div class="mt-3">
-      <button class="btn btn-primary" type="submit">Assign Pilot</button>
-    </div>
-  </form>
-  <div class="mt-4">
-    <h5>Schedule List</h5>
-    <div class="table-responsive">
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Flight</th>
-            <th>Pilot</th>
-            <th>Scheduled Date</th>
-            <th>Status</th>
-            <th>Assign Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let schedule of schedules">
-            <td>{{ schedule.flight?.flight_number }}</td>
-            <td>{{ schedule.pilot?.username || 'Unassigned' }}</td>
-            <td>{{ schedule.scheduledDate }}</td>
-            <td>{{ schedule.status }}</td>
-            <td>{{ schedule.assignStatus }}</td>
-            <td>
-              <button class="btn btn-sm btn-success me-2" (click)="updateStatus(schedule.id, 'CONFIRMED')">Confirm</button>
-              <button class="btn btn-sm btn-secondary" (click)="updateStatus(schedule.id, 'COMPLETED')">Complete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <button type="submit" class="btn btn-primary mt-3">Assign Pilot</button>
+    </form>
+  </div>
+
+  <!-- Schedule Table -->
+  <div class="card p-3">
+    <h6>Schedule Information</h6>
+    <table class="table table-hover">
+      <thead class="table-dark">
+        <tr><th>Sr#</th><th>Pilot</th><th>Flight No</th><th>Source</th><th>Destination</th><th>Departure</th><th>Scheduled Date</th><th>Status</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let s of schedules; let i = index" [class.table-warning]="s.assignStatus === 'ASSIGNED'">
+          <td>{{ i+1 }}</td>
+          <td>{{ s.pilot?.username }}</td>
+          <td>{{ s.flight?.flight_number }}</td>
+          <td>{{ s.flight?.source }}</td>
+          <td>{{ s.flight?.destination }}</td>
+          <td>{{ s.flight?.departureTime }}</td>
+          <td>{{ s.scheduledDate }}</td>
+          <td>{{ s.status }}</td>
+          <td>
+            <ng-container *ngIf="roleName === 'PILOT'">
+              <button class="btn btn-sm btn-success me-1" (click)="updateStatus(s.id, 'ACCEPTED')">Accept</button>
+              <button class="btn btn-sm btn-danger" (click)="updateStatus(s.id, 'REJECTED')">Reject</button>
+            </ng-container>
+            <ng-container *ngIf="roleName === 'ADMIN'">
+              <select class="form-select form-select-sm d-inline w-auto" (change)="updateStatus(s.id, $any($event.target).value)">
+                <option value="PENDING">PENDING</option>
+                <option value="CONFIRMED">CONFIRMED</option>
+                <option value="COMPLETED">COMPLETED</option>
+              </select>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>

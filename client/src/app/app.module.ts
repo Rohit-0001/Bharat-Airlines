@@ -15,16 +15,17 @@ import { BookingsComponent } from './component/bookings/bookings.component';
 import { AssignPilotComponent } from './component/assign-pilot/assign-pilot.component';
 import { ProfilComponent } from './component/profil/profil.component';
 import { ViewuserComponent } from './component/viewuser/viewuser.component';
+import { SeatSelectionComponent } from './component/seat/seat.component';
 
 import { HttpService } from '../services/http.service';
 import { AuthService } from '../services/auth.service';
-import { SeatSelectionComponent } from './component/seat/seat.component';
 
 @NgModule({
   declarations: [
     AppComponent, LoginComponent, RegisterComponent,
     DashboardComponent, FlightComponent, FlightSearchComponent,
-    BookingsComponent, AssignPilotComponent, ProfilComponent, ViewuserComponent, SeatSelectionComponent
+    BookingsComponent, AssignPilotComponent, ProfilComponent,
+    ViewuserComponent, SeatSelectionComponent
   ],
   imports: [
     BrowserModule, AppRoutingModule, FormsModule,

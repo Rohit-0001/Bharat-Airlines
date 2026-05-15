@@ -1,40 +1,45 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { AuthService } from './auth.service';
 import { Flights } from '../model/flights';
+import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
+import { User } from '../model/user';
+import { FlightSchedule } from '../model/flight-schedule';
 
 @Injectable({ providedIn: 'root' })
 export class FlightService {
+
   private baseUrl = environment.apiUrl;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
-  private getHeaders() {
-    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    const token = this.authService.getToken();
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
-    }
-    return { headers };
+  private getHeaders(): HttpHeaders {
+    return new HttpHeaders({ Authorization: `Bearer ${this.authService.getToken()}` });
   }
 
   getAllFlights(): Observable<Flights[]> {
-    return this.http.get<Flights[]>(`${this.baseUrl}/api/flights`, this.getHeaders());
+    return this.http.get<Flights[]>(`${this.baseUrl}/api/flights`,
+      { headers: this.getHeaders() });
   }
 
   searchFlights(source: string, destination: string, date: string): Observable<Flights[]> {
-    const params = new HttpParams().set('source', source).set('destination', destination).set('date', date);
-    return this.http.get<Flights[]>(`${this.baseUrl}/api/flights/search`, { ...this.getHeaders(), params });
+    const params = new HttpParams()
+      .set('source', source)
+      .set('destination', destination)
+      .set('date', date);
+    return this.http.get<Flights[]>(`${this.baseUrl}/api/flights/search`,
+      { headers: this.getHeaders(), params });
   }
 
-  createFlight(payload: Flights): Observable<Flights> {
-    return this.http.post<Flights>(`${this.baseUrl}/api/flights`, payload, this.getHeaders());
+  createFlight(flight: Flights): Observable<Flights> {
+    return this.http.post<Flights>(`${this.baseUrl}/api/flights`, flight,
+      { headers: this.getHeaders() });
   }
 
-  updateFlight(id: number, payload: Flights): Observable<Flights> {
-    return this.http.put<Flights>(`${this.baseUrl}/api/flights/${id}`, payload, this.getHeaders());
+  updateFlight(id: number, flight: Flights): Observable<Flights> {
+    return this.http.put<Flights>(`${this.baseUrl}/api/flights/${id}`, flight,
+      { headers: this.getHeaders() });
   }
 
   assignPilot(flightId: number, pilotId: number, scheduledDate: string, assignStatus: string): Observable<any> {
@@ -43,27 +48,35 @@ export class FlightService {
       .set('pilotId', pilotId.toString())
       .set('scheduledDate', scheduledDate)
       .set('assignStatus', assignStatus);
-    return this.http.post<any>(`${this.baseUrl}/api/pilot/schedule/admin/assign-pilot`, null, { ...this.getHeaders(), params });
+    return this.http.post(`${this.baseUrl}/api/pilot/schedule/admin/assign-pilot`, null,
+      { headers: this.getHeaders(), params });
   }
 
-  getPilots(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/api/pilot/schedule/users`, this.getHeaders());
+  getPilots(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.baseUrl}/api/pilot/schedule/users`,
+      { headers: this.getHeaders() });
   }
 
-  getAssignPilotDetails(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/api/pilot/schedule/scheduleUser`, this.getHeaders());
+  getAssignPilotDetails(): Observable<FlightSchedule[]> {
+    return this.http.get<FlightSchedule[]>(`${this.baseUrl}/api/pilot/schedule/scheduleUser`,
+      { headers: this.getHeaders() });
   }
 
-  getAllAssignPilotDetails(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/api/pilot/schedule`, this.getHeaders());
+  getAllAssignPilotDetails(): Observable<FlightSchedule[]> {
+    return this.http.get<FlightSchedule[]>(`${this.baseUrl}/api/pilot/schedule`,
+      { headers: this.getHeaders() });
   }
 
   updateFlightStatus(id: number, status: string): Observable<any> {
-    return this.http.put<any>(`${this.baseUrl}/api/pilot/schedule/${id}/status`, { status }, this.getHeaders());
+    return this.http.put(`${this.baseUrl}/api/pilot/schedule/${id}/status`,
+      { status },
+      { headers: this.getHeaders() });
   }
 
-  checkAvailability(flightId: number, travelerCount: number): Observable<any> {
+  checkAvailability(flightId: number, travelerCount: number): Observable<{ available: boolean }> {
     const params = new HttpParams().set('travelerCount', travelerCount.toString());
-    return this.http.get<any>(`${this.baseUrl}/api/flights/${flightId}/check-availability`, { ...this.getHeaders(), params });
+    return this.http.get<{ available: boolean }>(
+      `${this.baseUrl}/api/flights/${flightId}/check-availability`,
+      { headers: this.getHeaders(), params });
   }
 }

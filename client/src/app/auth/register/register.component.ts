@@ -9,16 +9,14 @@ import { HttpService } from '../../../services/http.service';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit {
+
   registerForm!: FormGroup;
   showMessage = false;
   showError = false;
+  responseMessage = '';
   errorMessage = '';
 
-  constructor(
-    private fb: FormBuilder,
-    private router: Router,
-    private httpService: HttpService
-  ) {}
+  constructor(private fb: FormBuilder, private httpService: HttpService, private router: Router) { }
 
   ngOnInit(): void {
     this.registerForm = this.fb.group({
@@ -26,28 +24,33 @@ export class RegisterComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
       contactNumber: [''],
-      role: ['', Validators.required]
+      role: ['PASSENGER', Validators.required]
     });
   }
-
   onSubmit(): void {
-    this.showMessage = false;
-    this.showError = false;
+    if (this.registerForm.invalid) return;
 
-    if (this.registerForm.invalid) {
-      this.showError = true;
-      this.errorMessage = 'Please complete all required fields.';
-      return;
+    // ✅ FIX: create formData first
+    const formData = { ...this.registerForm.value };
+
+    // ✅ handle contactNumber properly
+    if (!formData.contactNumber || formData.contactNumber === '') {
+      delete formData.contactNumber;
+    } else {
+      formData.contactNumber = Number(formData.contactNumber);
     }
 
-    this.httpService.registerUser(this.registerForm.value).subscribe({
-      next: () => {
+    this.httpService.registerUser(formData).subscribe({
+      next: (res: any) => {
         this.showMessage = true;
-        this.registerForm.reset();
+        this.responseMessage = `Registered successfully as ${res.username}`;
+        this.showError = false;
+        setTimeout(() => this.router.navigate(['/login']), 1500);
       },
-      error: (error) => {
+      error: (err) => {
         this.showError = true;
-        this.errorMessage = error?.error?.message || 'Registration failed. Please try again.';
+        this.errorMessage =
+          err?.error?.message || 'Registration failed. Username may already exist.';
       }
     });
   }

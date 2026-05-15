@@ -17,15 +17,16 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtUtil {
 
-   @Value("${jwt.secret:mySecretKey123456789012345678901234}")
+    @Value("${jwt.secret:mySecretKey123456789012345678901234}")
 private String secret;
 
  @Value("${jwt.expiration:3600000}")
 private long expiration;
 
-    // Generate a token for the given username
-    public String generateToken(String username) {
+    // Generate a token for the given username and role
+    public String generateToken(String username, String role) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)

@@ -1,4 +1,4 @@
-import { Seat } from './seat';
+import { Seat } from "./seat";
 
 export enum FlightStatus {
   SCHEDULED = 'SCHEDULED',
@@ -17,8 +17,8 @@ export interface Flights {
   arrivalTime: string;
   totalSeats: number;
   available_seats: number;
-  isAvailable: boolean;
+  isAvailable?: boolean;
   price: number;
-  status: FlightStatus;
-  seats: Seat[];
+  status: string;
+  seats?: Seat[];
 }

@@ -110,11 +110,23 @@ public class BookingService {
     }
 
     // Update the status of a specific booking
+    @Transactional
     public void updateBookingStatus(Long id, String status) {
         Bookings booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Booking not found with id: " + id));
         booking.setStatus(status);
         bookingRepository.save(booking);
+
+        // Free up the seats when a booking is cancelled
+        if ("CANCELLED".equals(status) && booking.getSeatNumbers() != null && !booking.getSeatNumbers().isEmpty()) {
+            List<String> seatNums = java.util.Arrays.asList(booking.getSeatNumbers().split(","));
+            List<Seat> seats = seatRepository.findByFlightIdAndSeatNumberIn(
+                    booking.getFlight().getId(), seatNums);
+            for (Seat seat : seats) {
+                seat.setAvailable(true);
+            }
+            seatRepository.saveAll(seats);
+        }
     }
 
     // Delete a booking

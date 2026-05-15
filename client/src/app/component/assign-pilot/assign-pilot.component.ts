@@ -9,94 +9,71 @@ import { AuthService } from '../../../services/auth.service';
   styleUrls: ['./assign-pilot.component.scss']
 })
 export class AssignPilotComponent implements OnInit {
+
   assignForm!: FormGroup;
   flights: any[] = [];
   pilots: any[] = [];
   schedules: any[] = [];
-  roleName: string | null = null;
+  roleName = '';
   showMessage = false;
   showError = false;
+  responseMessage = '';
   errorMessage = '';
 
-  constructor(
-    private fb: FormBuilder,
-    private httpService: HttpService,
-    public authService: AuthService
-  ) {}
+  constructor(private fb: FormBuilder, private httpService: HttpService, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.roleName = this.authService.getRole;
+
     this.assignForm = this.fb.group({
-      flightId: [null, Validators.required],
-      pilotId: [null, Validators.required],
+      flightId: ['', Validators.required],
+      pilotId: ['', Validators.required],
       scheduledDate: ['', Validators.required],
       assignStatus: ['ASSIGNED', Validators.required]
     });
-    this.loadData();
-  }
 
-  loadData(): void {
-    this.httpService.getAllFlights().subscribe((flights) => {
-      this.flights = flights || [];
-    });
-    this.httpService.getPilots().subscribe((users) => {
-      this.pilots = users || [];
-    });
-    if (this.roleName === 'PILOT') {
-      this.httpService.getAssignPilotDetails().subscribe((schedules) => {
-        this.schedules = schedules || [];
-      });
+    this.httpService.getAllFlights().subscribe({ next: (data) => this.flights = data });
+    this.httpService.getPilots().subscribe({ next: (data) => this.pilots = data });
+
+    if (this.roleName === 'ADMIN') {
+      this.httpService.getAllSchedules().subscribe({ next: (data) => this.schedules = data });
     } else {
-      this.httpService.getAllSchedules().subscribe((schedules) => {
-        this.schedules = schedules || [];
-      });
-    }
-  }
-
-  onFlightChange(): void {
-    const flightId = this.assignForm.get('flightId')?.value;
-    const selected = this.flights.find((flight) => flight.id === flightId);
-    if (selected?.departureDate) {
-      this.assignForm.patchValue({ scheduledDate: selected.departureDate });
+      this.httpService.getMySchedule().subscribe({ next: (data) => this.schedules = data });
     }
   }
 
   onSubmit(): void {
-    this.showMessage = false;
-    this.showError = false;
-
-    if (this.assignForm.invalid) {
-      this.showError = true;
-      this.errorMessage = 'Please fill all required assignment fields.';
-      return;
-    }
+    if (this.assignForm.invalid) return;
 
     const { flightId, pilotId, scheduledDate, assignStatus } = this.assignForm.value;
     this.httpService.assignPilot(flightId, pilotId, scheduledDate, assignStatus).subscribe({
       next: () => {
         this.showMessage = true;
-        this.assignForm.reset({ assignStatus: 'ASSIGNED' });
-        this.loadData();
+        this.showError = false;
+        this.responseMessage = 'Pilot assigned successfully!';
+        this.httpService.getAllSchedules().subscribe({ next: (data) => this.schedules = data });
       },
-      error: (error) => {
+      error: (err) => {
         this.showError = true;
-        this.errorMessage = error?.error?.message || 'Failed to assign pilot.';
+        this.errorMessage = err?.error?.message || 'Assignment failed.';
       }
     });
   }
 
   updateStatus(id: number, status: string): void {
-    this.showMessage = false;
-    this.showError = false;
-
     this.httpService.updateScheduleStatus(id, status).subscribe({
       next: () => {
         this.showMessage = true;
-        this.loadData();
+        this.showError = false;
+        if (this.roleName === 'ADMIN') {
+          this.httpService.getAllSchedules().subscribe({ next: (data) => this.schedules = data });
+        } else {
+          this.httpService.getMySchedule().subscribe({ next: (data) => this.schedules = data });
+        }
       },
-      error: (error) => {
+      error: (err) => {
         this.showError = true;
-        this.errorMessage = error?.error?.message || 'Unable to update schedule status.';
+        this.errorMessage = err?.error?.message || 'Failed to update status.';
       }
     });
   }

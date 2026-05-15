@@ -6,6 +6,6 @@ export interface LoginRequest {
 export interface AssignManagerRequest {
   flightId: number;
   pilotId: number;
-  scheduledDate: string;  // Format: YYYY-MM-DD
-  assignStatus: string;   // e.g., 'ASSIGNED'
+  scheduledDate: string;
+  assignStatus: string;
 }

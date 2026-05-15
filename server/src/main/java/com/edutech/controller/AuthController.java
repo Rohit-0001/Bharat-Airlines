@@ -1,19 +1,17 @@
 package com.edutech.controller;
 
+import java.util.*;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.http.*;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import com.edutech.dto.LoginRequest;
-import com.edutech.dto.LoginResponse;
 import com.edutech.entity.User;
 import com.edutech.service.UserService;
 import com.edutech.util.JwtUtil;
@@ -23,7 +21,6 @@ import com.edutech.util.JwtUtil;
 @CrossOrigin(origins = "*")
 public class AuthController {
 
-    // Injecting service
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -33,28 +30,54 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // Register a new user (ADMIN / PASSENGER / PILOT)
+    // ✅ REGISTER
     @PostMapping("/register")
-    public ResponseEntity<User> register(@Valid @RequestBody User user) {
-        User saved = userService.registerUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    public ResponseEntity<?> register(@Valid @RequestBody User user) {
+        try {
+            User saved = userService.registerUser(user);
+            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("message", e.getMessage()));
+        }
     }
 
-    // Authenticate and return a JWT token
+    // ✅ LOGIN (FLAT RESPONSE ✅)
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 
-        User user = userService.findByUsername(request.getUsername());
-        String token = jwtUtil.generateToken(request.getUsername());
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getUsername(),
+                            request.getPassword()));
 
-        LoginResponse response = new LoginResponse(
-                token, user.getUsername(), user.getEmail(), user.getRole(), user.getId());
-        return ResponseEntity.ok(response);
+            User user = userService.findByUsername(request.getUsername());
+
+            String token = jwtUtil.generateToken(
+                    request.getUsername(),
+                    user.getRole().name());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", token);
+            response.put("username", user.getUsername());
+            response.put("email", user.getEmail());
+            response.put("role", user.getRole());
+            response.put("id", user.getId());
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+
+            Map<String, Object> error = new HashMap<>();
+            error.put("status", 401);
+            error.put("message", "Invalid username or password");
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+        }
     }
 
-    // Return the currently authenticated user's profile
     @GetMapping("/user")
     public ResponseEntity<User> getLoggedInUser(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.findByUsername(userDetails.getUsername());

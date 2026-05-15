@@ -20,7 +20,6 @@ import com.edutech.service.BookingService;
 @CrossOrigin(origins = "*")
 public class BookingsController {
 
-    // Injecting service
     @Autowired
     private BookingService bookingService;
 
@@ -30,8 +29,12 @@ public class BookingsController {
     // Passenger: Book seats on a flight
     @PostMapping("/book-seats")
     public ResponseEntity<String> bookSeats(@RequestBody BookSeatsRequest request) {
-        bookingService.bookSeats(request.getFlightId(), request.getSeatNumbers(), request.getUserId());
-        return ResponseEntity.ok("Booking Successful");
+        bookingService.bookSeats(
+                request.getFlightId(),
+                request.getSeatNumbers(),
+                request.getUserId());
+
+        return ResponseEntity.ok("Booking Successful"); // ✅ plain string
     }
 
     // Passenger: Get my own booking history

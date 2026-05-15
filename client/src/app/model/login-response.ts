@@ -3,5 +3,5 @@ export interface LoginResponse {
   username: string;
   email: string;
   role: string;
-  userId?: string | number;
+  userId: number;
 }

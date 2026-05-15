@@ -1,7 +1,21 @@
-<div class="card">
-  <div class="card-body">
-    <h3>Welcome, {{ authService.getUsername || 'Traveler' }}</h3>
-    <p>Your role: {{ authService.getRole || 'Guest' }}</p>
-    <p>Use the navigation bar to manage flights, bookings, pilot assignments, or view your profile.</p>
+<div class="text-center mt-5">
+  <h2>Welcome to Airline Booking System</h2>
+  <p class="text-muted">You are logged in as <strong>{{ role }}</strong></p>
+
+  <div class="mt-4" *ngIf="role === 'ADMIN'">
+    <a routerLink="/add_flights" class="btn btn-primary me-2">Manage Flights</a>
+    <a routerLink="/view_all_user" class="btn btn-secondary me-2">View All Bookings</a>
+    <a routerLink="/assign_pilot" class="btn btn-info">Assign Pilots</a>
+  </div>
+
+  <div class="mt-4" *ngIf="role === 'PASSENGER'">
+    <a routerLink="/search_flight" class="btn btn-primary me-2">Search Flights</a>
+    <a routerLink="/my_booking" class="btn btn-secondary me-2">My Bookings</a>
+    <a routerLink="/my_profile" class="btn btn-info">My Profile</a>
+  </div>
+
+  <div class="mt-4" *ngIf="role === 'PILOT'">
+    <a routerLink="/assign_pilot" class="btn btn-primary me-2">My Schedule</a>
+    <a routerLink="/my_profile" class="btn btn-info">My Profile</a>
   </div>
 </div>

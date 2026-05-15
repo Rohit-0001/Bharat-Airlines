@@ -1,0 +1,72 @@
+// ============================================================
+// MANAGE FLIGHTS (Admin) — Add-flight form + flight list
+// ============================================================
+
+h3 { margin-bottom: 1.5rem; }
+
+// ---- Add flight form card ----
+.card:first-of-type {
+  border-top: 3px solid var(--ai-primary) !important;
+
+  h5::before { content: '✈ '; }
+}
+
+// Seat FormArray rows
+div[formarrayname="seats"] {
+  .row.border {
+    background: var(--ai-surface-warm);
+    border-color: var(--ai-border) !important;
+    border-radius: var(--ai-r-sm) !important;
+    transition: box-shadow 0.14s ease;
+
+    &:hover {
+      box-shadow: var(--ai-shadow-sm);
+    }
+  }
+}
+
+// "Add Seat" button
+.btn-outline-primary.btn-sm {
+  border-style: dashed;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+// "Create Flight" CTA
+button.btn-success[type="submit"] {
+  min-width: 160px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 0.55rem 1.5rem;
+}
+
+// ---- Flight list card ----
+.card:last-of-type {
+  h5::before { content: '📋 '; }
+}
+
+// Status badges in table — map text to badge-like spans
+.table td:last-child {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ai-text-secondary);
+}
+
+// Flight number column
+.table td:nth-child(2) {
+  font-weight: 700;
+  color: var(--ai-primary);
+  letter-spacing: 0.04em;
+}
+
+// Price column
+.table td:nth-child(8) {
+  font-weight: 700;
+  color: var(--ai-success);
+}
+
+@media (max-width: 992px) {
+  .table { display: block; overflow-x: auto; white-space: nowrap; }
+}

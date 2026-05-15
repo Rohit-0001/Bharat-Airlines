@@ -2,55 +2,41 @@ import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  getToken(): string | null {
-    return localStorage.getItem('token');
-  }
 
-  setToken(token: string): void {
+  // Save token, role, and userId to localStorage after login
+  saveAuth(token: string, role: string, userId: string): void {
     localStorage.setItem('token', token);
-  }
-
-  get getRole(): string | null {
-    return localStorage.getItem('role');
-  }
-
-  setRole(role: string): void {
     localStorage.setItem('role', role);
-  }
-
-  get getUserId(): string | null {
-    return localStorage.getItem('userId');
-  }
-
-  setUserId(userId: string): void {
     localStorage.setItem('userId', userId);
   }
 
-  get getUsername(): string | null {
-    return localStorage.getItem('username');
+  getToken(): string {
+    return localStorage.getItem('token') || '';
   }
 
-  setUsername(username: string): void {
-    localStorage.setItem('username', username);
+  // getRole decodes the role from the JWT payload so it cannot be faked via localStorage
+  get getRole(): string {
+    const token = this.getToken();
+    if (!token) return '';
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.role || '';
+    } catch {
+      return '';
+    }
   }
 
-  get getEmail(): string | null {
-    return localStorage.getItem('email');
-  }
-
-  setEmail(email: string): void {
-    localStorage.setItem('email', email);
+  getUserId(): string {
+    return localStorage.getItem('userId') || '';
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    return !!localStorage.getItem('token');
   }
 
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
     localStorage.removeItem('userId');
-    localStorage.removeItem('username');
-    localStorage.removeItem('email');
   }
 }

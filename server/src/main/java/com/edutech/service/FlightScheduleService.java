@@ -48,6 +48,12 @@ public class FlightScheduleService {
         User pilot = userRepository.findById(pilotId)
                 .orElseThrow(() -> new EntityNotFoundException("Pilot not found with id: " + pilotId));
 
+        // Validate that the scheduled date matches the flight's actual departure date
+        if (!scheduledDate.equals(flight.getDepartureDate())) {
+            throw new IllegalStateException(
+                    "Scheduled date does not match the flight's departure date: " + flight.getDepartureDate());
+        }
+
         // Check for duplicate assignment on the same date for this flight
         flightScheduleRepository.findByFlightIdAndScheduledDate(flightId, scheduledDate)
                 .ifPresent(existing -> {

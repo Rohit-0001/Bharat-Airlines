@@ -10,16 +10,16 @@ import { AuthService } from '../../../services/auth.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+
   loginForm!: FormGroup;
-  showMessage = false;
   showError = false;
   errorMessage = '';
 
   constructor(
     private fb: FormBuilder,
-    private router: Router,
     private httpService: HttpService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -30,30 +30,16 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.showMessage = false;
-    this.showError = false;
-
-    if (this.loginForm.invalid) {
-      this.showError = true;
-      this.errorMessage = 'Please complete all required fields.';
-      return;
-    }
+    if (this.loginForm.invalid) return;
 
     this.httpService.login(this.loginForm.value).subscribe({
-      next: (response) => {
-        this.authService.setToken(response.token);
-        this.authService.setRole(response.role);
-        this.authService.setUsername(response.username);
-        this.authService.setEmail(response.email);
-        if (response.userId !== undefined) {
-          this.authService.setUserId(response.userId.toString());
-        }
-        this.showMessage = true;
-        this.router.navigate(['/dashboard']).then(() => window.location.reload());
+      next: (res: any) => {
+        this.authService.saveAuth(res.token, res.role, res.userId?.toString());
+        this.router.navigate(['/dashboard']);
       },
-      error: (error) => {
+      error: (err) => {
         this.showError = true;
-        this.errorMessage = error?.error?.message || 'Login failed. Please try again.';
+        this.errorMessage = err?.error?.message || 'Invalid credentials.';
       }
     });
   }

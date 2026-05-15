@@ -1,12 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Seat } from '../../model/seat';
 import { SeatService } from '../../services/seat.service';
 
@@ -15,94 +7,49 @@ import { SeatService } from '../../services/seat.service';
   templateUrl: './seat.component.html',
   styleUrls: ['./seat.component.scss']
 })
-export class SeatSelectionComponent implements OnChanges, OnInit {
+export class SeatSelectionComponent implements OnInit, OnChanges {
 
-  @Input() flightId?: number;
+  @Input() flightId!: number;
   @Input() seats: Seat[] = [];
   @Output() seatSelected = new EventEmitter<string>();
 
-  seatMap: Seat[][] = [];
+  seatMap: any[][] = [];
   selectedSeatNumber: string | null = null;
-  loading = false;
-  error = false;
 
   constructor(private seatService: SeatService) {}
 
   ngOnInit(): void {
     if (this.flightId) {
-      this.loadSeats();
+      this.seatService.getSeats(this.flightId).subscribe({
+        next: (data) => { this.buildSeatMap(data); }
+      });
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['flightId'] && this.flightId) {
-      this.loadSeats();
-    }
-    if (changes['seats'] && this.seats) {
-      this.buildSeatMap();
+    if (changes['seats'] && changes['seats'].currentValue) {
+      this.buildSeatMap(changes['seats'].currentValue);
     }
   }
 
-  loadSeats(): void {
-    this.loading = true;
-    this.error = false;
-
-    if (!this.flightId) {
-      this.seats = [];
-      this.loading = false;
-      return;
+  // Group seats by rowLabel to create a 2D grid
+  buildSeatMap(seats: any[]): void {
+    const rowMap: { [key: string]: any[] } = {};
+    const rowOrder: string[] = [];
+    for (const seat of seats) {
+      const row = seat.rowLabel;
+      if (!rowMap[row]) {
+        rowMap[row] = [];
+        rowOrder.push(row);
+      }
+      rowMap[row].push({ ...seat, booked: !seat.isAvailable });
     }
-
-    this.seatService.getSeats(this.flightId).subscribe({
-      next: (data: Seat[]) => {
-        this.seats = data || [];
-        this.buildSeatMap();
-        this.loading = false;
-      },
-      error: () => {
-        this.error = true;
-        this.loading = false;
-      }
-    });
-  }
-
-  buildSeatMap(): void {
-    const rows: { [row: string]: Seat[] } = {};
-
-    this.seats.forEach((seat) => {
-      const row = seat.rowLabel || 'Unknown';
-
-      if (!rows[row]) {
-        rows[row] = [];
-      }
-
-      rows[row].push(seat);
-    });
-
-    this.seatMap = Object.keys(rows)
-      .sort()
-      .map((row) =>
-        rows[row].sort((a, b) => (a.columnNumber || 0) - (b.columnNumber || 0))
-      );
+    this.seatMap = rowOrder.map(row => rowMap[row]);
   }
 
   selectSeat(seat: any): void {
-    const isBooked = seat.booked ?? false;
-    const isAvailable = seat.isAvailable ?? !isBooked;
-    const isBlocked = seat.isBlocked ?? false;
-
-    if (isBooked || !isAvailable || isBlocked) {
-      return;
-    }
-
+    if (seat.booked) return;
     this.selectedSeatNumber = seat.seatNumber;
-
-    if (this.selectedSeatNumber) {
-      this.seatSelected.emit(this.selectedSeatNumber);
-    }
-  }
-
-  isSelected(seat: Seat): boolean {
-    return seat.seatNumber === this.selectedSeatNumber;
+    this.seatSelected.emit(seat.seatNumber);
   }
 }

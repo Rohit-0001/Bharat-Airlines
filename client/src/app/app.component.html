@@ -1,47 +1,60 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" routerLink="/">Airline Booking System</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item" *ngIf="isLoggedIn && role === 'ADMIN'">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+  <a class="navbar-brand" routerLink="/dashboard">
+    ✈ Airline Booking System
+  </a>
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav ms-auto">
+
+      <!-- Admin links -->
+      <ng-container *ngIf="isLoggedIn && role === 'ADMIN'">
+        <li class="nav-item">
           <a class="nav-link" routerLink="/add_flights">Add Flights</a>
         </li>
-        <li class="nav-item" *ngIf="isLoggedIn && role === 'ADMIN'">
+        <li class="nav-item">
           <a class="nav-link" routerLink="/view_all_user">View All Bookings</a>
         </li>
-        <li class="nav-item" *ngIf="isLoggedIn && role === 'ADMIN'">
+        <li class="nav-item">
           <a class="nav-link" routerLink="/assign_pilot">Assign Pilots</a>
         </li>
-        <li class="nav-item" *ngIf="isLoggedIn && role === 'PASSENGER'">
+      </ng-container>
+
+      <!-- Passenger links -->
+      <ng-container *ngIf="isLoggedIn && role === 'PASSENGER'">
+        <li class="nav-item">
           <a class="nav-link" routerLink="/search_flight">Search Flights</a>
         </li>
-        <li class="nav-item" *ngIf="isLoggedIn && role === 'PASSENGER'">
+        <li class="nav-item">
           <a class="nav-link" routerLink="/my_booking">My Bookings</a>
         </li>
-        <li class="nav-item" *ngIf="isLoggedIn && role === 'PILOT'">
-          <a class="nav-link" routerLink="/assign_pilot">My Schedule</a>
-        </li>
-        <li class="nav-item" *ngIf="isLoggedIn">
+        <li class="nav-item">
           <a class="nav-link" routerLink="/my_profile">My Profile</a>
         </li>
-      </ul>
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item" *ngIf="!isLoggedIn">
-          <a class="nav-link" routerLink="/login">Login</a>
+      </ng-container>
+
+      <!-- Pilot links -->
+      <ng-container *ngIf="isLoggedIn && role === 'PILOT'">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/assign_pilot">My Schedule</a>
         </li>
-        <li class="nav-item" *ngIf="!isLoggedIn">
-          <a class="nav-link" routerLink="/register">Register</a>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/my_profile">My Profile</a>
         </li>
-        <li class="nav-item" *ngIf="isLoggedIn">
-          <a class="nav-link" (click)="logout()">Logout</a>
-        </li>
-      </ul>
-    </div>
+      </ng-container>
+
+      <!-- Not logged in -->
+      <li class="nav-item" *ngIf="!isLoggedIn">
+        <a class="nav-link" routerLink="/login">Login</a>
+      </li>
+
+      <!-- Logout -->
+      <li class="nav-item" *ngIf="isLoggedIn">
+        <button class="btn btn-outline-light btn-sm ms-2" (click)="logout()">Logout</button>
+      </li>
+
+    </ul>
   </div>
 </nav>
+
 <div class="container mt-4">
   <router-outlet></router-outlet>
 </div>

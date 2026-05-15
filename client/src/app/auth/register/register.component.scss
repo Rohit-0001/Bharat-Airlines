@@ -1,0 +1,82 @@
+// ============================================================
+// REGISTER PAGE — Mirrors login card with extra fields
+// ============================================================
+
+// Full-page wrapper
+.d-flex.justify-content-center.align-items-center {
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 70% 20%, rgba(140,29,24,0.06) 0%, transparent 60%),
+              radial-gradient(ellipse at 30% 80%, rgba(201,168,76,0.05) 0%, transparent 60%),
+              var(--ai-bg);
+
+  &::before {
+    content: '✈';
+    position: absolute;
+    top: 10%;
+    right: 8%;
+    font-size: 9rem;
+    opacity: 0.03;
+    color: var(--ai-primary);
+    transform: rotate(20deg);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  &::after {
+    content: '✈';
+    position: absolute;
+    bottom: 10%;
+    left: 8%;
+    font-size: 6rem;
+    opacity: 0.03;
+    color: var(--ai-primary);
+    transform: rotate(-20deg);
+    pointer-events: none;
+    user-select: none;
+  }
+}
+
+// Auth card
+.card {
+  position: relative;
+  border-radius: 20px !important;
+  border: 1px solid rgba(140,29,24,0.1) !important;
+  box-shadow: 0 24px 56px rgba(140,29,24,0.12), 0 8px 20px rgba(0,0,0,0.06) !important;
+  animation: fadeInUp 0.4s cubic-bezier(0.4,0,0.2,1) both;
+  background: #FFFFFF !important;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--ai-primary) 0%, var(--ai-gold) 100%);
+    z-index: 1;
+  }
+
+  &.p-4 { padding: 2.5rem 2rem !important; }
+
+  h4 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--ai-primary);
+    letter-spacing: -0.02em;
+  }
+
+  .btn-primary.w-100 {
+    height: 46px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    border-radius: 10px !important;
+    margin-top: 0.25rem;
+  }
+
+  p.text-center {
+    font-size: 0.875rem;
+    color: var(--ai-text-muted);
+    a { color: var(--ai-primary); font-weight: 600; &:hover { text-decoration: underline; } }
+  }
+}

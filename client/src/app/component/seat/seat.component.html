@@ -1,36 +1,22 @@
-<div class="seat-map">
-
-  <div *ngIf="error" class="alert alert-warning">
-    Unable to load seats.
-  </div>
-
-  <div *ngIf="loading" class="text-center">
-    Loading seat map...
-  </div>
-
-  <div class="d-flex flex-wrap gap-2" *ngIf="!loading && seats.length">
-
-    <button *ngFor="let seat of seats"
+<div class="mt-3" *ngIf="seatMap.length > 0">
+  <h6>Select a Seat</h6>
+  <div *ngFor="let row of seatMap" class="d-flex gap-2 mb-2">
+    <button
+      *ngFor="let seat of row"
       type="button"
       class="btn btn-sm"
-
-      [ngClass]="{
-        'btn-success': seat?.isAvailable && !seat?.isBlocked && !isSelected(seat),
-        'btn-primary': isSelected(seat),
-        'btn-secondary': !seat?.isAvailable || seat?.isBlocked
-      }"
-
-      [disabled]="!seat?.isAvailable || seat?.isBlocked"
-
-      (click)="selectSeat(seat)">
-
-      {{ seat?.seatNumber }}
-
+      [class.btn-success]="!seat.booked && seat.seatNumber !== selectedSeatNumber"
+      [class.btn-warning]="seat.seatNumber === selectedSeatNumber"
+      [class.btn-danger]="seat.booked"
+      [disabled]="seat.booked"
+      (click)="selectSeat(seat)"
+      title="{{ seat.seatNumber }}">
+      {{ seat.seatNumber }}
     </button>
   </div>
-
-  <p *ngIf="!loading && !seats.length" class="text-muted">
-    No seats available for this flight.
-  </p>
-
+  <small class="text-muted">
+    <span class="badge bg-success me-1">Available</span>
+    <span class="badge bg-warning text-dark me-1">Selected</span>
+    <span class="badge bg-danger me-1">Booked</span>
+  </small>
 </div>

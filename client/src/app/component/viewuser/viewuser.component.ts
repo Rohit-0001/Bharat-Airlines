@@ -8,11 +8,12 @@ import { AuthService } from '../../../services/auth.service';
   styleUrls: ['./viewuser.component.scss']
 })
 export class ViewuserComponent implements OnInit {
+
   bookingsListUser: any[] = [];
   showError = false;
   errorMessage = '';
 
-  constructor(private httpService: HttpService, public authService: AuthService) {}
+  constructor(private httpService: HttpService, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.loadBookings();
@@ -20,8 +21,8 @@ export class ViewuserComponent implements OnInit {
 
   loadBookings(): void {
     this.httpService.getAllBookings().subscribe({
-      next: (result) => {
-        this.bookingsListUser = result || [];
+      next: (data) => {
+        this.bookingsListUser = data;
         this.showError = false;
       },
       error: () => {

@@ -1,0 +1,61 @@
+// ============================================================
+// ASSIGN PILOT (Admin) / MY SCHEDULE (Pilot)
+// ============================================================
+
+h3 { margin-bottom: 1.5rem; }
+
+// Assign form card
+.card:first-of-type {
+  border-top: 3px solid var(--ai-primary) !important;
+
+  h6::before { content: '👨‍✈️ '; }
+}
+
+// Submit button
+.btn-primary[type="submit"] {
+  min-width: 150px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+// Schedule table card
+.card:last-of-type {
+  h6::before { content: '📅 '; }
+}
+
+// Pilot name bold
+.table td:nth-child(2) {
+  font-weight: 600;
+  color: var(--ai-text);
+}
+
+// Flight number
+.table td:nth-child(3) {
+  font-weight: 700;
+  color: var(--ai-primary);
+  letter-spacing: 0.04em;
+}
+
+// Status column — use text color to indicate state
+.table td:nth-child(8) {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ai-text-secondary);
+}
+
+// Inline status select (admin)
+.form-select.form-select-sm.d-inline.w-auto {
+  min-width: 110px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+// Pilot action buttons
+.btn-success.btn-sm { min-width: 68px; }
+.btn-danger.btn-sm  { min-width: 60px; }
+
+@media (max-width: 992px) {
+  .table { display: block; overflow-x: auto; white-space: nowrap; }
+}

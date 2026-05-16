@@ -16,6 +16,10 @@ export class AuthService {
     return localStorage.getItem('token') || '';
   }
 
+  isLoggedIn(): boolean {
+    return !!this.getToken();  // true if token exists
+  }
+
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.baseUrl}/api/auth/login`, credentials);
   }

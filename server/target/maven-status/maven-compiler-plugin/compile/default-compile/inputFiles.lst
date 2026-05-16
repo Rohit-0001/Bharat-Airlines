@@ -6,6 +6,7 @@
 /home/coder/app/server/src/main/java/com/edutech/entity/Status.java
 /home/coder/app/server/src/main/java/com/edutech/controller/FlightsController.java
 /home/coder/app/server/src/main/java/com/edutech/dto/LoginRequest.java
+/home/coder/app/server/src/main/java/com/edutech/dto/ForgotPasswordRequest.java
 /home/coder/app/server/src/main/java/com/edutech/TicketBookingApplicatonApplication.java
 /home/coder/app/server/src/main/java/com/edutech/util/JwtUtil.java
 /home/coder/app/server/src/main/java/com/edutech/service/BookingValidationService.java
@@ -18,10 +19,12 @@
 /home/coder/app/server/src/main/java/com/edutech/config/SecurityConfig.java
 /home/coder/app/server/src/main/java/com/edutech/dto/UserDTO.java
 /home/coder/app/server/src/main/java/com/edutech/controller/SeatController.java
+/home/coder/app/server/src/main/java/com/edutech/dto/ResetPasswordRequest.java
 /home/coder/app/server/src/main/java/com/edutech/service/FlightScheduleService.java
 /home/coder/app/server/src/main/java/com/edutech/config/Configurations.java
 /home/coder/app/server/src/main/java/com/edutech/repository/FlightScheduleRepository.java
 /home/coder/app/server/src/main/java/com/edutech/controller/BookingsController.java
+/home/coder/app/server/src/main/java/com/edutech/dto/CaptchaLoginRequest.java
 /home/coder/app/server/src/main/java/com/edutech/repository/BookingRepository.java
 /home/coder/app/server/src/main/java/com/edutech/controller/BookingValidationController.java
 /home/coder/app/server/src/main/java/com/edutech/entity/Seat.java
@@ -30,7 +33,11 @@
 /home/coder/app/server/src/main/java/com/edutech/entity/Flights.java
 /home/coder/app/server/src/main/java/com/edutech/exception/GlobalExceptionHandler.java
 /home/coder/app/server/src/main/java/com/edutech/service/FlightsService.java
+/home/coder/app/server/src/main/java/com/edutech/service/OtpService.java
+/home/coder/app/server/src/main/java/com/edutech/dto/OtpVerifyRequest.java
 /home/coder/app/server/src/main/java/com/edutech/service/BookingService.java
 /home/coder/app/server/src/main/java/com/edutech/service/UserService.java
+/home/coder/app/server/src/main/java/com/edutech/service/LoginAttemptService.java
+/home/coder/app/server/src/main/java/com/edutech/service/EmailService.java
 /home/coder/app/server/src/main/java/com/edutech/controller/FlightScheduleController.java
 /home/coder/app/server/src/main/java/com/edutech/entity/Role.java

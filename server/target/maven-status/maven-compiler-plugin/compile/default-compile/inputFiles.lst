@@ -2,6 +2,7 @@
 /home/coder/app/server/src/main/java/com/edutech/dto/LoginResponse.java
 /home/coder/app/server/src/main/java/com/edutech/entity/User.java
 /home/coder/app/server/src/main/java/com/edutech/dto/BookingDTO.java
+/home/coder/app/server/src/main/java/com/edutech/util/ScheduleStatusConstants.java
 /home/coder/app/server/src/main/java/com/edutech/entity/Status.java
 /home/coder/app/server/src/main/java/com/edutech/controller/FlightsController.java
 /home/coder/app/server/src/main/java/com/edutech/dto/LoginRequest.java

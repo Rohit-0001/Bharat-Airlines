@@ -7,108 +7,185 @@
       <div class="row g-2 align-items-end">
         <div class="col-md-3">
           <label class="form-label">Source</label>
-          <input class="form-control" formControlName="source" list="sourceList" placeholder="From">
+          <input class="form-control" formControlName="source" list="sourceList" placeholder="From"
+            [class.is-invalid]="searchForm.get('source')?.invalid && searchForm.get('source')?.touched">
           <datalist id="sourceList">
             <option *ngFor="let s of sourceList" [value]="s"></option>
           </datalist>
         </div>
         <div class="col-md-3">
           <label class="form-label">Destination</label>
-          <input class="form-control" formControlName="destination" list="destList" placeholder="To">
+          <input class="form-control" formControlName="destination" list="destList" placeholder="To"
+            [class.is-invalid]="searchForm.get('destination')?.invalid && searchForm.get('destination')?.touched">
           <datalist id="destList">
             <option *ngFor="let d of destinationList" [value]="d"></option>
           </datalist>
         </div>
         <div class="col-md-2">
           <label class="form-label">Date</label>
-          <input type="date" class="form-control" formControlName="date">
+          <input type="date" class="form-control" formControlName="date" [min]="minDate"
+            [class.is-invalid]="searchForm.get('date')?.invalid && searchForm.get('date')?.touched">
         </div>
         <div class="col-md-3">
           <label class="form-label">Travellers</label>
-          <div class="dropdown">
-            <button type="button" class="btn btn-outline-secondary btn-sm w-100" (click)="toggleDropdown()">
-              {{ travelerSummary }} ▾
+          <div class="dropdown traveler-dropdown position-relative">
+            <button type="button" class="btn btn-outline-secondary btn-sm w-100"
+              (click)="toggleDropdown($event)" [attr.aria-expanded]="dropdownOpen">
+              {{ travelerSummary }} &#9662;
             </button>
-            <div class="dropdown-menu p-3 show" *ngIf="dropdownOpen" style="min-width:220px">
+            <div class="dropdown-menu traveller-panel p-3 shadow show" *ngIf="dropdownOpen" (click)="$event.stopPropagation()">
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <span>Adults</span>
                 <div>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('adult', -1)">-</button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('adult', -1, $event)">-</button>
                   <span class="mx-2">{{ searchForm.get('adult')?.value }}</span>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('adult', 1)">+</button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('adult', 1, $event)">+</button>
                 </div>
               </div>
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <span>Children</span>
                 <div>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('child', -1)">-</button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('child', -1, $event)">-</button>
                   <span class="mx-2">{{ searchForm.get('child')?.value }}</span>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('child', 1)">+</button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('child', 1, $event)">+</button>
                 </div>
               </div>
               <div class="d-flex justify-content-between align-items-center">
                 <span>Infants</span>
                 <div>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('infant', -1)">-</button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('infant', -1, $event)">-</button>
                   <span class="mx-2">{{ searchForm.get('infant')?.value }}</span>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('infant', 1)">+</button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('infant', 1, $event)">+</button>
                 </div>
               </div>
               <select class="form-select form-select-sm mt-2" formControlName="travelClass">
-                <option>Economy</option><option>Business</option><option>First</option>
+                <option>Economy</option>
+                <option>Business</option>
+                <option>First</option>
               </select>
+              <button type="button" class="btn btn-primary btn-sm w-100 mt-2" (click)="applyTravellers()">Done</button>
             </div>
           </div>
         </div>
         <div class="col-md-1">
-          <button type="submit" class="btn btn-primary w-100">Search</button>
+          <button type="submit" class="btn btn-primary w-100" [disabled]="isSearching || searchForm.invalid">
+            <span *ngIf="isSearching" class="spinner-border spinner-border-sm me-1"></span>
+            Search
+          </button>
         </div>
       </div>
     </form>
   </div>
 
-  <div class="alert alert-danger" *ngIf="showError">{{ errorMessage }}</div>
+  <div class="alert alert-danger" *ngIf="showError && !selectedFlight">{{ errorMessage }}</div>
 
-  <div *ngIf="flights.length > 0">
-    <h6>Available Flights</h6>
+  <div *ngIf="isSearching" class="text-center py-4">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-2 text-muted">Searching flights...</p>
+  </div>
+
+  <div *ngIf="searchAttempted && !isSearching && flights.length === 0" class="table-empty">
+    <p>No confirmed flights found for this route and date.</p>
+    <p class="small text-muted">Flights appear after a pilot is assigned and accepts the schedule.</p>
+  </div>
+
+  <div class="search-results-section" *ngIf="flights.length > 0 && !isSearching">
+    <h6>Available Flights ({{ flights.length }})</h6>
     <table class="table table-hover">
       <thead class="table-dark">
-        <tr><th>Sr#</th><th>Flight No</th><th>Source</th><th>Destination</th><th>Departure</th><th>Arrival</th><th>Price</th><th>Action</th></tr>
+        <tr>
+          <th>#</th>
+          <th>Flight No</th>
+          <th>Route</th>
+          <th>Date</th>
+          <th>Departure</th>
+          <th>Arrival</th>
+          <th>Seats</th>
+          <th>Price</th>
+          <th>Action</th>
+        </tr>
       </thead>
       <tbody>
         <tr *ngFor="let f of flights; let i = index">
-          <td>{{ i+1 }}</td><td>{{ f.flight_number }}</td><td>{{ f.source }}</td>
-          <td>{{ f.destination }}</td><td>{{ f.departureTime }}</td><td>{{ f.arrivalTime }}</td>
-          <td>₹{{ f.price }}</td>
+          <td>{{ i + 1 }}</td>
+          <td>{{ f.flight_number }}</td>
+          <td>{{ f.source }} &rarr; {{ f.destination }}</td>
+          <td>{{ f.departureDate }}</td>
+          <td>{{ f.departureTime }}</td>
+          <td>{{ f.arrivalTime }}</td>
+          <td>{{ f.available_seats }}</td>
+          <td>&#8377;{{ f.price }}</td>
           <td><button class="btn btn-sm btn-primary" (click)="viewFlight(f)">View &amp; Book</button></td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <div class="modal d-block" *ngIf="selectedFlight" tabindex="-1" style="background:rgba(0,0,0,0.5)">
-    <div class="modal-dialog">
+  <div class="modal d-block booking-modal" *ngIf="selectedFlight" tabindex="-1">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Flight Details - {{ selectedFlight.flight_number }}</h5>
-          <button type="button" class="btn-close" (click)="selectedFlight=null"></button>
+          <h5 class="modal-title">Flight {{ selectedFlight.flight_number }}</h5>
+          <button type="button" class="btn-close" (click)="closeModal()" [disabled]="isBooking"></button>
         </div>
         <div class="modal-body">
           <div class="row">
-            <div class="col-6"><p><strong>Source:</strong> {{ selectedFlight.source }}</p></div>
-            <div class="col-6"><p><strong>Class:</strong> {{ searchForm.get('travelClass')?.value }}</p></div>
-            <div class="col-6"><p><strong>Destination:</strong> {{ selectedFlight.destination }}</p></div>
-            <div class="col-6"><p><strong>Travellers:</strong> {{ travelerSummary }}</p></div>
-            <div class="col-6"><p><strong>Departure:</strong> {{ selectedFlight.departureTime }}</p></div>
-            <div class="col-6"><p><strong>Total Price:</strong> ₹{{ totalPrice }}</p></div>
-            <div class="col-6"><p><strong>Arrival:</strong> {{ selectedFlight.arrivalTime }}</p></div>
-            <div class="col-6"><p><strong>Selected Seats:</strong> {{ seatSelectionLabel }}</p></div>
+            <div class="col-6"><p><strong>Route</strong> {{ selectedFlight.source }} &rarr; {{ selectedFlight.destination }}</p></div>
+            <div class="col-6"><p><strong>Class</strong> {{ searchForm.get('travelClass')?.value }}</p></div>
+            <div class="col-6"><p><strong>Date</strong> {{ selectedFlight.departureDate }}</p></div>
+            <div class="col-6">
+              <p class="mb-1"><strong>Travellers</strong> {{ travelerSummary }}</p>
+              <div class="modal-traveller-dropdown position-relative d-inline-block">
+                <button type="button" class="btn btn-outline-primary btn-sm"
+                  (click)="toggleModalTravellers($event)">
+                  Change travellers
+                </button>
+                <div class="dropdown-menu traveller-panel p-3 shadow show" *ngIf="modalTravellerOpen"
+                  (click)="$event.stopPropagation()">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Adults</span>
+                    <div>
+                      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('adult', -1, $event)">-</button>
+                      <span class="mx-2">{{ searchForm.get('adult')?.value }}</span>
+                      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('adult', 1, $event)">+</button>
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Children</span>
+                    <div>
+                      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('child', -1, $event)">-</button>
+                      <span class="mx-2">{{ searchForm.get('child')?.value }}</span>
+                      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('child', 1, $event)">+</button>
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Infants</span>
+                    <div>
+                      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('infant', -1, $event)">-</button>
+                      <span class="mx-2">{{ searchForm.get('infant')?.value }}</span>
+                      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('infant', 1, $event)">+</button>
+                    </div>
+                  </div>
+                  <select class="form-select form-select-sm mt-2" formControlName="travelClass">
+                    <option>Economy</option>
+                    <option>Business</option>
+                    <option>First</option>
+                  </select>
+                  <p class="small text-muted mt-2 mb-2">Seats needed: {{ totalTravelers }} (infants do not need a seat)</p>
+                  <button type="button" class="btn btn-primary btn-sm w-100" (click)="applyTravellers()">Apply</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-6"><p><strong>Departure</strong> {{ selectedFlight.departureTime }}</p></div>
+            <div class="col-6"><p><strong>Total</strong> &#8377;{{ totalPrice }}</p></div>
+            <div class="col-12"><p><strong>Selected Seats</strong> {{ seatSelectionLabel }}</p></div>
           </div>
 
           <app-seat
             [flightId]="selectedFlight.id"
             [seats]="seats"
             [maxSelectable]="totalTravelers"
+            [selectedSeats]="selectedSeatNumbers"
             (seatSelected)="onSeatSelected($event)">
           </app-seat>
 
@@ -116,8 +193,12 @@
           <div class="alert alert-danger mt-2" *ngIf="showError">{{ errorMessage }}</div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" (click)="selectedFlight=null">Close</button>
-          <button class="btn btn-primary" (click)="bookSelectedFlight()">Book &amp; Pay</button>
+          <button class="btn btn-secondary" (click)="closeModal()" [disabled]="isBooking">Close</button>
+          <button class="btn btn-primary" (click)="bookSelectedFlight()"
+            [disabled]="isBooking || selectedSeatNumbers.length < totalTravelers">
+            <span *ngIf="isBooking" class="spinner-border spinner-border-sm me-1"></span>
+            {{ isBooking ? 'Booking...' : 'Book Ticket' }}
+          </button>
         </div>
       </div>
     </div>

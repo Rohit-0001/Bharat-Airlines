@@ -1,0 +1,59 @@
+/* Bharat Airlines — global design tokens */
+:root {
+  --ai-primary: #1a3a6b;
+  --ai-primary-dark: #0f2447;
+  --ai-primary-light: #e8eef7;
+  --ai-accent: #c9a227;
+  --ai-success: #198754;
+  --ai-danger: #dc3545;
+  --ai-warning: #ffc107;
+  --ai-bg: #f4f6f9;
+  --ai-surface: #ffffff;
+  --ai-surface-warm: #faf8f5;
+  --ai-text: #1a1a2e;
+  --ai-text-secondary: #4a5568;
+  --ai-text-muted: #718096;
+  --ai-border: #dde3ec;
+  --ai-border-light: #edf0f5;
+  --ai-shadow: 0 2px 8px rgba(26, 58, 107, 0.08);
+  --ai-shadow-lg: 0 8px 24px rgba(26, 58, 107, 0.12);
+  --ai-r: 10px;
+  --ai-r-sm: 6px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--ai-bg);
+  color: var(--ai-text);
+  margin: 0;
+  min-height: 100vh;
+}
+
+.btn:disabled,
+.btn[disabled] {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+.dropdown-menu.position-absolute {
+  z-index: 1050;
+}
+
+.modal.d-block {
+  z-index: 1060;
+}
+
+.table-empty {
+  text-align: center;
+  color: var(--ai-text-muted);
+  padding: 2rem;
+}

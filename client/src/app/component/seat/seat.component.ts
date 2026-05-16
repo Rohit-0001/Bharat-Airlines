@@ -20,7 +20,7 @@ export class SeatSelectionComponent implements OnInit, OnChanges {
   constructor(private seatService: SeatService) {}
 
   ngOnInit(): void {
-    if (this.flightId) {
+    if (this.flightId && (!this.seats || this.seats.length === 0)) {
       this.seatService.getSeats(this.flightId).subscribe({
         next: (data) => { this.buildSeatMap(data); }
       });
@@ -40,32 +40,45 @@ export class SeatSelectionComponent implements OnInit, OnChanges {
     const rowMap: { [key: string]: any[] } = {};
     const rowOrder: string[] = [];
     for (const seat of seats) {
-      const row = seat.rowLabel;
+      // FIX: Normalise seat numbers to uppercase so what we send to backend matches DB
+      const normalisedSeat = {
+        ...seat,
+        seatNumber: (seat.seatNumber || '').trim().toUpperCase(),
+        rowLabel: (seat.rowLabel || '').trim().toUpperCase(),
+        booked: !seat.isAvailable
+      };
+      const row = normalisedSeat.rowLabel;
       if (!rowMap[row]) {
         rowMap[row] = [];
         rowOrder.push(row);
       }
-      rowMap[row].push({ ...seat, booked: !seat.isAvailable });
+      rowMap[row].push(normalisedSeat);
     }
-    this.seatMap = rowOrder.map(row => rowMap[row]);
+    // Sort rows alphabetically, seats within each row by column number
+    rowOrder.sort();
+    this.seatMap = rowOrder.map(row =>
+      rowMap[row].sort((a, b) => a.columnNumber - b.columnNumber)
+    );
   }
 
   isSelected(seatNumber: string): boolean {
-    return this.selectedSeatNumbers.has(seatNumber);
+    return this.selectedSeatNumbers.has(seatNumber.toUpperCase());
   }
 
   selectSeat(seat: any): void {
-    if (seat.booked) return;
+    if (seat.booked || seat.isBlocked) return;
 
-    if (this.selectedSeatNumbers.has(seat.seatNumber)) {
-      this.selectedSeatNumbers.delete(seat.seatNumber);
-      this.seatSelected.emit(seat.seatNumber);
+    const seatNum = seat.seatNumber.toUpperCase();
+
+    if (this.selectedSeatNumbers.has(seatNum)) {
+      this.selectedSeatNumbers.delete(seatNum);
+      this.seatSelected.emit(seatNum);
     } else {
       if (this.selectedSeatNumbers.size >= this.maxSelectable) {
         return;
       }
-      this.selectedSeatNumbers.add(seat.seatNumber);
-      this.seatSelected.emit(seat.seatNumber);
+      this.selectedSeatNumbers.add(seatNum);
+      this.seatSelected.emit(seatNum);
     }
   }
 }

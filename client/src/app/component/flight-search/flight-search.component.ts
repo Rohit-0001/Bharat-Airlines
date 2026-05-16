@@ -23,6 +23,7 @@ export class FlightSearchComponent implements OnInit {
   responseMessage = '';
   errorMessage = '';
   seats: any[] = [];
+  isBooking = false; // FIX: double-submit guard
 
   constructor(
     private fb: FormBuilder,
@@ -41,11 +42,18 @@ export class FlightSearchComponent implements OnInit {
       travelClass: ['Economy']
     });
 
+    // FIX: Deduplicate city suggestions
     this.httpService.suggestSource().subscribe({
-      next: (data: any[]) => { this.sourceList = data.map(f => f.source); }
+      next: (data: any[]) => {
+        const sources = data.map(f => f.source);
+        this.sourceList = [...new Set(sources)];
+      }
     });
     this.httpService.suggestDestination().subscribe({
-      next: (data: any[]) => { this.destinationList = data.map(f => f.destination); }
+      next: (data: any[]) => {
+        const destinations = data.map(f => f.destination);
+        this.destinationList = [...new Set(destinations)];
+      }
     });
   }
 
@@ -134,15 +142,21 @@ export class FlightSearchComponent implements OnInit {
       return;
     }
 
+    // FIX: Prevent double-submit on rapid button clicks
+    if (this.isBooking) return;
+    this.isBooking = true;
+
     const userId = Number(this.authService.getUserId());
     this.httpService.bookSeats(this.selectedFlight.id, this.selectedSeatNumbers, userId).subscribe({
       next: () => {
+        this.isBooking = false;
         this.showMessage = true;
         this.showError = false;
         this.responseMessage = 'Booking successful!';
         this.selectedSeatNumbers = [];
       },
       error: (err) => {
+        this.isBooking = false;
         this.showError = true;
         this.errorMessage = err?.error?.message || 'Booking failed.';
       }

@@ -21,7 +21,7 @@ const routes: Routes = [
   { path: 'search_flight', component: FlightSearchComponent, canActivate: [AuthGuard] },
   { path: 'my_booking', component: BookingsComponent, canActivate: [AuthGuard] },
   { path: 'my_profile', component: ProfilComponent, canActivate: [AuthGuard] },
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' }
+  { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];
 
 @NgModule({

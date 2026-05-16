@@ -69,7 +69,6 @@
 
   <div class="alert alert-danger" *ngIf="showError">{{ errorMessage }}</div>
 
-  <!-- Flight Results -->
   <div *ngIf="flights.length > 0">
     <h6>Available Flights</h6>
     <table class="table table-hover">
@@ -87,7 +86,6 @@
     </table>
   </div>
 
-  <!-- Flight Detail Modal -->
   <div class="modal d-block" *ngIf="selectedFlight" tabindex="-1" style="background:rgba(0,0,0,0.5)">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -104,13 +102,18 @@
             <div class="col-6"><p><strong>Departure:</strong> {{ selectedFlight.departureTime }}</p></div>
             <div class="col-6"><p><strong>Total Price:</strong> ₹{{ totalPrice }}</p></div>
             <div class="col-6"><p><strong>Arrival:</strong> {{ selectedFlight.arrivalTime }}</p></div>
-            <div class="col-6"><p><strong>Selected Seat:</strong> {{ seatNumbers || 'None' }}</p></div>
+            <div class="col-6"><p><strong>Selected Seats:</strong> {{ seatSelectionLabel }}</p></div>
           </div>
 
-          <!-- Seat selection component -->
-          <app-seat [flightId]="selectedFlight.id" [seats]="seats" (seatSelected)="onSeatSelected($event)"></app-seat>
+          <app-seat
+            [flightId]="selectedFlight.id"
+            [seats]="seats"
+            [maxSelectable]="totalTravelers"
+            (seatSelected)="onSeatSelected($event)">
+          </app-seat>
 
-          <div class="alert alert-success mt-2" *ngIf="showMessage">Booking successful!</div>
+          <div class="alert alert-success mt-2" *ngIf="showMessage">{{ responseMessage }}</div>
+          <div class="alert alert-danger mt-2" *ngIf="showError">{{ errorMessage }}</div>
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" (click)="selectedFlight=null">Close</button>

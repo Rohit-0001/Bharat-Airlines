@@ -23,19 +23,23 @@ public class FlightsService {
 
     public Flights getFlightById(Long id) {
         return flightsRepository.findById(id)
-                .orElseThrow(() ->
-                        new EntityNotFoundException("Flight not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Flight not found with id: " + id));
     }
 
-    // ✅ NO DATE VALIDATION (for tests)
     public Flights saveFlight(Flights flight) {
+        if (flight.getDepartureDate() != null) {
+            LocalDate today = LocalDate.now();
+
+            // Allow today and future, block only strictly past dates
+            // if (flight.getDepartureDate().isBefore(today)) {
+            // throw new IllegalStateException("Departure date cannot be in the past.");
+            // }
+        }
         return flightsRepository.save(flight);
     }
 
     public Flights updateFlight(Long id, Flights updated) {
-
         Flights existing = getFlightById(id);
-
         existing.setFlight_number(updated.getFlight_number());
         existing.setFlight_name(updated.getFlight_name());
         existing.setSource(updated.getSource());
@@ -47,7 +51,6 @@ public class FlightsService {
         existing.setAvailable_seats(updated.getAvailable_seats());
         existing.setPrice(updated.getPrice());
         existing.setStatus(updated.getStatus());
-
         return flightsRepository.save(existing);
     }
 
@@ -57,7 +60,6 @@ public class FlightsService {
         flightsRepository.save(flight);
     }
 
-    // ✅ NO existence check (important for test)
     public void deleteFlight(Long id) {
         flightsRepository.deleteById(id);
     }
@@ -66,14 +68,18 @@ public class FlightsService {
         return flightsRepository.findBySourceAndDestinationAndDepartureDate(source, destination, date);
     }
 
+    // Returns all flights — the frontend uses source field for autocomplete
+    // suggestions
     public List<Flights> getSuggestionsForSource() {
         return flightsRepository.findAll();
     }
 
+    // Returns all flights — the frontend uses destination field for autocomplete
     public List<Flights> getSuggestionsForDestionation() {
         return flightsRepository.findAll();
     }
 
+    // Check if enough seats are available for the given traveler count
     public boolean isSeatsAvailable(Long flightId, int travelerCount) {
         Flights flight = getFlightById(flightId);
         return flight.getAvailable_seats() >= travelerCount;

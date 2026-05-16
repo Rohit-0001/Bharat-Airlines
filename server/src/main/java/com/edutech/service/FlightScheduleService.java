@@ -1,6 +1,7 @@
 package com.edutech.service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
@@ -31,7 +32,6 @@ public class FlightScheduleService {
         return flightScheduleRepository.findAll();
     }
 
-    // Update schedule status (both status and assignStatus fields)
     public FlightSchedule updateStatus(Long id, String status) {
         FlightSchedule schedule = flightScheduleRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Schedule not found with id: " + id));
@@ -40,7 +40,6 @@ public class FlightScheduleService {
         return flightScheduleRepository.save(schedule);
     }
 
-    // Assign a pilot to a flight on a specific date
     public FlightSchedule assignPilot(Long flightId, Long pilotId, String assignStatus, LocalDate scheduledDate) {
         Flights flight = flightsRepository.findById(flightId)
                 .orElseThrow(() -> new EntityNotFoundException("Flight not found with id: " + flightId));
@@ -54,12 +53,35 @@ public class FlightScheduleService {
                     "Scheduled date does not match the flight's departure date: " + flight.getDepartureDate());
         }
 
-        // Check for duplicate assignment on the same date for this flight
+        // Check for duplicate assignment: same flight, same date
         flightScheduleRepository.findByFlightIdAndScheduledDate(flightId, scheduledDate)
                 .ifPresent(existing -> {
                     throw new IllegalStateException(
-                            "Pilot already assigned to this flight on the selected date.");
+                            "A pilot is already assigned to this flight on the selected date.");
                 });
+
+        // Check pilot time conflict: pilot cannot fly two flights at the same time on the same date
+        List<FlightSchedule> pilotSchedulesOnDate =
+                flightScheduleRepository.findByPilotIdAndScheduledDate(pilotId, scheduledDate);
+
+        LocalTime newDep = flight.getDepartureTime();
+        LocalTime newArr = flight.getArrivalTime();
+
+        for (FlightSchedule existing : pilotSchedulesOnDate) {
+            Flights existingFlight = existing.getFlight();
+            LocalTime existDep = existingFlight.getDepartureTime();
+            LocalTime existArr = existingFlight.getArrivalTime();
+
+            // Two flights overlap if one starts before the other ends
+            boolean overlap = newDep.isBefore(existArr) && existDep.isBefore(newArr);
+            if (overlap) {
+                throw new IllegalStateException(
+                        "Pilot " + pilot.getUsername() +
+                        " is already assigned to flight " + existingFlight.getFlight_number() +
+                        " from " + existDep + " to " + existArr +
+                        " on " + scheduledDate + ". Cannot assign overlapping flights.");
+            }
+        }
 
         FlightSchedule schedule = new FlightSchedule();
         schedule.setFlight(flight);
@@ -71,12 +93,10 @@ public class FlightScheduleService {
         return flightScheduleRepository.save(schedule);
     }
 
-    // Get all schedules assigned to a specific pilot (by pilot id)
     public List<FlightSchedule> getAssignmentsForPilot(Long pilotId) {
         return flightScheduleRepository.findByPilotId(pilotId);
     }
 
-    // Get all schedules assigned to a specific pilot (by User object)
     public List<FlightSchedule> findByPilot(User pilot) {
         return flightScheduleRepository.findByPilot(pilot);
     }

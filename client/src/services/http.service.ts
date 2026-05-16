@@ -10,12 +10,9 @@ export class HttpService {
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
-  // Build Authorization header using the stored JWT token
   private getHeaders(): HttpHeaders {
     return new HttpHeaders({ Authorization: `Bearer ${this.authService.getToken()}` });
   }
-
-  // ── Auth ──────────────────────────────────────────────────────────────
 
   login(credentials: { username: string; password: string }): Observable<any> {
     return this.http.post(`${this.serverName}/api/auth/login`, credentials);
@@ -25,7 +22,11 @@ export class HttpService {
     return this.http.post(`${this.serverName}/api/auth/register`, user);
   }
 
-  // ── Flights ───────────────────────────────────────────────────────────
+  // BUG FIX: This method was completely missing — added to fetch full profile from backend
+  getMyProfile(): Observable<any> {
+    return this.http.get(`${this.serverName}/api/auth/user`,
+      { headers: this.getHeaders() });
+  }
 
   getAllFlights(): Observable<any[]> {
     return this.http.get<any[]>(`${this.serverName}/api/flights`,
@@ -67,8 +68,6 @@ export class HttpService {
       { headers: this.getHeaders(), params });
   }
 
-  // ── Bookings ──────────────────────────────────────────────────────────
-
   bookSeats(flightId: number, seatNumbers: string[], userId: number): Observable<any> {
     return this.http.post(`${this.serverName}/api/booking/book-seats`,
       { flightId, seatNumbers, userId },
@@ -101,8 +100,6 @@ export class HttpService {
       { headers: this.getHeaders(), responseType: 'blob' });
   }
 
-  // ── Schedule ──────────────────────────────────────────────────────────
-
   getPilots(): Observable<any[]> {
     return this.http.get<any[]>(`${this.serverName}/api/pilot/schedule/users`,
       { headers: this.getHeaders() });
@@ -133,8 +130,6 @@ export class HttpService {
       { status },
       { headers: this.getHeaders() });
   }
-
-  // ── Seats ─────────────────────────────────────────────────────────────
 
   getSeats(flightId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.serverName}/api/seats/flights/${flightId}/seats`,

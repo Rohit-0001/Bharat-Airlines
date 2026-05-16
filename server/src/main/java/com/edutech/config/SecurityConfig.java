@@ -31,11 +31,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    //fetch user details and matches password using password encoder
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
 
+    //used to check username and password and verify wheather login is valid or not 
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -74,3 +76,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
+//jwt filter- check token in every request before going to controller

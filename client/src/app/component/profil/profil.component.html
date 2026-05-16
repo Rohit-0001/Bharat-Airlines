@@ -1,11 +1,42 @@
 <div class="container mt-4">
   <h3 class="mb-3">My Profile</h3>
-  <div class="card p-4" style="max-width: 500px;" *ngIf="user">
-    <table class="table table-borderless">
+
+  <div class="alert alert-warning" *ngIf="showError">{{ errorMessage }}</div>
+
+  <div class="card p-4" style="max-width: 520px;" *ngIf="user">
+    <div class="d-flex align-items-center mb-4">
+      <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
+           style="width:56px;height:56px;font-size:22px;font-weight:600;flex-shrink:0;">
+        {{ user.username ? user.username.charAt(0).toUpperCase() : '?' }}
+      </div>
+      <div>
+        <h5 class="mb-0">{{ user.username || '—' }}</h5>
+        <span class="badge bg-primary">{{ user.role }}</span>
+      </div>
+    </div>
+
+    <table class="table table-borderless mb-0">
       <tbody>
-        <tr><th>Username</th><td>{{ user.username }}</td></tr>
-        <tr><th>Role</th><td><span class="badge bg-primary">{{ user.role }}</span></td></tr>
-        <tr><th>User ID</th><td>{{ user.userId }}</td></tr>
+        <tr>
+          <th style="width:140px;" class="text-muted">Username</th>
+          <td>{{ user.username || '—' }}</td>
+        </tr>
+        <tr>
+          <th class="text-muted">Email</th>
+          <td>{{ user.email || '—' }}</td>
+        </tr>
+        <tr>
+          <th class="text-muted">Contact</th>
+          <td>{{ user.contactNumber || 'N/A' }}</td>
+        </tr>
+        <tr>
+          <th class="text-muted">Role</th>
+          <td><span class="badge bg-primary">{{ user.role }}</span></td>
+        </tr>
+        <tr>
+          <th class="text-muted">User ID</th>
+          <td class="text-muted">#{{ user.userId }}</td>
+        </tr>
       </tbody>
     </table>
   </div>

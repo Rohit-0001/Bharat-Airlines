@@ -3,7 +3,7 @@
     ✈ Airline Booking System
   </a>
   <div class="collapse navbar-collapse">
-    <ul class="navbar-nav ms-auto">
+    <ul class="navbar-nav ms-auto align-items-center">
 
       <!-- Admin links -->
       <ng-container *ngIf="isLoggedIn && role === 'ADMIN'">
@@ -15,6 +15,10 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLink="/assign_pilot">Assign Pilots</a>
+        </li>
+        <!-- BUG FIX: Admin had no My Profile link anywhere -->
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/my_profile">My Profile</a>
         </li>
       </ng-container>
 
@@ -46,10 +50,16 @@
         <a class="nav-link" routerLink="/login">Login</a>
       </li>
 
-      <!-- Logout -->
-      <li class="nav-item" *ngIf="isLoggedIn">
-        <button class="btn btn-outline-light btn-sm ms-2" (click)="logout()">Logout</button>
-      </li>
+      <!-- Username display + Logout -->
+      <ng-container *ngIf="isLoggedIn">
+        <!-- BUG FIX: Shows who is logged in in the navbar -->
+        <li class="nav-item">
+          <span class="nav-link text-light opacity-75">👤 {{ username }}</span>
+        </li>
+        <li class="nav-item">
+          <button class="btn btn-outline-light btn-sm ms-1" (click)="logout()">Logout</button>
+        </li>
+      </ng-container>
 
     </ul>
   </div>

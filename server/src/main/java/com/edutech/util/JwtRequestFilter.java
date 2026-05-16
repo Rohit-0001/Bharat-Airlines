@@ -46,11 +46,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 // Invalid token — let the filter chain handle it
             }
         }
-
         // If we got a username and no authentication is set yet
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (jwtUtil.validateToken(token, userDetails)) {
+            if (jwtUtil.validateToken(token, userDetails)) { 
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities());

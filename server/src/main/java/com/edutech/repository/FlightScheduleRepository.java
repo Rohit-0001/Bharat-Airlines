@@ -21,5 +21,10 @@ public interface FlightScheduleRepository extends JpaRepository<FlightSchedule, 
     @Query("SELECT fs FROM FlightSchedule fs WHERE fs.pilot.id = :pilotId")
     List<FlightSchedule> findByPilotId(@Param("pilotId") Long pilotId);
 
+    @Query("SELECT fs FROM FlightSchedule fs WHERE fs.pilot.id = :pilotId AND fs.scheduledDate = :scheduledDate")
+    List<FlightSchedule> findByPilotIdAndScheduledDate(
+            @Param("pilotId") Long pilotId,
+            @Param("scheduledDate") LocalDate scheduledDate);
+
     List<FlightSchedule> findByPilot(User pilot);
 }

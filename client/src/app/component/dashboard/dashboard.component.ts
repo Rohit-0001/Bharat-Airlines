@@ -13,4 +13,9 @@ export class DashboardComponent {
   get role(): string {
     return this.authService.getRole;
   }
+
+  // BUG FIX: Added so dashboard can greet user by name
+  get username(): string {
+    return this.authService.getUsername();
+  }
 }

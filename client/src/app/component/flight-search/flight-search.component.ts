@@ -14,7 +14,7 @@ export class FlightSearchComponent implements OnInit {
   flights: any[] = [];
   selectedFlight: any = null;
   totalPrice = 0;
-  seatNumbers = '';
+  selectedSeatNumbers: string[] = [];
   sourceList: string[] = [];
   destinationList: string[] = [];
   dropdownOpen = false;
@@ -24,7 +24,11 @@ export class FlightSearchComponent implements OnInit {
   errorMessage = '';
   seats: any[] = [];
 
-  constructor(private fb: FormBuilder, private httpService: HttpService, private authService: AuthService) {}
+  constructor(
+    private fb: FormBuilder,
+    private httpService: HttpService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.searchForm = this.fb.group({
@@ -65,6 +69,12 @@ export class FlightSearchComponent implements OnInit {
     return `${a} Adult${a !== 1 ? 's' : ''}${c ? ', ' + c + ' Child' : ''}${i ? ', ' + i + ' Infant' : ''} - ${cls}`;
   }
 
+  get totalTravelers(): number {
+    const a = this.searchForm.get('adult')?.value || 0;
+    const c = this.searchForm.get('child')?.value || 0;
+    return a + c;
+  }
+
   search(): void {
     if (this.searchForm.invalid) return;
     const { source, destination, date } = this.searchForm.value;
@@ -82,6 +92,7 @@ export class FlightSearchComponent implements OnInit {
 
   viewFlight(flight: any): void {
     this.selectedFlight = flight;
+    this.selectedSeatNumbers = [];
     const adult = this.searchForm.get('adult')?.value || 1;
     const child = this.searchForm.get('child')?.value || 0;
     const infant = this.searchForm.get('infant')?.value || 0;
@@ -92,17 +103,44 @@ export class FlightSearchComponent implements OnInit {
   }
 
   onSeatSelected(seatNum: string): void {
-    this.seatNumbers = seatNum;
+    const idx = this.selectedSeatNumbers.indexOf(seatNum);
+    if (idx > -1) {
+      this.selectedSeatNumbers.splice(idx, 1);
+    } else {
+      if (this.selectedSeatNumbers.length >= this.totalTravelers) {
+        this.showError = true;
+        this.errorMessage = `You can only select ${this.totalTravelers} seat(s) for your party. Deselect a seat before choosing another.`;
+        return;
+      }
+      this.selectedSeatNumbers.push(seatNum);
+      this.showError = false;
+    }
+  }
+
+  get seatSelectionLabel(): string {
+    if (this.selectedSeatNumbers.length === 0) return 'None';
+    return this.selectedSeatNumbers.join(', ');
   }
 
   bookSelectedFlight(): void {
+    if (this.selectedSeatNumbers.length === 0) {
+      this.showError = true;
+      this.errorMessage = 'Please select at least one seat before booking.';
+      return;
+    }
+    if (this.selectedSeatNumbers.length < this.totalTravelers) {
+      this.showError = true;
+      this.errorMessage = `Please select ${this.totalTravelers} seat(s) — one per traveller (excluding infants).`;
+      return;
+    }
+
     const userId = Number(this.authService.getUserId());
-    const seatList = this.seatNumbers ? [this.seatNumbers] : [];
-    this.httpService.bookSeats(this.selectedFlight.id, seatList, userId).subscribe({
+    this.httpService.bookSeats(this.selectedFlight.id, this.selectedSeatNumbers, userId).subscribe({
       next: () => {
         this.showMessage = true;
         this.showError = false;
         this.responseMessage = 'Booking successful!';
+        this.selectedSeatNumbers = [];
       },
       error: (err) => {
         this.showError = true;

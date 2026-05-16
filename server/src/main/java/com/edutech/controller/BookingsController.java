@@ -26,34 +26,32 @@ public class BookingsController {
     @Autowired
     private UserRepository userRepository;
 
-    // Passenger: Book seats on a flight
     @PostMapping("/book-seats")
-    public ResponseEntity<String> bookSeats(@RequestBody BookSeatsRequest request) {
+    public ResponseEntity<Map<String, String>> bookSeats(@RequestBody BookSeatsRequest request) {
         bookingService.bookSeats(
-                request.getFlightId(),
-                request.getSeatNumbers(),
-                request.getUserId());
-
-        return ResponseEntity.ok("Booking Successful"); // ✅ plain string
+            request.getFlightId(),
+            request.getSeatNumbers(),
+            request.getUserId()
+        );
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Booking Successful");
+        return ResponseEntity.ok(response);
     }
 
-    // Passenger: Get my own booking history
     @GetMapping("/bookings")
     public ResponseEntity<List<Bookings>> getMyBookings(Authentication auth) {
         User user = userRepository.findByUsername(auth.getName());
         return ResponseEntity.ok(bookingService.getBookingsByUser(user.getId()));
     }
 
-    // Admin: Get all bookings across all passengers
     @GetMapping("/bookingList")
     public ResponseEntity<List<Bookings>> getAllBookings() {
         return ResponseEntity.ok(bookingService.getBookingListUser());
     }
 
-    // Passenger: Update a booking status (e.g., CANCELLED)
     @PutMapping("/{id}/status")
     public ResponseEntity<Map<String, String>> updateBookingStatus(@PathVariable Long id,
-            @RequestBody Map<String, String> body) {
+                                                                    @RequestBody Map<String, String> body) {
         String status = body.get("status");
         bookingService.updateBookingStatus(id, status);
         Map<String, String> response = new HashMap<>();
@@ -61,14 +59,12 @@ public class BookingsController {
         return ResponseEntity.ok(response);
     }
 
-    // Passenger: Cancel (delete) a booking
     @DeleteMapping("/bookings/{id}")
     public ResponseEntity<Void> cancelBooking(@PathVariable Long id) {
         bookingService.cancelBooking(id);
         return ResponseEntity.ok().build();
     }
 
-    // Passenger: Download boarding ticket as PDF
     @GetMapping("/ticket/{id}")
     public ResponseEntity<byte[]> downloadTicket(@PathVariable Long id) {
         byte[] pdf = bookingService.generateTicketPdf(id);

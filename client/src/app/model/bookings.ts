@@ -24,3 +24,4 @@ export interface Bookings {
 }
 
 export { User };
+

@@ -3,18 +3,18 @@ import { Injectable } from '@angular/core';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-  // Save token, role, and userId to localStorage after login
-  saveAuth(token: string, role: string, userId: string): void {
+  // BUG FIX: Added username param — original saveAuth() never stored it
+  saveAuth(token: string, role: string, userId: string, username: string): void {
     localStorage.setItem('token', token);
     localStorage.setItem('role', role);
     localStorage.setItem('userId', userId);
+    localStorage.setItem('username', username);
   }
 
   getToken(): string {
     return localStorage.getItem('token') || '';
   }
 
-  // getRole decodes the role from the JWT payload so it cannot be faked via localStorage
   get getRole(): string {
     const token = this.getToken();
     if (!token) return '';
@@ -30,6 +30,11 @@ export class AuthService {
     return localStorage.getItem('userId') || '';
   }
 
+  // BUG FIX: Added this method — it was missing entirely
+  getUsername(): string {
+    return localStorage.getItem('username') || '';
+  }
+
   isLoggedIn(): boolean {
     return !!localStorage.getItem('token');
   }
@@ -38,5 +43,6 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
     localStorage.removeItem('userId');
+    localStorage.removeItem('username');
   }
 }

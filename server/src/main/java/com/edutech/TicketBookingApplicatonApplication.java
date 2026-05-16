@@ -9,9 +9,9 @@ public class TicketBookingApplicatonApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TicketBookingApplicatonApplication.class, args);
-		// test1;
-		// System.out.println(new BCryptPasswordEncoder().encode("admin123"));
+		//test1;
+		System.out.println(new BCryptPasswordEncoder().encode("admin123"));
 
 	}
 
-}
+} 

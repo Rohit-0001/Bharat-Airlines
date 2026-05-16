@@ -11,10 +11,11 @@ export class SeatSelectionComponent implements OnInit, OnChanges {
 
   @Input() flightId!: number;
   @Input() seats: Seat[] = [];
+  @Input() maxSelectable: number = 1;
   @Output() seatSelected = new EventEmitter<string>();
 
   seatMap: any[][] = [];
-  selectedSeatNumber: string | null = null;
+  selectedSeatNumbers: Set<string> = new Set();
 
   constructor(private seatService: SeatService) {}
 
@@ -30,9 +31,11 @@ export class SeatSelectionComponent implements OnInit, OnChanges {
     if (changes['seats'] && changes['seats'].currentValue) {
       this.buildSeatMap(changes['seats'].currentValue);
     }
+    if (changes['flightId']) {
+      this.selectedSeatNumbers = new Set();
+    }
   }
 
-  // Group seats by rowLabel to create a 2D grid
   buildSeatMap(seats: any[]): void {
     const rowMap: { [key: string]: any[] } = {};
     const rowOrder: string[] = [];
@@ -47,9 +50,22 @@ export class SeatSelectionComponent implements OnInit, OnChanges {
     this.seatMap = rowOrder.map(row => rowMap[row]);
   }
 
+  isSelected(seatNumber: string): boolean {
+    return this.selectedSeatNumbers.has(seatNumber);
+  }
+
   selectSeat(seat: any): void {
     if (seat.booked) return;
-    this.selectedSeatNumber = seat.seatNumber;
-    this.seatSelected.emit(seat.seatNumber);
+
+    if (this.selectedSeatNumbers.has(seat.seatNumber)) {
+      this.selectedSeatNumbers.delete(seat.seatNumber);
+      this.seatSelected.emit(seat.seatNumber);
+    } else {
+      if (this.selectedSeatNumbers.size >= this.maxSelectable) {
+        return;
+      }
+      this.selectedSeatNumbers.add(seat.seatNumber);
+      this.seatSelected.emit(seat.seatNumber);
+    }
   }
 }

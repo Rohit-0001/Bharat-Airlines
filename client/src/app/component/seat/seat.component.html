@@ -1,12 +1,14 @@
 <div class="mt-3" *ngIf="seatMap.length > 0">
-  <h6>Select a Seat</h6>
+  <h6>Select Seats
+    <small class="text-muted ms-2">({{ selectedSeatNumbers.size }}/{{ maxSelectable }} selected)</small>
+  </h6>
   <div *ngFor="let row of seatMap" class="d-flex gap-2 mb-2">
     <button
       *ngFor="let seat of row"
       type="button"
       class="btn btn-sm"
-      [class.btn-success]="!seat.booked && seat.seatNumber !== selectedSeatNumber"
-      [class.btn-warning]="seat.seatNumber === selectedSeatNumber"
+      [class.btn-success]="!seat.booked && !isSelected(seat.seatNumber)"
+      [class.btn-warning]="isSelected(seat.seatNumber)"
       [class.btn-danger]="seat.booked"
       [disabled]="seat.booked"
       (click)="selectSeat(seat)"

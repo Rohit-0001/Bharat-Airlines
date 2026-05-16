@@ -34,7 +34,14 @@ export class LoginComponent implements OnInit {
 
     this.httpService.login(this.loginForm.value).subscribe({
       next: (res: any) => {
-        this.authService.saveAuth(res.token, res.role, res.userId?.toString());
+        // BUG FIX: Original call was saveAuth(res.token, res.role, res.userId)
+        // — it never passed res.username, so username was never stored
+        this.authService.saveAuth(
+          res.token,
+          res.role,
+          res.userId?.toString(),
+          res.username || ''
+        );
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {

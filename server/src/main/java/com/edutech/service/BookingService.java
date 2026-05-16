@@ -38,7 +38,6 @@ public class BookingService {
     @Autowired
     private SeatRepository seatRepository;
 
-    // Book a single flight — simple version used internally
     public Bookings bookFlight(Long userId, Long flightId, String seatNumbers) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
@@ -54,39 +53,42 @@ public class BookingService {
         booking.setPaymentStatus(Bookings.PaymentStatus.SUCCESS);
         booking.setPnr(UUID.randomUUID().toString());
 
-        // Decrement available seats
-        flight.setAvailable_seats(flight.getAvailable_seats() - 1);
+        int seatCount = seatNumbers != null && !seatNumbers.isEmpty()
+                ? seatNumbers.split(",").length
+                : 1;
+        flight.setAvailable_seats(flight.getAvailable_seats() - seatCount);
         flightsRepository.save(flight);
 
         return bookingRepository.save(booking);
     }
 
-    // Book multiple seats — marks each seat as unavailable and saves the booking
     @Transactional
     public void bookSeats(Long flightId, List<String> seatNumbers, Long userId) {
-        // Find the actual seat entities for this flight
         List<Seat> seats = seatRepository.findByFlightIdAndSeatNumberIn(flightId, seatNumbers);
 
-        // Check if any found seat is already booked
+        if (seats.size() != seatNumbers.size()) {
+            throw new RuntimeException("One or more selected seats were not found for this flight.");
+        }
+
         for (Seat seat : seats) {
             if (!seat.isAvailable()) {
                 throw new RuntimeException("One or more selected seats are already booked.");
             }
         }
 
-        // Mark found seats as unavailable
         for (Seat seat : seats) {
             seat.setAvailable(false);
         }
         seatRepository.saveAll(seats);
 
-        // Fetch flight and user
         Flights flight = flightsRepository.findById(flightId)
                 .orElseThrow(() -> new EntityNotFoundException("Flight not found"));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        // Save the booking record
+        flight.setAvailable_seats(flight.getAvailable_seats() - seatNumbers.size());
+        flightsRepository.save(flight);
+
         Bookings booking = new Bookings();
         booking.setFlight(flight);
         booking.setUser(user);
@@ -99,17 +101,14 @@ public class BookingService {
         bookingRepository.save(booking);
     }
 
-    // Get all bookings for a specific passenger
     public List<Bookings> getBookingsByUser(Long userId) {
         return bookingRepository.findByUserId(userId);
     }
 
-    // Get all bookings across all passengers (Admin)
     public List<Bookings> getBookingListUser() {
         return bookingRepository.findAll();
     }
 
-    // Update the status of a specific booking
     @Transactional
     public void updateBookingStatus(Long id, String status) {
         Bookings booking = bookingRepository.findById(id)
@@ -117,7 +116,6 @@ public class BookingService {
         booking.setStatus(status);
         bookingRepository.save(booking);
 
-        // Free up the seats when a booking is cancelled
         if ("CANCELLED".equals(status) && booking.getSeatNumbers() != null && !booking.getSeatNumbers().isEmpty()) {
             List<String> seatNums = java.util.Arrays.asList(booking.getSeatNumbers().split(","));
             List<Seat> seats = seatRepository.findByFlightIdAndSeatNumberIn(
@@ -126,15 +124,17 @@ public class BookingService {
                 seat.setAvailable(true);
             }
             seatRepository.saveAll(seats);
+
+            Flights flight = booking.getFlight();
+            flight.setAvailable_seats(flight.getAvailable_seats() + seatNums.size());
+            flightsRepository.save(flight);
         }
     }
 
-    // Delete a booking
     public void cancelBooking(Long id) {
         bookingRepository.deleteById(id);
     }
 
-    // Generate a simple PDF ticket for a booking
     public byte[] generateTicketPdf(Long bookingId) {
         Bookings booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new EntityNotFoundException("Booking not found"));

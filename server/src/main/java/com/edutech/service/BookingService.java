@@ -2,7 +2,6 @@ package com.edutech.service;
 
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -132,7 +131,6 @@ public class BookingService {
         }
     }
 
-    // FIX: Restores seat availability before deleting the booking record
     @Transactional
     public void cancelBooking(Long id) {
         Bookings booking = bookingRepository.findById(id)
@@ -155,40 +153,44 @@ public class BookingService {
         bookingRepository.deleteById(id);
     }
 
-    // FIX: Uses actual flight name, adds passenger name
     public byte[] generateTicketPdf(Long bookingId) {
-    Bookings booking = bookingRepository.findById(bookingId)
-            .orElseThrow(() -> new EntityNotFoundException("Booking not found"));
+        Bookings booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new EntityNotFoundException("Booking not found"));
 
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    Document document = new Document();
-    try {
-        PdfWriter.getInstance(document, out);
-        document.open();
-        Flights flight = booking.getFlight();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Document document = new Document();
+        try {
+            PdfWriter.getInstance(document, out);
+            document.open();
+            Flights flight = booking.getFlight();
 
-        int seatCount = booking.getSeatNumbers() != null && !booking.getSeatNumbers().isEmpty()
-                ? booking.getSeatNumbers().split(",").length : 1;
-        double totalPrice = flight.getPrice() * seatCount;
+            String seatNumbersStr = booking.getSeatNumbers();
+            int seatCount = (seatNumbersStr != null && !seatNumbersStr.trim().isEmpty())
+                    ? seatNumbersStr.split(",").length
+                    : 1;
 
-        document.add(new Paragraph(flight.getFlight_name() + " - Boarding Pass"));
-        document.add(new Paragraph("PNR: " + booking.getPnr()));
-        document.add(new Paragraph("Passenger: " + booking.getUser().getUsername()));
-        document.add(new Paragraph("Flight Number: " + flight.getFlight_number()));
-        document.add(new Paragraph("Seat Numbers: " + booking.getSeatNumbers()));
-        document.add(new Paragraph("From: " + flight.getSource()));
-        document.add(new Paragraph("To: " + flight.getDestination()));
-        document.add(new Paragraph("Date: " + flight.getDepartureDate()));
-        document.add(new Paragraph("Departure Time: " + flight.getDepartureTime()));
-        document.add(new Paragraph("Arrival Time: " + flight.getArrivalTime()));
-        document.add(new Paragraph("Price per Seat: " + flight.getPrice()));
-        document.add(new Paragraph("Total Price: " + totalPrice + " (x" + seatCount + " seats)"));
-        document.add(new Paragraph("Booking Status: " + booking.getStatus()));
-        document.add(new Paragraph("Payment Status: " + booking.getPaymentStatus()));
-        document.close();
-    } catch (Exception e) {
-        throw new RuntimeException("Failed to generate PDF", e);
+            double totalPrice = flight.getPrice() * seatCount;
+
+            document.add(new Paragraph("Bharat Airlines - Boarding Pass"));
+            document.add(new Paragraph("Flight: " + flight.getFlight_name()));
+            document.add(new Paragraph("PNR: " + booking.getPnr()));
+            document.add(new Paragraph("Passenger: " + booking.getUser().getUsername()));
+            document.add(new Paragraph("Flight Number: " + flight.getFlight_number()));
+            document.add(new Paragraph("Seat(s): " + booking.getSeatNumbers()));
+            document.add(new Paragraph("From: " + flight.getSource()));
+            document.add(new Paragraph("To: " + flight.getDestination()));
+            document.add(new Paragraph("Date: " + flight.getDepartureDate()));
+            document.add(new Paragraph("Departure: " + flight.getDepartureTime()));
+            document.add(new Paragraph("Arrival: " + flight.getArrivalTime()));
+            document.add(new Paragraph("Price per Seat: ₹" + flight.getPrice()));
+            document.add(new Paragraph("Seats Booked: " + seatCount));
+            document.add(new Paragraph("Total Price: ₹" + totalPrice));
+            document.add(new Paragraph("Booking Status: " + booking.getStatus()));
+            document.add(new Paragraph("Payment Status: " + booking.getPaymentStatus()));
+            document.close();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate PDF", e);
+        }
+        return out.toByteArray();
     }
-    return out.toByteArray();
-}
 }

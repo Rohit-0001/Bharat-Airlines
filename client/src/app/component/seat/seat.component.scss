@@ -88,3 +88,7 @@ small.text-muted {
     border-radius: var(--ai-r-full);
   }
 }
+/* Emergency exit seat — orange border */
+.emergency-seat {
+  border: 2px solid #fd7e14 !important;
+}

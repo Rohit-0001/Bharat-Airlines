@@ -34,8 +34,21 @@ export class BookingsComponent implements OnInit {
     });
   }
 
+  getSeatCount(seatNumbers: string): number {
+    if (!seatNumbers || seatNumbers.trim() === '') return 0;
+    return seatNumbers.split(',').filter(s => s.trim() !== '').length;
+  }
+
+  getTotalPrice(booking: any): number {
+    const pricePerSeat: number = booking.flight?.price || 0;
+    const count = this.getSeatCount(booking.seatNumbers);
+    return pricePerSeat * count;
+  }
+
   cancelBooking(id: number): void {
-    this.httpService.updateBookingStatus(id, 'CANCELLED').subscribe({
+    if (!confirm('Are you sure you want to cancel this booking?')) return;
+
+    this.httpService.cancelBooking(id).subscribe({
       next: () => {
         this.showMessage = true;
         this.showError = false;

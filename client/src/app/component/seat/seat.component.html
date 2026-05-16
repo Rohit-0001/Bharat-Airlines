@@ -2,23 +2,48 @@
   <h6>Select Seats
     <small class="text-muted ms-2">({{ selectedSeatNumbers.size }}/{{ maxSelectable }} selected)</small>
   </h6>
-  <div *ngFor="let row of seatMap" class="d-flex gap-2 mb-2">
-    <button
-      *ngFor="let seat of row"
-      type="button"
-      class="btn btn-sm"
-      [class.btn-success]="!seat.booked && !isSelected(seat.seatNumber)"
-      [class.btn-warning]="isSelected(seat.seatNumber)"
-      [class.btn-danger]="seat.booked"
-      [disabled]="seat.booked"
-      (click)="selectSeat(seat)"
-      title="{{ seat.seatNumber }}">
-      {{ seat.seatNumber }}
-    </button>
+
+  <div *ngFor="let row of seatMap" class="d-flex gap-2 mb-2 align-items-center">
+    <div *ngFor="let seat of row" class="position-relative">
+      <div *ngIf="seat.isEmergencyExist"
+           class="text-center"
+           title="Emergency Exit Row"
+           style="font-size:0.6rem; color:#dc3545; font-weight:600; line-height:1;">
+        🚪EXIT
+      </div>
+      <button
+        type="button"
+        class="btn btn-sm position-relative"
+        [class.btn-success]="!seat.booked && !seat.isBlocked && !isSelected(seat.seatNumber)"
+        [class.btn-warning]="isSelected(seat.seatNumber)"
+        [class.btn-danger]="seat.booked"
+        [class.btn-secondary]="seat.isBlocked && !seat.booked"
+        [class.emergency-seat]="seat.isEmergencyExist && !seat.booked && !seat.isBlocked"
+        [disabled]="seat.booked || seat.isBlocked"
+        (click)="selectSeat(seat)"
+        [title]="getSeatTooltip(seat)">
+        {{ seat.seatNumber }}
+        <span *ngIf="seat.isXL"
+              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-info"
+              style="font-size:0.5rem;">XL</span>
+      </button>
+    </div>
   </div>
-  <small class="text-muted">
-    <span class="badge bg-success me-1">Available</span>
-    <span class="badge bg-warning text-dark me-1">Selected</span>
-    <span class="badge bg-danger me-1">Booked</span>
-  </small>
+
+  <div class="mt-2 d-flex flex-wrap gap-2">
+    <small><span class="badge bg-success me-1">Available</span></small>
+    <small><span class="badge bg-warning text-dark me-1">Selected</span></small>
+    <small><span class="badge bg-danger me-1">Booked</span></small>
+    <small><span class="badge bg-secondary me-1">Blocked</span></small>
+    <small *ngIf="hasEmergencySeats">
+      <span class="badge me-1" style="background:#fd7e14;">🚪 Emergency Exit Row</span>
+    </small>
+    <small *ngIf="hasXLSeats">
+      <span class="badge bg-info me-1">XL = Extra Legroom</span>
+    </small>
+  </div>
+</div>
+
+<div class="mt-3 text-muted text-center" *ngIf="seatMap.length === 0">
+  <small>No seat map available for this flight.</small>
 </div>

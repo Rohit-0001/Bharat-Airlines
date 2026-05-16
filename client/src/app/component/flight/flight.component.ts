@@ -29,11 +29,20 @@ export class FlightComponent implements OnInit {
       departureTime: ['', Validators.required],
       arrivalTime: ['', Validators.required],
       totalSeats: ['', [Validators.required, Validators.min(1)]],
-      available_seats: ['', Validators.required],
+      available_seats: ['', [Validators.required, Validators.min(0)]],
       price: ['', [Validators.required, Validators.min(0.01)]],
       status: ['SCHEDULED', Validators.required],
       seats: this.fb.array([])
     });
+
+    // Auto-fill available_seats when totalSeats is set
+    this.flightForm.get('totalSeats')?.valueChanges.subscribe(val => {
+      const availCtrl = this.flightForm.get('available_seats');
+      if (availCtrl && (availCtrl.value === '' || availCtrl.value === null || availCtrl.value === 0)) {
+        availCtrl.setValue(val, { emitEvent: false });
+      }
+    });
+
     this.addSeat();
     this.loadFlights();
   }
@@ -74,7 +83,7 @@ export class FlightComponent implements OnInit {
       next: () => {
         this.showMessage = true;
         this.showError = false;
-        this.flightForm.reset();
+        this.flightForm.reset({ status: 'SCHEDULED' });
         this.seats.clear();
         this.addSeat();
         this.loadFlights();

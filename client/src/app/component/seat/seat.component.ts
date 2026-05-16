@@ -17,6 +17,9 @@ export class SeatSelectionComponent implements OnInit, OnChanges {
   seatMap: any[][] = [];
   selectedSeatNumbers: Set<string> = new Set();
 
+  hasEmergencySeats = false;
+  hasXLSeats = false;
+
   constructor(private seatService: SeatService) {}
 
   ngOnInit(): void {
@@ -39,8 +42,11 @@ export class SeatSelectionComponent implements OnInit, OnChanges {
   buildSeatMap(seats: any[]): void {
     const rowMap: { [key: string]: any[] } = {};
     const rowOrder: string[] = [];
+
+    this.hasEmergencySeats = false;
+    this.hasXLSeats = false;
+
     for (const seat of seats) {
-      // FIX: Normalise seat numbers to uppercase so what we send to backend matches DB
       const normalisedSeat = {
         ...seat,
         seatNumber: (seat.seatNumber || '').trim().toUpperCase(),
@@ -53,8 +59,11 @@ export class SeatSelectionComponent implements OnInit, OnChanges {
         rowOrder.push(row);
       }
       rowMap[row].push(normalisedSeat);
+
+      if (normalisedSeat.isEmergencyExist) this.hasEmergencySeats = true;
+      if (normalisedSeat.isXL) this.hasXLSeats = true;
     }
-    // Sort rows alphabetically, seats within each row by column number
+
     rowOrder.sort();
     this.seatMap = rowOrder.map(row =>
       rowMap[row].sort((a, b) => a.columnNumber - b.columnNumber)
@@ -63,6 +72,17 @@ export class SeatSelectionComponent implements OnInit, OnChanges {
 
   isSelected(seatNumber: string): boolean {
     return this.selectedSeatNumbers.has(seatNumber.toUpperCase());
+  }
+
+  getSeatTooltip(seat: any): string {
+    if (seat.booked) return `${seat.seatNumber} — Booked`;
+    if (seat.isBlocked) return `${seat.seatNumber} — Blocked (not available)`;
+    const features: string[] = [];
+    if (seat.isEmergencyExist) features.push('Emergency Exit Row');
+    if (seat.isXL) features.push('Extra Legroom');
+    const price = seat.price > 0 ? `₹${seat.price}` : '';
+    const featureStr = features.length ? ` (${features.join(', ')})` : '';
+    return `${seat.seatNumber}${featureStr}${price ? ' — ' + price : ''}`;
   }
 
   selectSeat(seat: any): void {

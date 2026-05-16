@@ -16,18 +16,22 @@
         <div class="col-md-4">
           <label class="form-label">Flight Name</label>
           <input class="form-control" formControlName="flight_name" placeholder="Flight name">
+          <div class="text-danger small" *ngIf="flightForm.get('flight_name')?.invalid && flightForm.get('flight_name')?.touched">Required</div>
         </div>
         <div class="col-md-4">
           <label class="form-label">Source</label>
-          <input class="form-control" formControlName="source" placeholder="source">
+          <input class="form-control" formControlName="source" placeholder="Source city">
+          <div class="text-danger small" *ngIf="flightForm.get('source')?.invalid && flightForm.get('source')?.touched">Required</div>
         </div>
         <div class="col-md-4">
           <label class="form-label">Destination</label>
-          <input class="form-control" formControlName="destination" placeholder="destination">
+          <input class="form-control" formControlName="destination" placeholder="Destination city">
+          <div class="text-danger small" *ngIf="flightForm.get('destination')?.invalid && flightForm.get('destination')?.touched">Required</div>
         </div>
         <div class="col-md-4">
           <label class="form-label">Departure Date</label>
           <input type="date" class="form-control" formControlName="departureDate" [min]="today">
+          <div class="text-danger small" *ngIf="flightForm.get('departureDate')?.invalid && flightForm.get('departureDate')?.touched">Required</div>
         </div>
         <div class="col-md-4">
           <label class="form-label">Departure Time</label>
@@ -39,15 +43,17 @@
         </div>
         <div class="col-md-4">
           <label class="form-label">Total Seats</label>
-          <input type="number" class="form-control" formControlName="totalSeats">
+          <input type="number" class="form-control" formControlName="totalSeats" min="1">
+          <div class="text-danger small" *ngIf="flightForm.get('totalSeats')?.invalid && flightForm.get('totalSeats')?.touched">Must be ≥ 1</div>
         </div>
         <div class="col-md-4">
           <label class="form-label">Available Seats</label>
-          <input type="number" class="form-control" formControlName="available_seats">
+          <input type="number" class="form-control" formControlName="available_seats" min="0">
         </div>
         <div class="col-md-4">
-          <label class="form-label">Price (₹)</label>
-          <input type="number" class="form-control" formControlName="price">
+          <label class="form-label">Price per Seat (₹)</label>
+          <input type="number" class="form-control" formControlName="price" min="0.01" step="0.01">
+          <div class="text-danger small" *ngIf="flightForm.get('price')?.invalid && flightForm.get('price')?.touched">Must be > 0</div>
         </div>
         <div class="col-md-4">
           <label class="form-label">Status</label>
@@ -59,64 +65,103 @@
         </div>
       </div>
 
-      <!-- Seat Details FormArray -->
       <hr>
       <h6>Seat Details</h6>
+      <p class="text-muted small mb-2">
+        Add each seat individually. <strong>Seat No</strong> format: A1, B3 etc.
+        Check <strong>Emergency Exit</strong> for seats in emergency exit rows.
+      </p>
       <button type="button" class="btn btn-sm btn-outline-primary mb-2" (click)="addSeat()">+ Add Seat</button>
 
       <div formArrayName="seats">
-        <div *ngFor="let seat of seats.controls; let i = index" [formGroupName]="i" class="row g-2 align-items-center mb-2 border rounded p-2">
-          <div class="col-md-2"><input class="form-control form-control-sm" formControlName="seatNumber" placeholder="Seat No"></div>
-          <div class="col-md-2"><input class="form-control form-control-sm" formControlName="rowLabel" placeholder="Row"></div>
-          <div class="col-md-1"><input type="number" class="form-control form-control-sm" formControlName="columnNumber" placeholder="Col"></div>
-          <div class="col-md-2"><input type="number" class="form-control form-control-sm" formControlName="price" placeholder="Price"></div>
-          <div class="col-auto">
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" formControlName="isAvailable">
-              <label class="form-check-label">Available</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" formControlName="isXL">
-              <label class="form-check-label">XL</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" formControlName="isBlocked">
-              <label class="form-check-label">Blocked</label>
+        <div *ngFor="let seat of seats.controls; let i = index"
+             [formGroupName]="i"
+             class="row g-2 align-items-center mb-2 border rounded p-2">
+
+          <div class="col-md-2">
+            <label class="form-label form-label-sm">Seat No</label>
+            <input class="form-control form-control-sm" formControlName="seatNumber" placeholder="e.g. A1">
+          </div>
+          <div class="col-md-1">
+            <label class="form-label form-label-sm">Row</label>
+            <input class="form-control form-control-sm" formControlName="rowLabel" placeholder="A">
+          </div>
+          <div class="col-md-1">
+            <label class="form-label form-label-sm">Col</label>
+            <input type="number" class="form-control form-control-sm" formControlName="columnNumber" min="1">
+          </div>
+          <div class="col-md-2">
+            <label class="form-label form-label-sm">Price (₹)</label>
+            <input type="number" class="form-control form-control-sm" formControlName="price" min="0" step="0.01"
+                   placeholder="0 = use flight price">
+          </div>
+
+          <div class="col-md-5">
+            <label class="form-label form-label-sm d-block">Seat Flags</label>
+            <div class="d-flex flex-wrap gap-2">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" formControlName="isAvailable" [id]="'avail_' + i">
+                <label class="form-check-label small" [for]="'avail_' + i">Available</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" formControlName="isXL" [id]="'xl_' + i">
+                <label class="form-check-label small" [for]="'xl_' + i">XL (Extra Legroom)</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" formControlName="isBlocked" [id]="'blocked_' + i">
+                <label class="form-check-label small" [for]="'blocked_' + i">Blocked</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" formControlName="isEmergencyExist" [id]="'emerg_' + i">
+                <label class="form-check-label small text-danger" [for]="'emerg_' + i">🚪 Emergency Exit</label>
+              </div>
             </div>
           </div>
-          <div class="col-auto">
-            <button type="button" class="btn btn-sm btn-danger" (click)="removeSeat(i)">Remove</button>
+
+          <div class="col-md-1 text-end">
+            <button type="button" class="btn btn-sm btn-danger mt-3" (click)="removeSeat(i)">✕</button>
           </div>
         </div>
       </div>
 
-      <button type="submit" class="btn btn-success mt-2">Create Flight</button>
+      <button type="submit" class="btn btn-success mt-2" [disabled]="flightForm.invalid">Create Flight</button>
     </form>
   </div>
 
-  <!-- Flight List -->
   <div class="card p-3">
     <h5>Flight Information</h5>
-    <table class="table table-sm table-hover">
-      <thead class="table-dark">
-        <tr>
-          <th>Sr#</th><th>Flight No</th><th>Name</th><th>Source</th>
-          <th>Destination</th><th>Departure</th><th>Arrival</th><th>Price</th><th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let f of flights; let i = index">
-          <td>{{ i + 1 }}</td>
-          <td>{{ f.flight_number }}</td>
-          <td>{{ f.flight_name }}</td>
-          <td>{{ f.source }}</td>
-          <td>{{ f.destination }}</td>
-          <td>{{ f.departureTime }}</td>
-          <td>{{ f.arrivalTime }}</td>
-          <td>₹{{ f.price }}</td>
-          <td>{{ f.status }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table class="table table-sm table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>Sr#</th><th>Flight No</th><th>Name</th><th>Source</th>
+            <th>Destination</th><th>Date</th><th>Departure</th><th>Arrival</th>
+            <th>Price</th><th>Seats</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let f of flights; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ f.flight_number }}</td>
+            <td>{{ f.flight_name }}</td>
+            <td>{{ f.source }}</td>
+            <td>{{ f.destination }}</td>
+            <td>{{ f.departureDate }}</td>
+            <td>{{ f.departureTime }}</td>
+            <td>{{ f.arrivalTime }}</td>
+            <td>₹{{ f.price }}</td>
+            <td>{{ f.available_seats }} / {{ f.totalSeats }}</td>
+            <td>
+              <span class="badge"
+                [class.bg-success]="f.status === 'SCHEDULED'"
+                [class.bg-warning]="f.status === 'DELAYED'"
+                [class.bg-danger]="f.status === 'CANCELLED'">
+                {{ f.status }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

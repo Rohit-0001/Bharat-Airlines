@@ -23,7 +23,7 @@ export class FlightSearchComponent implements OnInit {
   responseMessage = '';
   errorMessage = '';
   seats: any[] = [];
-  isBooking = false; // FIX: double-submit guard
+  isBooking = false;
 
   constructor(
     private fb: FormBuilder,
@@ -42,7 +42,6 @@ export class FlightSearchComponent implements OnInit {
       travelClass: ['Economy']
     });
 
-    // FIX: Deduplicate city suggestions
     this.httpService.suggestSource().subscribe({
       next: (data: any[]) => {
         const sources = data.map(f => f.source);
@@ -67,6 +66,7 @@ export class FlightSearchComponent implements OnInit {
       const newVal = (ctrl.value || 0) + delta;
       if (newVal >= 0) ctrl.setValue(newVal);
     }
+    this.recalculateTotalPrice();
   }
 
   get travelerSummary(): string {
@@ -101,13 +101,32 @@ export class FlightSearchComponent implements OnInit {
   viewFlight(flight: any): void {
     this.selectedFlight = flight;
     this.selectedSeatNumbers = [];
-    const adult = this.searchForm.get('adult')?.value || 1;
-    const child = this.searchForm.get('child')?.value || 0;
-    const infant = this.searchForm.get('infant')?.value || 0;
-    this.totalPrice = adult * flight.price + child * flight.price * 0.75 + infant * flight.price * 0.5;
+    this.totalPrice = 0;
+    this.showMessage = false;
+    this.showError = false;
     this.httpService.getSeats(flight.id).subscribe({
       next: (data) => { this.seats = data; }
     });
+  }
+
+  recalculateTotalPrice(): void {
+    if (!this.selectedFlight) return;
+
+    const flightPrice: number = this.selectedFlight.price || 0;
+    let total = 0;
+
+    for (const seatNum of this.selectedSeatNumbers) {
+      const seatData = this.seats.find(
+        (s: any) => (s.seatNumber || '').trim().toUpperCase() === seatNum.toUpperCase()
+      );
+      const seatPrice = seatData && seatData.price > 0 ? seatData.price : flightPrice;
+      total += seatPrice;
+    }
+
+    const infantCount = this.searchForm.get('infant')?.value || 0;
+    total += infantCount * flightPrice * 0.5;
+
+    this.totalPrice = total;
   }
 
   onSeatSelected(seatNum: string): void {
@@ -123,6 +142,7 @@ export class FlightSearchComponent implements OnInit {
       this.selectedSeatNumbers.push(seatNum);
       this.showError = false;
     }
+    this.recalculateTotalPrice();
   }
 
   get seatSelectionLabel(): string {
@@ -142,7 +162,6 @@ export class FlightSearchComponent implements OnInit {
       return;
     }
 
-    // FIX: Prevent double-submit on rapid button clicks
     if (this.isBooking) return;
     this.isBooking = true;
 
@@ -152,8 +171,9 @@ export class FlightSearchComponent implements OnInit {
         this.isBooking = false;
         this.showMessage = true;
         this.showError = false;
-        this.responseMessage = 'Booking successful!';
+        this.responseMessage = `Booking successful! Total paid: ₹${this.totalPrice}`;
         this.selectedSeatNumbers = [];
+        this.totalPrice = 0;
       },
       error: (err) => {
         this.isBooking = false;

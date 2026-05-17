@@ -1,29 +1,97 @@
-/* Bharat Airlines — global design tokens */
+// /* Bharat Airlines — global design tokens */
+// :root {
+//   --ai-primary: #1a3a6b;
+//   --ai-primary-dark: #0f2447;
+//   --ai-primary-light: #e8eef7;
+//   --ai-accent: #c9a227;
+//   --ai-success: #198754;
+//   --ai-danger: #dc3545;
+//   --ai-warning: #ffc107;
+//   --ai-bg: #f4f6f9;
+//   --ai-surface: #ffffff;
+//   --ai-surface-warm: #faf8f5;
+//   --ai-text: #1a1a2e;
+//   --ai-text-secondary: #4a5568;
+//   --ai-text-muted: #718096;
+//   --ai-border: #dde3ec;
+//   --ai-border-light: #edf0f5;
+//   --ai-shadow: 0 2px 8px rgba(26, 58, 107, 0.08);
+//   --ai-shadow-lg: 0 8px 24px rgba(26, 58, 107, 0.12);
+//   --ai-r: 10px;
+//   --ai-r-sm: 6px;
+// }
+
+// * {
+//   box-sizing: border-box;
+// }
+
+// body {
+//   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+//   background: var(--ai-bg);
+//   color: var(--ai-text);
+//   margin: 0;
+//   min-height: 100vh;
+// }
+
+// .btn:disabled,
+// .btn[disabled] {
+//   cursor: not-allowed;
+//   opacity: 0.65;
+// }
+
+// .spinner-border-sm {
+//   width: 1rem;
+//   height: 1rem;
+// }
+
+// .dropdown-menu.position-absolute {
+//   z-index: 1050;
+// }
+
+// .modal.d-block {
+//   z-index: 1060;
+// }
+
+// .table-empty {
+//   text-align: center;
+//   color: var(--ai-text-muted);
+//   padding: 2rem;
+// }
+/* ============================================================
+   BHARAT AIRLINE — Global Design System
+   File: src/styles.scss
+   Changes: Added navbar offset for inner pages + minor
+            text contrast improvements. All existing tokens
+            preserved.
+   ============================================================ */
+
+/* ── Design Tokens ──────────────────────────────────────────── */
 :root {
-  --ai-primary: #1a3a6b;
-  --ai-primary-dark: #0f2447;
-  --ai-primary-light: #e8eef7;
-  --ai-accent: #c9a227;
-  --ai-success: #198754;
-  --ai-danger: #dc3545;
-  --ai-warning: #ffc107;
-  --ai-bg: #f4f6f9;
-  --ai-surface: #ffffff;
-  --ai-surface-warm: #faf8f5;
-  --ai-text: #1a1a2e;
+  --ai-primary:        #1a3a6b;
+  --ai-primary-dark:   #0f2447;
+  --ai-primary-light:  #e8eef7;
+  --ai-accent:         #c9a227;
+  --ai-accent-light:   #e8c55a;
+  --ai-success:        #198754;
+  --ai-danger:         #dc3545;
+  --ai-warning:        #ffc107;
+  --ai-bg:             #f4f6f9;
+  --ai-surface:        #ffffff;
+  --ai-surface-warm:   #faf8f5;
+  --ai-text:           #1a1a2e;
   --ai-text-secondary: #4a5568;
-  --ai-text-muted: #718096;
-  --ai-border: #dde3ec;
-  --ai-border-light: #edf0f5;
-  --ai-shadow: 0 2px 8px rgba(26, 58, 107, 0.08);
-  --ai-shadow-lg: 0 8px 24px rgba(26, 58, 107, 0.12);
-  --ai-r: 10px;
-  --ai-r-sm: 6px;
+  --ai-text-muted:     #718096;
+  --ai-border:         #dde3ec;
+  --ai-border-light:   #edf0f5;
+  --ai-shadow:         0 2px 8px rgba(26, 58, 107, 0.08);
+  --ai-shadow-lg:      0 8px 24px rgba(26, 58, 107, 0.12);
+  --ai-r:              10px;
+  --ai-r-sm:           6px;
+  --navbar-h:          68px;   /* Used for page offset below */
 }
 
-* {
-  box-sizing: border-box;
-}
+/* ── Reset & Base ────────────────────────────────────────────── */
+* { box-sizing: border-box; }
 
 body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -31,8 +99,30 @@ body {
   color: var(--ai-text);
   margin: 0;
   min-height: 100vh;
+  /* Smooth scrolling for anchor links */
+  scroll-behavior: smooth;
 }
 
+/* ── Navbar Offset: inner pages need top padding ─────────────── */
+/* The landing page (app-home) handles its own offset inside hero */
+/* All other route components should offset for the fixed navbar  */
+app-dashboard,
+app-login,
+app-register,
+app-forgot-password,
+app-reset-password,
+app-flight,
+app-flight-search,
+app-bookings,
+app-assign-pilot,
+app-profil,
+app-viewuser,
+app-seat {
+  display: block;
+  padding-top: var(--navbar-h);
+}
+
+/* ── Utility: Containers ─────────────────────────────────────── */
 .btn:disabled,
 .btn[disabled] {
   cursor: not-allowed;
@@ -44,16 +134,23 @@ body {
   height: 1rem;
 }
 
-.dropdown-menu.position-absolute {
-  z-index: 1050;
-}
-
-.modal.d-block {
-  z-index: 1060;
-}
+.dropdown-menu.position-absolute { z-index: 1050; }
+.modal.d-block                   { z-index: 1060; }
 
 .table-empty {
   text-align: center;
   color: var(--ai-text-muted);
   padding: 2rem;
+}
+
+/* ── Typography Fix: ensure text is always readable ─────────── */
+/* Prevents white-on-white or transparent text bugs */
+input, textarea, select {
+  color: var(--ai-text) !important;
+  &::placeholder { color: var(--ai-text-muted) !important; opacity: 1; }
+}
+
+/* ── Dashboard inner pages: standard card padding ────────────── */
+.container.mt-4 {
+  padding-bottom: 3rem;
 }

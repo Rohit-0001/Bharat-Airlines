@@ -1,206 +1,329 @@
-<div class="container">
-  <h3 class="mb-3">Search Flights</h3>
+<div class="fs-page">
 
-  <div class="card p-3 mb-4">
-    <h6>Find Your Flight</h6>
-    <form [formGroup]="searchForm" (ngSubmit)="search()">
-      <div class="row g-2 align-items-end">
-        <div class="col-md-3">
-          <label class="form-label">Source</label>
-          <input class="form-control" formControlName="source" list="sourceList" placeholder="From"
-            [class.is-invalid]="searchForm.get('source')?.invalid && searchForm.get('source')?.touched">
-          <datalist id="sourceList">
-            <option *ngFor="let s of sourceList" [value]="s"></option>
-          </datalist>
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Destination</label>
-          <input class="form-control" formControlName="destination" list="destList" placeholder="To"
-            [class.is-invalid]="searchForm.get('destination')?.invalid && searchForm.get('destination')?.touched">
-          <datalist id="destList">
-            <option *ngFor="let d of destinationList" [value]="d"></option>
-          </datalist>
-        </div>
-        <div class="col-md-2">
-          <label class="form-label">Date</label>
-          <input type="date" class="form-control" formControlName="date" [min]="minDate"
-            [class.is-invalid]="searchForm.get('date')?.invalid && searchForm.get('date')?.touched">
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Travellers</label>
-          <div class="dropdown traveler-dropdown position-relative">
-            <button type="button" class="btn btn-outline-secondary btn-sm w-100"
-              (click)="toggleDropdown($event)" [attr.aria-expanded]="dropdownOpen">
-              {{ travelerSummary }} &#9662;
-            </button>
-            <div class="dropdown-menu traveller-panel p-3 shadow show" *ngIf="dropdownOpen" (click)="$event.stopPropagation()">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span>Adults</span>
-                <div>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('adult', -1, $event)">-</button>
-                  <span class="mx-2">{{ searchForm.get('adult')?.value }}</span>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('adult', 1, $event)">+</button>
-                </div>
-              </div>
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span>Children</span>
-                <div>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('child', -1, $event)">-</button>
-                  <span class="mx-2">{{ searchForm.get('child')?.value }}</span>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('child', 1, $event)">+</button>
-                </div>
-              </div>
-              <div class="d-flex justify-content-between align-items-center">
-                <span>Infants</span>
-                <div>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('infant', -1, $event)">-</button>
-                  <span class="mx-2">{{ searchForm.get('infant')?.value }}</span>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('infant', 1, $event)">+</button>
-                </div>
-              </div>
-              <select class="form-select form-select-sm mt-2" formControlName="travelClass">
-                <option>Economy</option>
-                <option>Business</option>
-                <option>First</option>
-              </select>
-              <button type="button" class="btn btn-primary btn-sm w-100 mt-2" (click)="applyTravellers()">Done</button>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-1">
-          <button type="submit" class="btn btn-primary w-100" [disabled]="isSearching || searchForm.invalid">
-            <span *ngIf="isSearching" class="spinner-border spinner-border-sm me-1"></span>
-            Search
-          </button>
-        </div>
+  <!-- Page Header -->
+  <div class="fs-page-header">
+    <div class="fs-header-inner">
+      <h2 class="fs-title">
+        <i class="fa-solid fa-magnifying-glass-location"></i>
+        Search Flights
+      </h2>
+      <p class="fs-subtitle">Find the best routes at the best prices</p>
+    </div>
+  </div>
+
+  <div class="fs-container">
+
+    <!-- Search Form Card -->
+    <div class="fs-search-card">
+      <div class="fs-search-header">
+        <i class="fa-solid fa-plane-departure"></i>
+        <span>Find Your Flight</span>
       </div>
-    </form>
-  </div>
+      <form [formGroup]="searchForm" (ngSubmit)="search()" class="fs-form">
+        <div class="fs-fields">
 
-  <div class="alert alert-danger" *ngIf="showError && !selectedFlight">{{ errorMessage }}</div>
+          <div class="fs-field">
+            <label class="fs-label"><i class="fa-solid fa-plane-departure"></i> From</label>
+            <input class="fs-input" formControlName="source" list="sourceList"
+              placeholder="Source city"
+              [class.is-invalid]="searchForm.get('source')?.invalid && searchForm.get('source')?.touched">
+            <datalist id="sourceList">
+              <option *ngFor="let s of sourceList" [value]="s"></option>
+            </datalist>
+          </div>
 
-  <div *ngIf="isSearching" class="text-center py-4">
-    <div class="spinner-border text-primary" role="status"></div>
-    <p class="mt-2 text-muted">Searching flights...</p>
-  </div>
+          <div class="fs-swap-icon"><i class="fa-solid fa-right-left"></i></div>
 
-  <div *ngIf="searchAttempted && !isSearching && flights.length === 0" class="table-empty">
-    <p>No confirmed flights found for this route and date.</p>
-    <p class="small text-muted">Flights appear after a pilot is assigned and accepts the schedule.</p>
-  </div>
+          <div class="fs-field">
+            <label class="fs-label"><i class="fa-solid fa-plane-arrival"></i> To</label>
+            <input class="fs-input" formControlName="destination" list="destList"
+              placeholder="Destination city"
+              [class.is-invalid]="searchForm.get('destination')?.invalid && searchForm.get('destination')?.touched">
+            <datalist id="destList">
+              <option *ngFor="let d of destinationList" [value]="d"></option>
+            </datalist>
+          </div>
 
-  <div class="search-results-section" *ngIf="flights.length > 0 && !isSearching">
-    <h6>Available Flights ({{ flights.length }})</h6>
-    <table class="table table-hover">
-      <thead class="table-dark">
-        <tr>
-          <th>#</th>
-          <th>Flight No</th>
-          <th>Route</th>
-          <th>Date</th>
-          <th>Departure</th>
-          <th>Arrival</th>
-          <th>Seats</th>
-          <th>Price</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let f of flights; let i = index">
-          <td>{{ i + 1 }}</td>
-          <td>{{ f.flight_number }}</td>
-          <td>{{ f.source }} &rarr; {{ f.destination }}</td>
-          <td>{{ f.departureDate }}</td>
-          <td>{{ f.departureTime }}</td>
-          <td>{{ f.arrivalTime }}</td>
-          <td>{{ f.available_seats }}</td>
-          <td>&#8377;{{ f.price }}</td>
-          <td><button class="btn btn-sm btn-primary" (click)="viewFlight(f)">View &amp; Book</button></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+          <div class="fs-field fs-field-date">
+            <label class="fs-label"><i class="fa-solid fa-calendar"></i> Date</label>
+            <input type="date" class="fs-input" formControlName="date" [min]="minDate"
+              [class.is-invalid]="searchForm.get('date')?.invalid && searchForm.get('date')?.touched">
+          </div>
 
-  <div class="modal d-block booking-modal" *ngIf="selectedFlight" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Flight {{ selectedFlight.flight_number }}</h5>
-          <button type="button" class="btn-close" (click)="closeModal()" [disabled]="isBooking"></button>
-        </div>
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-6"><p><strong>Route</strong> {{ selectedFlight.source }} &rarr; {{ selectedFlight.destination }}</p></div>
-            <div class="col-6"><p><strong>Class</strong> {{ searchForm.get('travelClass')?.value }}</p></div>
-            <div class="col-6"><p><strong>Date</strong> {{ selectedFlight.departureDate }}</p></div>
-            <div class="col-6">
-              <p class="mb-1"><strong>Travellers</strong> {{ travelerSummary }}</p>
-              <div class="modal-traveller-dropdown position-relative d-inline-block">
-                <button type="button" class="btn btn-outline-primary btn-sm"
-                  (click)="toggleModalTravellers($event)">
-                  Change travellers
-                </button>
-                <div class="dropdown-menu traveller-panel p-3 shadow show" *ngIf="modalTravellerOpen"
-                  (click)="$event.stopPropagation()">
-                  <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span>Adults</span>
-                    <div>
-                      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('adult', -1, $event)">-</button>
-                      <span class="mx-2">{{ searchForm.get('adult')?.value }}</span>
-                      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('adult', 1, $event)">+</button>
-                    </div>
+          <div class="fs-field fs-field-travellers">
+            <label class="fs-label"><i class="fa-solid fa-users"></i> Travellers & Class</label>
+            <div class="dropdown traveler-dropdown position-relative">
+              <button type="button" class="fs-traveller-btn" (click)="toggleDropdown($event)" [attr.aria-expanded]="dropdownOpen">
+                <i class="fa-solid fa-person-walking-luggage"></i>
+                {{ travelerSummary }}
+                <i class="fa-solid fa-chevron-down fs-chevron"></i>
+              </button>
+              <div class="fs-dropdown-panel traveller-panel" *ngIf="dropdownOpen" (click)="$event.stopPropagation()">
+                <div class="fs-traveller-row">
+                  <span><i class="fa-solid fa-person"></i> Adults</span>
+                  <div class="fs-counter">
+                    <button type="button" class="fs-cnt-btn" (click)="updateTravelerCount('adult', -1, $event)">−</button>
+                    <span class="fs-cnt-val">{{ searchForm.get('adult')?.value }}</span>
+                    <button type="button" class="fs-cnt-btn" (click)="updateTravelerCount('adult', 1, $event)">+</button>
                   </div>
-                  <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span>Children</span>
-                    <div>
-                      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('child', -1, $event)">-</button>
-                      <span class="mx-2">{{ searchForm.get('child')?.value }}</span>
-                      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('child', 1, $event)">+</button>
-                    </div>
+                </div>
+                <div class="fs-traveller-row">
+                  <span><i class="fa-solid fa-child"></i> Children</span>
+                  <div class="fs-counter">
+                    <button type="button" class="fs-cnt-btn" (click)="updateTravelerCount('child', -1, $event)">−</button>
+                    <span class="fs-cnt-val">{{ searchForm.get('child')?.value }}</span>
+                    <button type="button" class="fs-cnt-btn" (click)="updateTravelerCount('child', 1, $event)">+</button>
                   </div>
-                  <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span>Infants</span>
-                    <div>
-                      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('infant', -1, $event)">-</button>
-                      <span class="mx-2">{{ searchForm.get('infant')?.value }}</span>
-                      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="updateTravelerCount('infant', 1, $event)">+</button>
-                    </div>
+                </div>
+                <div class="fs-traveller-row">
+                  <span><i class="fa-solid fa-baby"></i> Infants</span>
+                  <div class="fs-counter">
+                    <button type="button" class="fs-cnt-btn" (click)="updateTravelerCount('infant', -1, $event)">−</button>
+                    <span class="fs-cnt-val">{{ searchForm.get('infant')?.value }}</span>
+                    <button type="button" class="fs-cnt-btn" (click)="updateTravelerCount('infant', 1, $event)">+</button>
                   </div>
-                  <select class="form-select form-select-sm mt-2" formControlName="travelClass">
+                </div>
+                <div class="fs-class-select-wrap">
+                  <label class="fs-dp-label">Class</label>
+                  <select class="fs-class-select" formControlName="travelClass">
                     <option>Economy</option>
                     <option>Business</option>
                     <option>First</option>
                   </select>
-                  <p class="small text-muted mt-2 mb-2">Seats needed: {{ totalTravelers }} (infants do not need a seat)</p>
-                  <button type="button" class="btn btn-primary btn-sm w-100" (click)="applyTravellers()">Apply</button>
                 </div>
+                <button type="button" class="fs-apply-btn" (click)="applyTravellers()">
+                  <i class="fa-solid fa-check"></i> Done
+                </button>
               </div>
             </div>
-            <div class="col-6"><p><strong>Departure</strong> {{ selectedFlight.departureTime }}</p></div>
-            <div class="col-6"><p><strong>Total</strong> &#8377;{{ totalPrice }}</p></div>
-            <div class="col-12"><p><strong>Selected Seats</strong> {{ seatSelectionLabel }}</p></div>
           </div>
 
-          <app-seat
-            [flightId]="selectedFlight.id"
-            [seats]="seats"
-            [maxSelectable]="totalTravelers"
-            [selectedSeats]="selectedSeatNumbers"
-            (seatSelected)="onSeatSelected($event)">
-          </app-seat>
+          <div class="fs-field fs-field-btn">
+            <label class="fs-label-hidden">Search</label>
+            <button type="submit" class="fs-search-btn" [disabled]="isSearching || searchForm.invalid">
+              <span *ngIf="isSearching" class="spinner-border spinner-border-sm"></span>
+              <i *ngIf="!isSearching" class="fa-solid fa-magnifying-glass"></i>
+              {{ isSearching ? 'Searching...' : 'Search' }}
+            </button>
+          </div>
 
-          <div class="alert alert-success mt-2" *ngIf="showMessage">{{ responseMessage }}</div>
-          <div class="alert alert-danger mt-2" *ngIf="showError">{{ errorMessage }}</div>
         </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" (click)="closeModal()" [disabled]="isBooking">Close</button>
-          <button class="btn btn-primary" (click)="bookSelectedFlight()"
-            [disabled]="isBooking || selectedSeatNumbers.length < totalTravelers">
-            <span *ngIf="isBooking" class="spinner-border spinner-border-sm me-1"></span>
-            {{ isBooking ? 'Booking...' : 'Book Ticket' }}
+      </form>
+    </div>
+
+    <!-- Error -->
+    <div class="fs-alert fs-alert-danger" *ngIf="showError && !selectedFlight">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      {{ errorMessage }}
+    </div>
+
+    <!-- Loading -->
+    <div class="fs-loading" *ngIf="isSearching">
+      <div class="fs-loading-plane"><i class="fa-solid fa-plane"></i></div>
+      <p>Searching available flights…</p>
+    </div>
+
+    <!-- No results -->
+    <div class="fs-empty" *ngIf="searchAttempted && !isSearching && flights.length === 0">
+      <i class="fa-solid fa-plane-circle-xmark"></i>
+      <p>No confirmed flights found for this route and date.</p>
+      <small>Flights appear after a pilot is assigned and accepts the schedule.</small>
+    </div>
+
+    <!-- Results -->
+    <div class="fs-results" *ngIf="flights.length > 0 && !isSearching">
+      <div class="fs-results-header">
+        <h5><i class="fa-solid fa-list-check"></i> Available Flights</h5>
+        <span class="fs-count-badge">{{ flights.length }} result{{ flights.length !== 1 ? 's' : '' }}</span>
+      </div>
+
+      <!-- Flight cards for mobile -->
+      <div class="fs-flight-cards">
+        <div class="fs-flight-card" *ngFor="let f of flights; let i = index">
+          <div class="ffc-header">
+            <span class="ffc-num"><i class="fa-solid fa-plane"></i> {{ f.flight_number }}</span>
+            <span class="ffc-price">₹{{ f.price }}</span>
+          </div>
+          <div class="ffc-route">
+            <span class="ffc-city">{{ f.source }}</span>
+            <span class="ffc-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+            <span class="ffc-city">{{ f.destination }}</span>
+          </div>
+          <div class="ffc-details">
+            <span><i class="fa-solid fa-calendar"></i> {{ f.departureDate }}</span>
+            <span><i class="fa-solid fa-clock"></i> {{ f.departureTime }} → {{ f.arrivalTime }}</span>
+            <span><i class="fa-solid fa-seat"></i> {{ f.available_seats }} seats left</span>
+          </div>
+          <button class="ffc-book-btn" (click)="viewFlight(f)">
+            <i class="fa-solid fa-ticket"></i> View &amp; Book
           </button>
         </div>
       </div>
+
+      <!-- Table for desktop -->
+      <div class="fs-table-wrap">
+        <table class="fs-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Flight</th>
+              <th>Route</th>
+              <th>Date</th>
+              <th>Departure</th>
+              <th>Arrival</th>
+              <th>Seats</th>
+              <th>Price</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let f of flights; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td class="flt-num">{{ f.flight_number }}</td>
+              <td>{{ f.source }} <i class="fa-solid fa-arrow-right flt-arrow"></i> {{ f.destination }}</td>
+              <td>{{ f.departureDate }}</td>
+              <td>{{ f.departureTime }}</td>
+              <td>{{ f.arrivalTime }}</td>
+              <td>
+                <span class="seats-badge" [class.seats-low]="f.available_seats < 5">
+                  {{ f.available_seats }}
+                </span>
+              </td>
+              <td class="flt-price">₹{{ f.price }}</td>
+              <td>
+                <button class="fs-book-btn" (click)="viewFlight(f)">
+                  <i class="fa-solid fa-ticket"></i> Book
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+
+    <!-- Booking Modal -->
+    <div class="fs-modal-overlay modal d-block booking-modal" *ngIf="selectedFlight" tabindex="-1">
+      <div class="fs-modal modal-dialog modal-lg">
+        <div class="fs-modal-content modal-content">
+          <div class="fs-modal-header modal-header">
+            <div class="fs-modal-title-wrap">
+              <div class="fs-modal-icon"><i class="fa-solid fa-plane"></i></div>
+              <div>
+                <h5 class="modal-title fs-modal-title">Flight {{ selectedFlight.flight_number }}</h5>
+                <span class="fs-modal-route">{{ selectedFlight.source }} → {{ selectedFlight.destination }}</span>
+              </div>
+            </div>
+            <button type="button" class="btn-close" (click)="closeModal()" [disabled]="isBooking"></button>
+          </div>
+
+          <div class="modal-body fs-modal-body">
+            <div class="fs-flight-info-grid">
+              <div class="fi-item">
+                <span class="fi-label"><i class="fa-solid fa-route"></i> Route</span>
+                <span class="fi-val">{{ selectedFlight.source }} → {{ selectedFlight.destination }}</span>
+              </div>
+              <div class="fi-item">
+                <span class="fi-label"><i class="fa-solid fa-couch"></i> Class</span>
+                <span class="fi-val">{{ searchForm.get('travelClass')?.value }}</span>
+              </div>
+              <div class="fi-item">
+                <span class="fi-label"><i class="fa-solid fa-calendar"></i> Date</span>
+                <span class="fi-val">{{ selectedFlight.departureDate }}</span>
+              </div>
+              <div class="fi-item">
+                <span class="fi-label"><i class="fa-solid fa-clock"></i> Departure</span>
+                <span class="fi-val">{{ selectedFlight.departureTime }}</span>
+              </div>
+              <div class="fi-item">
+                <span class="fi-label"><i class="fa-solid fa-users"></i> Travellers</span>
+                <span class="fi-val">
+                  {{ travelerSummary }}
+                  <div class="modal-traveller-dropdown position-relative d-inline-block ms-2">
+                    <button type="button" class="fs-change-btn" (click)="toggleModalTravellers($event)">
+                      <i class="fa-solid fa-pen-to-square"></i> Change
+                    </button>
+                    <div class="fs-dropdown-panel traveller-panel" *ngIf="modalTravellerOpen" (click)="$event.stopPropagation()">
+                      <div class="fs-traveller-row">
+                        <span>Adults</span>
+                        <div class="fs-counter">
+                          <button type="button" class="fs-cnt-btn" (click)="updateTravelerCount('adult', -1, $event)">−</button>
+                          <span class="fs-cnt-val">{{ searchForm.get('adult')?.value }}</span>
+                          <button type="button" class="fs-cnt-btn" (click)="updateTravelerCount('adult', 1, $event)">+</button>
+                        </div>
+                      </div>
+                      <div class="fs-traveller-row">
+                        <span>Children</span>
+                        <div class="fs-counter">
+                          <button type="button" class="fs-cnt-btn" (click)="updateTravelerCount('child', -1, $event)">−</button>
+                          <span class="fs-cnt-val">{{ searchForm.get('child')?.value }}</span>
+                          <button type="button" class="fs-cnt-btn" (click)="updateTravelerCount('child', 1, $event)">+</button>
+                        </div>
+                      </div>
+                      <div class="fs-traveller-row">
+                        <span>Infants</span>
+                        <div class="fs-counter">
+                          <button type="button" class="fs-cnt-btn" (click)="updateTravelerCount('infant', -1, $event)">−</button>
+                          <span class="fs-cnt-val">{{ searchForm.get('infant')?.value }}</span>
+                          <button type="button" class="fs-cnt-btn" (click)="updateTravelerCount('infant', 1, $event)">+</button>
+                        </div>
+                      </div>
+                      <div class="fs-class-select-wrap">
+                        <label class="fs-dp-label">Class</label>
+                        <select class="fs-class-select" formControlName="travelClass">
+                          <option>Economy</option>
+                          <option>Business</option>
+                          <option>First</option>
+                        </select>
+                      </div>
+                      <p class="fs-seats-note"><i class="fa-solid fa-info-circle"></i> Seats needed: {{ totalTravelers }} (infants excluded)</p>
+                      <button type="button" class="fs-apply-btn" (click)="applyTravellers()">
+                        <i class="fa-solid fa-check"></i> Apply
+                      </button>
+                    </div>
+                  </div>
+                </span>
+              </div>
+              <div class="fi-item fi-total">
+                <span class="fi-label"><i class="fa-solid fa-indian-rupee-sign"></i> Total</span>
+                <span class="fi-val fi-price">₹{{ totalPrice }}</span>
+              </div>
+              <div class="fi-item fi-seats-row">
+                <span class="fi-label"><i class="fa-solid fa-chair"></i> Selected Seats</span>
+                <span class="fi-val">{{ seatSelectionLabel }}</span>
+              </div>
+            </div>
+
+            <app-seat
+              [flightId]="selectedFlight.id"
+              [seats]="seats"
+              [maxSelectable]="totalTravelers"
+              [selectedSeats]="selectedSeatNumbers"
+              (seatSelected)="onSeatSelected($event)">
+            </app-seat>
+
+            <div class="fs-alert fs-alert-success mt-3" *ngIf="showMessage">
+              <i class="fa-solid fa-circle-check"></i> {{ responseMessage }}
+            </div>
+            <div class="fs-alert fs-alert-danger mt-3" *ngIf="showError">
+              <i class="fa-solid fa-triangle-exclamation"></i> {{ errorMessage }}
+            </div>
+          </div>
+
+          <div class="modal-footer fs-modal-footer">
+            <button class="fs-close-btn" (click)="closeModal()" [disabled]="isBooking">
+              <i class="fa-solid fa-xmark"></i> Close
+            </button>
+            <button class="fs-confirm-btn"
+              (click)="bookSelectedFlight()"
+              [disabled]="isBooking || selectedSeatNumbers.length < totalTravelers">
+              <span *ngIf="isBooking" class="spinner-border spinner-border-sm"></span>
+              <i *ngIf="!isBooking" class="fa-solid fa-check-circle"></i>
+              {{ isBooking ? 'Booking…' : 'Confirm Booking' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>

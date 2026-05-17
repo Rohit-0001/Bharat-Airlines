@@ -1,58 +1,134 @@
+/* ============================================================
+   ASSIGN PILOT
+   ============================================================ */
+.ap-page { min-height: calc(100vh - 68px); background: #f2f4f8; }
 
-h3 { margin-bottom: 1.5rem; }
+.ap-page-header { background: linear-gradient(135deg, #0a1628 0%, #122244 50%, #1e3a6e 100%); padding: 2rem 1.5rem 1.75rem; }
+.ap-header-inner { max-width: 1100px; margin: 0 auto; }
+.ap-title { font-family: 'Playfair Display', serif; font-size: 1.7rem; font-weight: 700; color: #fff; margin: 0 0 0.3rem; display: flex; align-items: center; gap: 0.75rem; i { color: #c9a227; font-size: 1.4rem; } }
+.ap-subtitle { color: rgba(255,255,255,0.6); font-size: 0.875rem; margin: 0; }
 
-// Assign form card
-.card:first-of-type {
-  border-top: 3px solid var(--ai-primary) !important;
+.ap-container { max-width: 1100px; margin: 0 auto; padding: 1.75rem 1.25rem 3rem; display: flex; flex-direction: column; gap: 1.5rem; }
 
-  h6::before { content: '👨‍✈️ '; }
+.ap-alert { display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1.1rem; border-radius: 10px; font-size: 0.875rem;
+  &.ap-alert-success { background: rgba(26,122,78,0.08); border: 1px solid rgba(26,122,78,0.2); color: #0f4d30; }
+  &.ap-alert-danger  { background: rgba(192,57,43,0.08); border: 1px solid rgba(192,57,43,0.2); color: #7a1a12; }
 }
 
-// Submit button
-.btn-primary[type="submit"] {
-  min-width: 150px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+.ap-form-card, .ap-table-card {
+  background: #fff; border-radius: 16px; overflow: hidden;
+  border: 1px solid #e0e8f4; box-shadow: 0 2px 12px rgba(10,22,40,0.07);
+}
+.ap-form-card { border-top: 3px solid #1e3a6e; }
+.ap-table-card { border-top: 3px solid #c9a227; }
+
+.ap-card-header {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 1.1rem 1.5rem; border-bottom: 1px solid #edf0f8;
+  font-weight: 700; font-size: 0.85rem; color: #0a1628;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  background: linear-gradient(135deg, #f8faff, #fff);
+  i { color: #c9a227; }
+}
+.ap-count-badge { margin-left: auto; background: rgba(10,22,40,0.08); color: #3d5470; padding: 0.2rem 0.7rem; border-radius: 50px; font-size: 0.78rem; font-weight: 600; }
+.ap-card-body { padding: 1.5rem; }
+
+/* Form */
+.ap-form { }
+.ap-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; }
+.ap-field { display: flex; flex-direction: column; }
+.ap-label { font-size: 0.77rem; font-weight: 700; color: #3d5470; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.45rem; display: flex; align-items: center; gap: 0.4rem; i { color: #c9a227; font-size: 0.7rem; } }
+.ap-input, .ap-select {
+  padding: 0.68rem 0.9rem; border: 1.5px solid #dde3ee; border-radius: 10px;
+  background: #f8fafd; font-size: 0.9rem; color: #0d1b2e; width: 100%;
+  transition: all 0.2s;
+  &:focus { border-color: #1e3a6e; background: #fff; box-shadow: 0 0 0 4px rgba(30,58,110,0.09); outline: none; }
+}
+.ap-submit-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.6rem 1.6rem; background: linear-gradient(135deg, #0a1628, #1e3a6e);
+  color: #fff; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700;
+  cursor: pointer; box-shadow: 0 4px 14px rgba(10,22,40,0.25); transition: all 0.25s;
+  &:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(10,22,40,0.35); }
+  &:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
 }
 
-// Schedule table card
-.card:last-of-type {
-  h6::before { content: '📅 '; }
+/* Empty */
+.ap-empty {
+  text-align: center; padding: 3.5rem 2rem; color: #6b7f99;
+  i { font-size: 2.5rem; color: #c0cce0; display: block; margin-bottom: 0.85rem; }
+  p { margin: 0; font-size: 0.95rem; font-weight: 600; }
 }
 
-// Pilot name bold
-.table td:nth-child(2) {
-  font-weight: 600;
-  color: var(--ai-text);
+/* Mobile cards */
+.ap-mobile-cards { display: none; }
+.ap-schedule-card {
+  padding: 1.25rem; border-bottom: 1px solid #f0f4f8;
+  &:last-child { border-bottom: none; }
+  &.ap-sc-warning { border-left: 3px solid #e6a817; }
+  &.ap-sc-danger  { border-left: 3px solid #c0392b; opacity: 0.75; }
 }
+.ap-sc-top { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.88rem; font-weight: 600; }
+.ap-sc-pilot { color: #3d5470; display: flex; align-items: center; gap: 0.4rem; i { color: #6b7f99; } }
+.ap-sc-flight { color: #0a1628; display: flex; align-items: center; gap: 0.4rem; i { color: #c9a227; } }
+.ap-sc-route { display: flex; align-items: center; gap: 0.75rem; font-size: 1rem; font-weight: 700; color: #0d1b2e; margin-bottom: 0.6rem; }
+.ap-arrow { color: #c9a227; font-size: 0.8rem; }
+.ap-sc-meta { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; font-size: 0.8rem; color: #6b7f99; margin-bottom: 0.85rem; span { display: flex; align-items: center; gap: 0.35rem; i { color: #c9a227; font-size: 0.7rem; } } }
+.ap-sc-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
 
-// Flight number
-.table td:nth-child(3) {
-  font-weight: 700;
-  color: var(--ai-primary);
-  letter-spacing: 0.04em;
+/* Badges */
+.ap-status-badge, .ap-assign-badge {
+  display: inline-flex; align-items: center;
+  padding: 0.25rem 0.65rem; border-radius: 50px;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
 }
+.ap-badge-success { background: rgba(26,122,78,0.1); color: #1a7a4e; }
+.ap-badge-danger  { background: rgba(192,57,43,0.1); color: #c0392b; }
+.ap-badge-warning { background: rgba(230,168,23,0.15); color: #a07800; }
+.ap-badge-primary { background: rgba(30,58,110,0.1); color: #1e3a6e; }
+.ap-badge-muted   { background: rgba(74,85,104,0.1); color: #4a5568; }
+.ap-assign-badge  { background: rgba(10,22,40,0.08); color: #3d5470; }
+.ap-status-inline { font-size: 0.72rem !important; }
 
-// Status column — use text color to indicate state
-.table td:nth-child(8) {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--ai-text-secondary);
+/* Buttons */
+.ap-btn-accept, .ap-btn-reject {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.45rem 0.9rem; border: none; border-radius: 8px;
+  font-size: 0.84rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
+  &:disabled { opacity: 0.45; cursor: not-allowed; }
 }
-
-// Inline status select (admin)
-.form-select.form-select-sm.d-inline.w-auto {
-  min-width: 110px;
-  font-size: 0.8rem;
-  font-weight: 500;
+.ap-btn-accept { background: rgba(26,122,78,0.1); color: #1a7a4e; border: 1px solid rgba(26,122,78,0.25); &:hover:not(:disabled) { background: #1a7a4e; color: #fff; } }
+.ap-btn-reject { background: rgba(192,57,43,0.1); color: #c0392b; border: 1px solid rgba(192,57,43,0.25); &:hover:not(:disabled) { background: #c0392b; color: #fff; } }
+.ap-btn-sm { padding: 0.32rem 0.65rem; }
+.ap-status-select {
+  padding: 0.38rem 0.65rem; border-radius: 8px; border: 1.5px solid #dde3ee;
+  background: #f8fafd; font-size: 0.82rem; color: #0d1b2e; cursor: pointer;
+  &:focus { outline: none; border-color: #1e3a6e; }
+  &:disabled { opacity: 0.55; cursor: not-allowed; }
 }
+.ap-dash { color: #c0cce0; }
 
-// Pilot action buttons
-.btn-success.btn-sm { min-width: 68px; }
-.btn-danger.btn-sm  { min-width: 60px; }
+/* Table */
+.ap-table-wrap { overflow-x: auto; }
+.ap-table {
+  width: 100%; border-collapse: collapse; font-size: 0.875rem;
+  thead tr th { background: #0a1628; color: #fff; padding: 0.85rem 0.9rem; font-weight: 600; letter-spacing: 0.03em; text-align: left; white-space: nowrap; }
+  tbody tr {
+    transition: background 0.15s;
+    td { padding: 0.82rem 0.9rem; border-bottom: 1px solid #f0f4f8; vertical-align: middle; white-space: nowrap; }
+    &:hover { background: #f4f8ff; }
+    &:last-child td { border-bottom: none; }
+    &.ap-row-warning { background: rgba(230,168,23,0.04); border-left: 3px solid #e6a817; }
+    &.ap-row-danger  { background: rgba(192,57,43,0.04); border-left: 3px solid #c0392b; }
+  }
+}
+.ap-pilot-name { font-weight: 600; color: #3d5470; }
+.ap-flt-num { font-weight: 700; color: #0a1628; letter-spacing: 0.04em; }
+.ap-tbl-arrow { color: #c9a227; font-size: 0.72rem; margin: 0 4px; }
+.ap-action-cell { display: flex; gap: 0.4rem; align-items: center; white-space: nowrap; }
 
-@media (max-width: 992px) {
-  .table { display: block; overflow-x: auto; white-space: nowrap; }
+@media (max-width: 768px) {
+  .ap-table-wrap { display: none; }
+  .ap-mobile-cards { display: block; }
+  .ap-fields { grid-template-columns: 1fr; }
 }

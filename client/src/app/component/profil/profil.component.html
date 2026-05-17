@@ -1,43 +1,76 @@
-<div class="container mt-4">
-  <h3 class="mb-3">My Profile</h3>
+<div class="pf-page">
 
-  <div class="alert alert-warning" *ngIf="showError">{{ errorMessage }}</div>
+  <div class="pf-page-header">
+    <div class="pf-header-inner">
+      <h2 class="pf-title">
+        <i class="fa-solid fa-circle-user"></i>
+        My Profile
+      </h2>
+      <p class="pf-subtitle">Your account information</p>
+    </div>
+  </div>
 
-  <div class="card p-4" style="max-width: 520px;" *ngIf="user">
-    <div class="d-flex align-items-center mb-4">
-      <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
-           style="width:56px;height:56px;font-size:22px;font-weight:600;flex-shrink:0;">
-        {{ user.username ? user.username.charAt(0).toUpperCase() : '?' }}
-      </div>
-      <div>
-        <h5 class="mb-0">{{ user.username || '—' }}</h5>
-        <span class="badge bg-primary">{{ user.role }}</span>
-      </div>
+  <div class="pf-container">
+
+    <div class="pf-alert pf-alert-warning" *ngIf="showError">
+      <i class="fa-solid fa-triangle-exclamation"></i> {{ errorMessage }}
     </div>
 
-    <table class="table table-borderless mb-0">
-      <tbody>
-        <tr>
-          <th style="width:140px;" class="text-muted">Username</th>
-          <td>{{ user.username || '—' }}</td>
-        </tr>
-        <tr>
-          <th class="text-muted">Email</th>
-          <td>{{ user.email || '—' }}</td>
-        </tr>
-        <tr>
-          <th class="text-muted">Contact</th>
-          <td>{{ user.contactNumber || 'N/A' }}</td>
-        </tr>
-        <tr>
-          <th class="text-muted">Role</th>
-          <td><span class="badge bg-primary">{{ user.role }}</span></td>
-        </tr>
-        <tr>
-          <th class="text-muted">User ID</th>
-          <td class="text-muted">#{{ user.userId }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="pf-card" *ngIf="user">
+      <!-- Profile hero -->
+      <div class="pf-card-hero">
+        <div class="pf-avatar">
+          {{ user.username ? user.username.charAt(0).toUpperCase() : '?' }}
+        </div>
+        <div class="pf-hero-info">
+          <h3 class="pf-username">{{ user.username || '—' }}</h3>
+          <span class="pf-role-badge">
+            <i class="fa-solid fa-shield-check"></i>
+            {{ user.role }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Details -->
+      <div class="pf-details">
+        <div class="pf-detail-row">
+          <div class="pf-detail-icon"><i class="fa-solid fa-person"></i></div>
+          <div class="pf-detail-content">
+            <span class="pf-detail-label">Username</span>
+            <span class="pf-detail-value">{{ user.username || '—' }}</span>
+          </div>
+        </div>
+        <div class="pf-detail-row">
+          <div class="pf-detail-icon"><i class="fa-solid fa-envelope"></i></div>
+          <div class="pf-detail-content">
+            <span class="pf-detail-label">Email Address</span>
+            <span class="pf-detail-value">{{ user.email || '—' }}</span>
+          </div>
+        </div>
+        <div class="pf-detail-row">
+          <div class="pf-detail-icon"><i class="fa-solid fa-phone"></i></div>
+          <div class="pf-detail-content">
+            <span class="pf-detail-label">Contact Number</span>
+            <span class="pf-detail-value">{{ user.contactNumber || 'N/A' }}</span>
+          </div>
+        </div>
+        <div class="pf-detail-row">
+          <div class="pf-detail-icon"><i class="fa-solid fa-user-tag"></i></div>
+          <div class="pf-detail-content">
+            <span class="pf-detail-label">Role</span>
+            <span class="pf-detail-value">
+              <span class="pf-role-badge">{{ user.role }}</span>
+            </span>
+          </div>
+        </div>
+        <div class="pf-detail-row pf-detail-last">
+          <div class="pf-detail-icon"><i class="fa-solid fa-fingerprint"></i></div>
+          <div class="pf-detail-content">
+            <span class="pf-detail-label">User ID</span>
+            <span class="pf-detail-value pf-user-id">#{{ user.userId }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

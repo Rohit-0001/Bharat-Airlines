@@ -16,19 +16,19 @@ import { AssignPilotComponent } from './component/assign-pilot/assign-pilot.comp
 import { ProfilComponent } from './component/profil/profil.component';
 import { ViewuserComponent } from './component/viewuser/viewuser.component';
 import { SeatSelectionComponent } from './component/seat/seat.component';
+import { LandingComponent } from './component/landing/landing.component';
 
 import { HttpService } from '../services/http.service';
 import { AuthService } from '../services/auth.service';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
-import { HomeComponent } from './component/home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent, LoginComponent, RegisterComponent, ForgotPasswordComponent,
-    ResetPasswordComponent ,DashboardComponent, FlightComponent, FlightSearchComponent,
+    ResetPasswordComponent, DashboardComponent, FlightComponent, FlightSearchComponent,
     BookingsComponent, AssignPilotComponent, ProfilComponent,
-    ViewuserComponent, SeatSelectionComponent, HomeComponent
+    ViewuserComponent, SeatSelectionComponent, LandingComponent
   ],
   imports: [
     BrowserModule, AppRoutingModule, FormsModule,

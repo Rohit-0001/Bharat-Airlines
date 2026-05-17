@@ -1,38 +1,53 @@
+/* ============================================================
+   VIEW ALL BOOKINGS — Admin
+   ============================================================ */
+.vu-page { min-height: calc(100vh - 68px); background: #f2f4f8; }
+.vu-page-header { background: linear-gradient(135deg, #0a1628 0%, #122244 50%, #1e3a6e 100%); padding: 2rem 1.5rem 1.75rem; }
+.vu-header-inner { max-width: 1200px; margin: 0 auto; }
+.vu-title { font-family: 'Playfair Display', serif; font-size: 1.7rem; font-weight: 700; color: #fff; margin: 0 0 0.3rem; display: flex; align-items: center; gap: 0.75rem; i { color: #c9a227; font-size: 1.4rem; } }
+.vu-subtitle { color: rgba(255,255,255,0.6); font-size: 0.875rem; margin: 0; }
 
-h3 { margin-bottom: 1.5rem; }
+.vu-container { max-width: 1200px; margin: 0 auto; padding: 1.75rem 1.25rem 3rem; }
 
-.card {
-  h6::before { content: '📊 '; }
+.vu-alert { display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1.1rem; border-radius: 10px; font-size: 0.875rem; margin-bottom: 1.25rem;
+  &.vu-alert-danger { background: rgba(192,57,43,0.08); border: 1px solid rgba(192,57,43,0.2); color: #7a1a12; }
 }
 
-// Passenger name
-.table td:nth-child(2) {
-  font-weight: 600;
-  color: var(--ai-text);
-}
+.vu-card { background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid #e0e8f4; box-shadow: 0 2px 12px rgba(10,22,40,0.07); border-top: 3px solid #c9a227; }
+.vu-card-header { display: flex; align-items: center; gap: 0.75rem; padding: 1.1rem 1.5rem; border-bottom: 1px solid #edf0f8; font-weight: 700; font-size: 0.85rem; color: #0a1628; text-transform: uppercase; letter-spacing: 0.07em; background: linear-gradient(135deg, #f8faff, #fff); i { color: #c9a227; } }
+.vu-count-badge { margin-left: auto; background: rgba(10,22,40,0.08); color: #3d5470; padding: 0.2rem 0.7rem; border-radius: 50px; font-size: 0.78rem; font-weight: 600; }
 
-// Flight number
-.table td:nth-child(3) {
-  font-weight: 700;
-  color: var(--ai-primary);
-  letter-spacing: 0.04em;
-}
+/* Mobile cards */
+.vu-mobile-cards { display: none; }
+.vu-booking-card { padding: 1.1rem 1.25rem; border-bottom: 1px solid #f0f4f8; &:last-child { border-bottom: none; } &:hover { background: #f8faff; } }
+.vu-bc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem; }
+.vu-bc-passenger { font-weight: 600; color: #3d5470; font-size: 0.88rem; display: flex; align-items: center; gap: 0.4rem; i { color: #6b7f99; } }
+.vu-bc-flight { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.45rem; }
+.vu-bc-route { display: flex; align-items: center; gap: 0.75rem; font-weight: 700; color: #0d1b2e; margin-bottom: 0.6rem; }
+.vu-arrow { color: #c9a227; font-size: 0.8rem; }
+.vu-bc-meta { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; font-size: 0.8rem; color: #6b7f99; span { display: flex; align-items: center; gap: 0.35rem; i { color: #c9a227; font-size: 0.7rem; } } }
 
-// PNR — monospace
-.table td:nth-child(4) {
-  font-family: 'Fira Code', 'Consolas', monospace;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--ai-text);
-}
+.vu-empty { text-align: center; padding: 3.5rem 2rem; color: #6b7f99; i { font-size: 2.5rem; color: #c0cce0; display: block; margin-bottom: 0.85rem; } p { margin: 0; font-size: 0.95rem; font-weight: 600; } }
+.vu-empty-cell { text-align: center; color: #6b7f99; padding: 3rem !important; font-size: 0.9rem; }
 
-// Booking date
-.table td:nth-child(8) {
-  font-size: 0.8125rem;
-  color: var(--ai-text-muted);
+/* Badges */
+.vu-status-badge { display: inline-flex; align-items: center; padding: 0.25rem 0.65rem; border-radius: 50px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+  &.vu-badge-success { background: rgba(26,122,78,0.1); color: #1a7a4e; }
+  &.vu-badge-danger  { background: rgba(192,57,43,0.1); color: #c0392b; }
+  &.vu-badge-muted   { background: rgba(74,85,104,0.1); color: #4a5568; }
 }
+.vu-pay-badge { display: inline-flex; align-items: center; padding: 0.22rem 0.6rem; border-radius: 50px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; background: rgba(26,110,168,0.1); color: #1a6ea8; }
 
-@media (max-width: 992px) {
-  .table { display: block; overflow-x: auto; white-space: nowrap; }
+/* Table */
+.vu-table-wrap { overflow-x: auto; }
+.vu-table {
+  width: 100%; border-collapse: collapse; font-size: 0.875rem;
+  thead tr th { background: #0a1628; color: #fff; padding: 0.85rem 0.9rem; font-weight: 600; letter-spacing: 0.03em; text-align: left; white-space: nowrap; }
+  tbody tr { transition: background 0.15s; td { padding: 0.82rem 0.9rem; border-bottom: 1px solid #f0f4f8; vertical-align: middle; white-space: nowrap; } &:hover { background: #f4f8ff; } &:last-child td { border-bottom: none; } }
 }
+.vu-passenger { font-weight: 600; color: #3d5470; }
+.vu-flt-num { font-weight: 700; color: #0a1628; letter-spacing: 0.04em; }
+.vu-pnr { font-family: 'Courier New', monospace; font-size: 0.8rem; font-weight: 700; color: #1e3a6e; letter-spacing: 0.06em; }
+.vu-date { color: #6b7f99; font-size: 0.78rem; }
+
+@media (max-width: 900px) { .vu-table-wrap { display: none; } .vu-mobile-cards { display: block; } }

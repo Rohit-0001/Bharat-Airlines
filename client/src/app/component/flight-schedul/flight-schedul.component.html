@@ -1,72 +1,129 @@
-<div class="container mt-4">
-  <h3 class="mb-3">My Flight Schedule</h3>
+<div class="sch-page">
 
-  <div class="alert alert-success" *ngIf="showMessage">{{ responseMessage }}</div>
-  <div class="alert alert-danger" *ngIf="showError">{{ errorMessage }}</div>
-
-  <div class="text-center py-5" *ngIf="isLoading">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
+  <div class="sch-page-header">
+    <div class="sch-header-inner">
+      <h2 class="sch-title">
+        <i class="fa-solid fa-calendar-days"></i>
+        My Flight Schedule
+      </h2>
+      <p class="sch-subtitle">Manage and respond to your assigned duties</p>
     </div>
-    <p class="mt-2 text-muted">Loading your schedule...</p>
   </div>
 
-  <div class="card p-3" *ngIf="!isLoading">
-    <div *ngIf="schedules.length === 0" class="text-center text-muted py-4">
-      <p>No flights assigned to you yet.</p>
+  <div class="sch-container">
+
+    <div class="sch-alert sch-alert-success" *ngIf="showMessage">
+      <i class="fa-solid fa-circle-check"></i> {{ responseMessage }}
+    </div>
+    <div class="sch-alert sch-alert-danger" *ngIf="showError">
+      <i class="fa-solid fa-triangle-exclamation"></i> {{ errorMessage }}
     </div>
 
-    <table class="table table-hover" *ngIf="schedules.length > 0">
-      <thead class="table-dark">
-        <tr>
-          <th>Sr#</th>
-          <th>Flight No</th>
-          <th>Source</th>
-          <th>Destination</th>
-          <th>Departure Date</th>
-          <th>Departure Time</th>
-          <th>Arrival Time</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let s of schedules; let i = index"
-            [class.table-warning]="s.assignStatus === 'ASSIGNED'"
-            [class.table-success]="s.assignStatus === 'ACCEPTED'"
-            [class.table-danger]="s.assignStatus === 'REJECTED'">
-          <td>{{ i + 1 }}</td>
-          <td><strong>{{ s.flight?.flight_number }}</strong></td>
-          <td>{{ s.flight?.source }}</td>
-          <td>{{ s.flight?.destination }}</td>
-          <td>{{ s.scheduledDate }}</td>
-          <td>{{ s.flight?.departureTime }}</td>
-          <td>{{ s.flight?.arrivalTime }}</td>
-          <td>
-            <span class="badge"
-              [class.bg-warning]="s.status === 'ASSIGNED'"
-              [class.text-dark]="s.status === 'ASSIGNED'"
-              [class.bg-success]="s.status === 'ACCEPTED'"
-              [class.bg-danger]="s.status === 'REJECTED'"
-              [class.bg-primary]="s.status === 'CONFIRMED'"
-              [class.bg-secondary]="s.status === 'COMPLETED'">
+    <!-- Loading -->
+    <div class="sch-loading" *ngIf="isLoading">
+      <div class="sch-spinner"></div>
+      <p>Loading your schedule…</p>
+    </div>
+
+    <!-- Card -->
+    <div class="sch-card" *ngIf="!isLoading">
+      <div class="sch-card-header">
+        <i class="fa-solid fa-list-check"></i>
+        <span>Schedule Information</span>
+        <span class="sch-count-badge">{{ schedules.length }} flight{{ schedules.length !== 1 ? 's' : '' }}</span>
+      </div>
+
+      <!-- Empty -->
+      <div class="sch-empty" *ngIf="schedules.length === 0">
+        <i class="fa-solid fa-plane-circle-xmark"></i>
+        <p>No flights assigned to you yet</p>
+        <small>Your schedule will appear here once a flight is assigned</small>
+      </div>
+
+      <!-- Mobile cards -->
+      <div class="sch-mobile-cards" *ngIf="schedules.length > 0">
+        <div class="sch-flight-card" *ngFor="let s of schedules; let i = index"
+          [class.sch-assigned]="s.assignStatus === 'ASSIGNED'"
+          [class.sch-accepted]="s.assignStatus === 'ACCEPTED'"
+          [class.sch-rejected]="s.assignStatus === 'REJECTED'">
+          <div class="sch-fc-top">
+            <span class="sch-fc-num"><i class="fa-solid fa-plane"></i> {{ s.flight?.flight_number }}</span>
+            <span class="sch-status-badge" [class.sch-badge-warning]="s.status === 'ASSIGNED'" [class.sch-badge-success]="s.status === 'ACCEPTED'" [class.sch-badge-danger]="s.status === 'REJECTED'" [class.sch-badge-primary]="s.status === 'CONFIRMED'" [class.sch-badge-muted]="s.status === 'COMPLETED'">
               {{ s.status }}
             </span>
-          </td>
-          <td>
-            <button class="btn btn-sm btn-success me-1"
+          </div>
+          <div class="sch-fc-route">
+            <span>{{ s.flight?.source }}</span>
+            <i class="fa-solid fa-arrow-right sch-arrow"></i>
+            <span>{{ s.flight?.destination }}</span>
+          </div>
+          <div class="sch-fc-details">
+            <span><i class="fa-solid fa-calendar"></i> {{ s.scheduledDate }}</span>
+            <span><i class="fa-solid fa-clock"></i> {{ s.flight?.departureTime }} → {{ s.flight?.arrivalTime }}</span>
+          </div>
+          <div class="sch-fc-actions">
+            <button class="sch-btn-accept"
               [disabled]="s.status === 'ACCEPTED' || s.status === 'COMPLETED'"
               (click)="updateStatus(s.id, 'ACCEPTED')">
-              Accept
+              <i class="fa-solid fa-check"></i> Accept
             </button>
-            <button class="btn btn-sm btn-danger"
+            <button class="sch-btn-reject"
               [disabled]="s.status === 'REJECTED' || s.status === 'COMPLETED'"
               (click)="updateStatus(s.id, 'REJECTED')">
-              Reject
+              <i class="fa-solid fa-xmark"></i> Reject
             </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop table -->
+      <div class="sch-table-wrap" *ngIf="schedules.length > 0">
+        <table class="sch-table">
+          <thead>
+            <tr>
+              <th>#</th><th>Flight</th><th>From</th><th>To</th>
+              <th>Date</th><th>Departure</th><th>Arrival</th>
+              <th>Status</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of schedules; let i = index"
+              [class.sch-row-assigned]="s.assignStatus === 'ASSIGNED'"
+              [class.sch-row-accepted]="s.assignStatus === 'ACCEPTED'"
+              [class.sch-row-rejected]="s.assignStatus === 'REJECTED'">
+              <td>{{ i + 1 }}</td>
+              <td><strong class="sch-flt-num">{{ s.flight?.flight_number }}</strong></td>
+              <td>{{ s.flight?.source }}</td>
+              <td>{{ s.flight?.destination }}</td>
+              <td>{{ s.scheduledDate }}</td>
+              <td>{{ s.flight?.departureTime }}</td>
+              <td>{{ s.flight?.arrivalTime }}</td>
+              <td>
+                <span class="sch-status-badge"
+                  [class.sch-badge-warning]="s.status === 'ASSIGNED'"
+                  [class.sch-badge-success]="s.status === 'ACCEPTED'"
+                  [class.sch-badge-danger]="s.status === 'REJECTED'"
+                  [class.sch-badge-primary]="s.status === 'CONFIRMED'"
+                  [class.sch-badge-muted]="s.status === 'COMPLETED'">
+                  {{ s.status }}
+                </span>
+              </td>
+              <td class="sch-actions">
+                <button class="sch-btn-accept sch-btn-sm"
+                  [disabled]="s.status === 'ACCEPTED' || s.status === 'COMPLETED'"
+                  (click)="updateStatus(s.id, 'ACCEPTED')">
+                  <i class="fa-solid fa-check"></i> Accept
+                </button>
+                <button class="sch-btn-reject sch-btn-sm"
+                  [disabled]="s.status === 'REJECTED' || s.status === 'COMPLETED'"
+                  (click)="updateStatus(s.id, 'REJECTED')">
+                  <i class="fa-solid fa-xmark"></i> Reject
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>

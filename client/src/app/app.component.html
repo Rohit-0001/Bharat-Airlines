@@ -1,186 +1,128 @@
-<!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
-  <a class="navbar-brand" routerLink="/dashboard">
-    ✈ Airline Booking System
-  </a>
-  <div class="collapse navbar-collapse">
-    <ul class="navbar-nav ms-auto align-items-center">
+<nav class="ba-navbar">
+  <div class="ba-navbar-inner">
 
-      
-      <ng-container *ngIf="isLoggedIn && role === 'ADMIN'">
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/add_flights">Add Flights</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/view_all_user">View All Bookings</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/assign_pilot">Assign Pilots</a>
-        </li>
-       
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/my_profile">My Profile</a>
-        </li>
-      </ng-container>
-
-  
-      <ng-container *ngIf="isLoggedIn && role === 'PASSENGER'">
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/search_flight">Search Flights</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/my_booking">My Bookings</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/my_profile">My Profile</a>
-        </li>
-      </ng-container>
-
-  
-      <ng-container *ngIf="isLoggedIn && role === 'PILOT'">
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/assign_pilot">My Schedule</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/my_profile">My Profile</a>
-        </li>
-      </ng-container>
-
-  
-      <li class="nav-item" *ngIf="!isLoggedIn">
-        <a class="nav-link" routerLink="/login">Login</a>
-      </li>
-
-     
-      <ng-container *ngIf="isLoggedIn">
-
-        <li class="nav-item">
-          <span class="nav-link text-light opacity-75">👤 {{ username }}</span>
-        </li>
-        <li class="nav-item">
-          <button class="btn btn-outline-light btn-sm ms-1" (click)="logout()">Logout</button>
-        </li>
-      </ng-container>
-
-    </ul>
-  </div>
-</nav>
-
-<div class="container mt-4">
-  <router-outlet></router-outlet>
-</div> -->
-<!-- ============================================================
-     BHARAT AIRLINE — App Shell (Navbar + Layout)
-     File: src/app/app.component.html
-     Purpose: Premium sticky navbar — preserves all routerLinks
-              and role-based visibility from original code
-     ============================================================ -->
-
-<!-- ── NAVBAR ─────────────────────────────────────────────── -->
-<nav class="ba-navbar" [class.scrolled]="isScrolled">
-  <div class="nav-container">
-
-    <!-- Brand -->
-    <a class="nav-brand" routerLink="/">
-      <span class="brand-plane">✈</span>
-      <span class="brand-name">Bharat<span class="brand-accent">Airline</span></span>
+    <a class="ba-brand" routerLink="/">
+      <div class="ba-brand-icon">
+        <i class="fa-solid fa-plane"></i>
+      </div>
+      <div class="ba-brand-text">
+        <span class="ba-brand-name">Bharat Airlines</span>
+        <span class="ba-brand-tagline">Fly with Pride</span>
+      </div>
     </a>
 
-    <!-- Desktop nav -->
-    <ul class="nav-links d-none d-lg-flex">
-      <li><a class="nav-link-item" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Home</a></li>
-      <li><a class="nav-link-item" href="#about">About</a></li>
-      <li><a class="nav-link-item" href="#flights">Flights</a></li>
-
-      <!-- Admin links -->
-      <ng-container *ngIf="isLoggedIn && role === 'ADMIN'">
-        <li><a class="nav-link-item" routerLink="/add_flights" routerLinkActive="active">Add Flights</a></li>
-        <li><a class="nav-link-item" routerLink="/view_all_user" routerLinkActive="active">Bookings</a></li>
-        <li><a class="nav-link-item" routerLink="/assign_pilot" routerLinkActive="active">Assign Pilots</a></li>
-        <li><a class="nav-link-item" routerLink="/my_profile" routerLinkActive="active">My Profile</a></li>
-      </ng-container>
-
-      <!-- Passenger links -->
-      <ng-container *ngIf="isLoggedIn && role === 'PASSENGER'">
-        <li><a class="nav-link-item" routerLink="/search_flight" routerLinkActive="active">Search Flights</a></li>
-        <li><a class="nav-link-item" routerLink="/my_booking" routerLinkActive="active">My Bookings</a></li>
-        <li><a class="nav-link-item" routerLink="/my_profile" routerLinkActive="active">My Profile</a></li>
-      </ng-container>
-
-      <!-- Pilot links -->
-      <ng-container *ngIf="isLoggedIn && role === 'PILOT'">
-        <li><a class="nav-link-item" routerLink="/assign_pilot" routerLinkActive="active">My Schedule</a></li>
-        <li><a class="nav-link-item" routerLink="/my_profile" routerLinkActive="active">My Profile</a></li>
-      </ng-container>
-    </ul>
-
-    <!-- Desktop right actions -->
-    <div class="nav-actions d-none d-lg-flex">
-      <ng-container *ngIf="!isLoggedIn">
-        <a routerLink="/login" class="nav-btn-ghost">Login</a>
-        <a routerLink="/register" class="nav-btn-solid">Register</a>
-      </ng-container>
-
-      <ng-container *ngIf="isLoggedIn">
-        <div class="nav-user">
-          <span class="user-avatar">{{ username | slice:0:1 | uppercase }}</span>
-          <span class="user-name">{{ username }}</span>
-          <span class="user-role-badge">{{ role }}</span>
-        </div>
-        <button class="nav-btn-ghost" (click)="logout()">Logout</button>
-      </ng-container>
-    </div>
-
-    <!-- Mobile hamburger -->
-    <button class="hamburger d-lg-none" (click)="toggleMobile()" [class.open]="mobileOpen" aria-label="Menu">
+    <button class="ba-nav-toggle" id="navToggle" data-bs-toggle="collapse" data-bs-target="#baNavMenu"
+      aria-controls="baNavMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span></span><span></span><span></span>
     </button>
 
-  </div>
+    <div class="collapse ba-nav-collapse" id="baNavMenu">
+      <ul class="ba-nav-list">
 
-  <!-- Mobile menu -->
-  <div class="mobile-menu" [class.open]="mobileOpen">
-    <ul class="mobile-links">
-      <li><a (click)="closeMobile()" routerLink="/">Home</a></li>
-      <li><a (click)="closeMobile()" href="#about">About</a></li>
-      <li><a (click)="closeMobile()" href="#flights">Flights</a></li>
+        <ng-container *ngIf="isLoggedIn && role === 'ADMIN'">
+          <li class="ba-nav-item">
+            <a class="ba-nav-link" routerLink="/add_flights" routerLinkActive="active">
+              <i class="fa-solid fa-plane-circle-plus"></i> Manage Flights
+            </a>
+          </li>
+          <li class="ba-nav-item">
+            <a class="ba-nav-link" routerLink="/view_all_user" routerLinkActive="active">
+              <i class="fa-solid fa-ticket"></i> All Bookings
+            </a>
+          </li>
+          <li class="ba-nav-item">
+            <a class="ba-nav-link" routerLink="/assign_pilot" routerLinkActive="active">
+              <i class="fa-solid fa-user-pilot"></i> Assign Pilots
+            </a>
+          </li>
+          <li class="ba-nav-item">
+            <a class="ba-nav-link" routerLink="/my_profile" routerLinkActive="active">
+              <i class="fa-solid fa-circle-user"></i> My Profile
+            </a>
+          </li>
+        </ng-container>
 
-      <ng-container *ngIf="isLoggedIn && role === 'ADMIN'">
-        <li><a (click)="closeMobile()" routerLink="/add_flights">Add Flights</a></li>
-        <li><a (click)="closeMobile()" routerLink="/view_all_user">View Bookings</a></li>
-        <li><a (click)="closeMobile()" routerLink="/assign_pilot">Assign Pilots</a></li>
-        <li><a (click)="closeMobile()" routerLink="/my_profile">My Profile</a></li>
-      </ng-container>
+        <ng-container *ngIf="isLoggedIn && role === 'PASSENGER'">
+          <li class="ba-nav-item">
+            <a class="ba-nav-link" routerLink="/search_flight" routerLinkActive="active">
+              <i class="fa-solid fa-magnifying-glass"></i> Search Flights
+            </a>
+          </li>
+          <li class="ba-nav-item">
+            <a class="ba-nav-link" routerLink="/my_booking" routerLinkActive="active">
+              <i class="fa-solid fa-suitcase"></i> My Bookings
+            </a>
+          </li>
+          <li class="ba-nav-item">
+            <a class="ba-nav-link" routerLink="/my_profile" routerLinkActive="active">
+              <i class="fa-solid fa-circle-user"></i> My Profile
+            </a>
+          </li>
+        </ng-container>
 
-      <ng-container *ngIf="isLoggedIn && role === 'PASSENGER'">
-        <li><a (click)="closeMobile()" routerLink="/search_flight">Search Flights</a></li>
-        <li><a (click)="closeMobile()" routerLink="/my_booking">My Bookings</a></li>
-        <li><a (click)="closeMobile()" routerLink="/my_profile">My Profile</a></li>
-      </ng-container>
+        <ng-container *ngIf="isLoggedIn && role === 'PILOT'">
+          <li class="ba-nav-item">
+            <a class="ba-nav-link" routerLink="/assign_pilot" routerLinkActive="active">
+              <i class="fa-solid fa-calendar-days"></i> My Schedule
+            </a>
+          </li>
+          <li class="ba-nav-item">
+            <a class="ba-nav-link" routerLink="/my_profile" routerLinkActive="active">
+              <i class="fa-solid fa-circle-user"></i> My Profile
+            </a>
+          </li>
+        </ng-container>
 
-      <ng-container *ngIf="isLoggedIn && role === 'PILOT'">
-        <li><a (click)="closeMobile()" routerLink="/assign_pilot">My Schedule</a></li>
-        <li><a (click)="closeMobile()" routerLink="/my_profile">My Profile</a></li>
-      </ng-container>
+        <ng-container *ngIf="!isLoggedIn">
+          <li class="ba-nav-item">
+            <a class="ba-nav-link" href="#home" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+              <i class="fa-solid fa-house"></i> Home
+            </a>
+          </li>
+          <li class="ba-nav-item">
+            <a class="ba-nav-link" href="#about">
+              <i class="fa-solid fa-circle-info"></i> About Us
+            </a>
+          </li>
+          <li class="ba-nav-item">
+            <a class="ba-nav-link" href="#contact">
+              <i class="fa-solid fa-envelope"></i> Contact
+            </a>
+          </li>
+          <li class="ba-nav-item">
+            <a class="ba-nav-link ba-nav-link--register" routerLink="/register">
+              <i class="fa-solid fa-user-plus"></i> Register
+            </a>
+          </li>
+          <li class="ba-nav-item">
+            <a class="ba-nav-link ba-nav-link--login" routerLink="/login">
+              <i class="fa-solid fa-right-to-bracket"></i> Login
+            </a>
+          </li>
+        </ng-container>
 
-      <li class="mobile-divider"></li>
+        <ng-container *ngIf="isLoggedIn">
+          <li class="ba-nav-item ba-nav-user">
+            <div class="ba-user-chip">
+              <div class="ba-user-avatar">{{ username ? username.charAt(0).toUpperCase() : '?' }}</div>
+              <span class="ba-user-name">{{ username }}</span>
+              <span class="ba-user-role">{{ role }}</span>
+            </div>
+          </li>
+          <li class="ba-nav-item">
+            <button class="ba-logout-btn" (click)="logout()">
+              <i class="fa-solid fa-right-from-bracket"></i>
+              <span>Logout</span>
+            </button>
+          </li>
+        </ng-container>
 
-      <ng-container *ngIf="!isLoggedIn">
-        <li><a (click)="closeMobile()" routerLink="/login" class="mobile-btn">Login</a></li>
-        <li><a (click)="closeMobile()" routerLink="/register" class="mobile-btn mobile-btn-solid">Register</a></li>
-      </ng-container>
+      </ul>
+    </div>
 
-      <ng-container *ngIf="isLoggedIn">
-        <li class="mobile-user-info">
-          <span class="user-avatar">{{ username | slice:0:1 | uppercase }}</span>
-          <span>{{ username }} &middot; {{ role }}</span>
-        </li>
-        <li><button class="mobile-btn" (click)="logout(); closeMobile()">Logout</button></li>
-      </ng-container>
-    </ul>
   </div>
 </nav>
 
-<!-- ── ROUTER OUTLET ───────────────────────────────────────── -->
-<main class="app-main">
+<main class="ba-main">
   <router-outlet></router-outlet>
 </main>

@@ -1,87 +1,182 @@
+<div class="ap-page">
 
-<div class="container">
-  <h3 class="mb-3">{{ roleName === 'ADMIN' ? 'Assign Pilot to Flight' : 'My Schedule' }}</h3>
-
-  <div class="alert alert-success" *ngIf="showMessage">{{ responseMessage || 'Operation successful!' }}</div>
-  <div class="alert alert-danger" *ngIf="showError">{{ errorMessage }}</div>
-
-  <div class="card p-3 mb-4" *ngIf="roleName === 'ADMIN'">
-    <h6>Assign Pilot</h6>
-    <form [formGroup]="assignForm" (ngSubmit)="onSubmit()">
-      <div class="row g-2">
-        <div class="col-md-4">
-          <label class="form-label">Flight</label>
-          <select class="form-select" formControlName="flightId">
-            <option value="">Select flight</option>
-            <option *ngFor="let f of flights" [value]="f.id">{{ f.flight_number }} – {{ f.source }} → {{ f.destination }} ({{ f.departureDate }})</option>
-          </select>
-        </div>
-        <div class="col-md-4">
-          <label class="form-label">Pilot</label>
-          <select class="form-select" formControlName="pilotId">
-            <option value="">Select pilot</option>
-            <option *ngFor="let p of pilots" [value]="p.id">{{ p.username }}</option>
-          </select>
-        </div>
-        <div class="col-md-4">
-          <label class="form-label">Scheduled Date</label>
-          <input type="date" class="form-control" formControlName="scheduledDate">
-        </div>
-      </div>
-      <button type="submit" class="btn btn-primary mt-3"
-        [disabled]="assignForm.invalid || isSubmitting">
-        <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1"></span>
-        {{ isSubmitting ? 'Assigning...' : 'Assign Pilot' }}
-      </button>
-    </form>
+  <div class="ap-page-header">
+    <div class="ap-header-inner">
+      <h2 class="ap-title">
+        <i class="fa-solid fa-user-pilot"></i>
+        {{ roleName === 'ADMIN' ? 'Assign Pilot to Flight' : 'My Schedule' }}
+      </h2>
+      <p class="ap-subtitle">{{ roleName === 'ADMIN' ? 'Manage crew assignments for all flights' : 'Your upcoming flight duties' }}</p>
+    </div>
   </div>
 
-  <div class="card p-3">
-    <h6>Schedule Information</h6>
-    <table class="table table-hover" *ngIf="schedules.length > 0">
-      <thead class="table-dark">
-        <tr>
-          <th>#</th><th>Pilot</th><th>Flight No</th><th>Route</th>
-          <th>Departure</th><th>Date</th><th>Status</th><th>Assign Status</th><th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let s of schedules; let i = index"
-          [class.table-warning]="isAwaitingAcceptance(s)"
-          [class.table-danger]="isRejected(s)">
-          <td>{{ i + 1 }}</td>
-          <td>{{ s.pilot?.username }}</td>
-          <td>{{ s.flight?.flight_number }}</td>
-          <td>{{ s.flight?.source }} → {{ s.flight?.destination }}</td>
-          <td>{{ s.flight?.departureTime }}</td>
-          <td>{{ s.scheduledDate }}</td>
-          <td>{{ s.status }}</td>
-          <td>{{ s.assignStatus }}</td>
-          <td>
+  <div class="ap-container">
+
+    <div class="ap-alert ap-alert-success" *ngIf="showMessage">
+      <i class="fa-solid fa-circle-check"></i> {{ responseMessage || 'Operation successful!' }}
+    </div>
+    <div class="ap-alert ap-alert-danger" *ngIf="showError">
+      <i class="fa-solid fa-triangle-exclamation"></i> {{ errorMessage }}
+    </div>
+
+    <!-- Admin assign form -->
+    <div class="ap-form-card" *ngIf="roleName === 'ADMIN'">
+      <div class="ap-card-header">
+        <i class="fa-solid fa-user-plus"></i>
+        <span>Assign Pilot</span>
+      </div>
+      <div class="ap-card-body">
+        <form [formGroup]="assignForm" (ngSubmit)="onSubmit()" class="ap-form">
+          <div class="ap-fields">
+            <div class="ap-field">
+              <label class="ap-label"><i class="fa-solid fa-plane"></i> Flight</label>
+              <select class="ap-select" formControlName="flightId">
+                <option value="">Select flight…</option>
+                <option *ngFor="let f of flights" [value]="f.id">
+                  {{ f.flight_number }} — {{ f.source }} → {{ f.destination }} ({{ f.departureDate }})
+                </option>
+              </select>
+            </div>
+            <div class="ap-field">
+              <label class="ap-label"><i class="fa-solid fa-circle-user"></i> Pilot</label>
+              <select class="ap-select" formControlName="pilotId">
+                <option value="">Select pilot…</option>
+                <option *ngFor="let p of pilots" [value]="p.id">{{ p.username }}</option>
+              </select>
+            </div>
+            <div class="ap-field">
+              <label class="ap-label"><i class="fa-solid fa-calendar"></i> Scheduled Date</label>
+              <input type="date" class="ap-input" formControlName="scheduledDate">
+            </div>
+          </div>
+          <button type="submit" class="ap-submit-btn" [disabled]="assignForm.invalid || isSubmitting">
+            <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm"></span>
+            <i *ngIf="!isSubmitting" class="fa-solid fa-check-circle"></i>
+            {{ isSubmitting ? 'Assigning…' : 'Assign Pilot' }}
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Schedule table card -->
+    <div class="ap-table-card">
+      <div class="ap-card-header">
+        <i class="fa-solid fa-calendar-check"></i>
+        <span>Schedule Information</span>
+        <span class="ap-count-badge">{{ schedules.length }} record{{ schedules.length !== 1 ? 's' : '' }}</span>
+      </div>
+
+      <!-- Empty -->
+      <div class="ap-empty" *ngIf="schedules.length === 0">
+        <i class="fa-solid fa-calendar-xmark"></i>
+        <p>No schedules found</p>
+      </div>
+
+      <!-- Mobile cards -->
+      <div class="ap-mobile-cards" *ngIf="schedules.length > 0">
+        <div class="ap-schedule-card" *ngFor="let s of schedules; let i = index"
+          [class.ap-sc-warning]="isAwaitingAcceptance(s)"
+          [class.ap-sc-danger]="isRejected(s)">
+          <div class="ap-sc-top">
+            <span class="ap-sc-pilot"><i class="fa-solid fa-circle-user"></i> {{ s.pilot?.username }}</span>
+            <span class="ap-sc-flight"><i class="fa-solid fa-plane"></i> {{ s.flight?.flight_number }}</span>
+          </div>
+          <div class="ap-sc-route">
+            <span>{{ s.flight?.source }}</span>
+            <i class="fa-solid fa-arrow-right ap-arrow"></i>
+            <span>{{ s.flight?.destination }}</span>
+          </div>
+          <div class="ap-sc-meta">
+            <span><i class="fa-solid fa-calendar"></i> {{ s.scheduledDate }}</span>
+            <span><i class="fa-solid fa-clock"></i> {{ s.flight?.departureTime }}</span>
+            <span class="ap-status-badge ap-status-inline">{{ s.status }}</span>
+            <span class="ap-assign-badge">{{ s.assignStatus }}</span>
+          </div>
+          <div class="ap-sc-actions">
             <ng-container *ngIf="roleName === 'PILOT' && isAwaitingAcceptance(s)">
-              <button class="btn btn-sm btn-success me-1"
-                [disabled]="updatingScheduleId === s.id"
-                (click)="updateStatus(s.id, 'ACCEPTED')">Accept</button>
-              <button class="btn btn-sm btn-danger"
-                [disabled]="updatingScheduleId === s.id"
-                (click)="updateStatus(s.id, 'REJECTED')">Reject</button>
+              <button class="ap-btn-accept" [disabled]="updatingScheduleId === s.id" (click)="updateStatus(s.id, 'ACCEPTED')">
+                <i class="fa-solid fa-check"></i> Accept
+              </button>
+              <button class="ap-btn-reject" [disabled]="updatingScheduleId === s.id" (click)="updateStatus(s.id, 'REJECTED')">
+                <i class="fa-solid fa-xmark"></i> Reject
+              </button>
             </ng-container>
             <ng-container *ngIf="roleName === 'ADMIN'">
-              <select class="form-select form-select-sm d-inline w-auto"
-                [disabled]="updatingScheduleId === s.id"
+              <select class="ap-status-select" [disabled]="updatingScheduleId === s.id"
                 (change)="updateStatus(s.id, $any($event.target).value)">
-                <option value="">Update status</option>
+                <option value="">Update status…</option>
                 <option value="CONFIRMED">CONFIRMED</option>
                 <option value="BOARDING">BOARDING</option>
                 <option value="COMPLETED">COMPLETED</option>
                 <option value="CANCELLED">CANCELLED</option>
               </select>
             </ng-container>
-            <span *ngIf="roleName === 'PILOT' && !isAwaitingAcceptance(s)" class="text-muted small">—</span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <p *ngIf="schedules.length === 0" class="table-empty mb-0">No schedules found.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop table -->
+      <div class="ap-table-wrap" *ngIf="schedules.length > 0">
+        <table class="ap-table">
+          <thead>
+            <tr>
+              <th>#</th><th>Pilot</th><th>Flight</th><th>Route</th>
+              <th>Departure</th><th>Date</th><th>Status</th><th>Assign</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of schedules; let i = index"
+              [class.ap-row-warning]="isAwaitingAcceptance(s)"
+              [class.ap-row-danger]="isRejected(s)">
+              <td>{{ i + 1 }}</td>
+              <td><span class="ap-pilot-name">{{ s.pilot?.username }}</span></td>
+              <td><strong class="ap-flt-num">{{ s.flight?.flight_number }}</strong></td>
+              <td>{{ s.flight?.source }} <i class="fa-solid fa-arrow-right ap-tbl-arrow"></i> {{ s.flight?.destination }}</td>
+              <td>{{ s.flight?.departureTime }}</td>
+              <td>{{ s.scheduledDate }}</td>
+              <td>
+                <span class="ap-status-badge"
+                  [class.ap-badge-warning]="s.status === 'ASSIGNED'"
+                  [class.ap-badge-success]="s.status === 'ACCEPTED'"
+                  [class.ap-badge-danger]="s.status === 'REJECTED' || s.status === 'CANCELLED'"
+                  [class.ap-badge-primary]="s.status === 'CONFIRMED' || s.status === 'BOARDING'"
+                  [class.ap-badge-muted]="s.status === 'COMPLETED'">
+                  {{ s.status }}
+                </span>
+              </td>
+              <td>
+                <span class="ap-assign-badge"
+                  [class.ap-badge-warning]="s.assignStatus === 'ASSIGNED'"
+                  [class.ap-badge-success]="s.assignStatus === 'ACCEPTED'"
+                  [class.ap-badge-danger]="s.assignStatus === 'REJECTED'">
+                  {{ s.assignStatus }}
+                </span>
+              </td>
+              <td class="ap-action-cell">
+                <ng-container *ngIf="roleName === 'PILOT' && isAwaitingAcceptance(s)">
+                  <button class="ap-btn-accept ap-btn-sm" [disabled]="updatingScheduleId === s.id" (click)="updateStatus(s.id, 'ACCEPTED')">
+                    <i class="fa-solid fa-check"></i>
+                  </button>
+                  <button class="ap-btn-reject ap-btn-sm" [disabled]="updatingScheduleId === s.id" (click)="updateStatus(s.id, 'REJECTED')">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                </ng-container>
+                <ng-container *ngIf="roleName === 'ADMIN'">
+                  <select class="ap-status-select" [disabled]="updatingScheduleId === s.id"
+                    (change)="updateStatus(s.id, $any($event.target).value)">
+                    <option value="">Update…</option>
+                    <option value="CONFIRMED">CONFIRMED</option>
+                    <option value="BOARDING">BOARDING</option>
+                    <option value="COMPLETED">COMPLETED</option>
+                    <option value="CANCELLED">CANCELLED</option>
+                  </select>
+                </ng-container>
+                <span *ngIf="roleName === 'PILOT' && !isAwaitingAcceptance(s)" class="ap-dash">—</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>

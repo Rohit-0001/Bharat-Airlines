@@ -1,25 +1,178 @@
-<div class="text-center mt-5">
-  <h2>Welcome to Airline Booking System</h2>
-  <p class="text-muted">
-    Hello, <strong>{{ username }}</strong> — logged in as <strong>{{ role }}</strong>
-  </p>
-
-  <div class="mt-4" *ngIf="role === 'ADMIN'">
-    <a routerLink="/add_flights" class="btn btn-primary me-2">Manage Flights</a>
-    <a routerLink="/view_all_user" class="btn btn-secondary me-2">View All Bookings</a>
-    <a routerLink="/assign_pilot" class="btn btn-info me-2">Assign Pilots</a>
-
-    <a routerLink="/my_profile" class="btn btn-outline-secondary">My Profile</a>
+<div class="dash-hero">
+  <!-- Animated sky background -->
+  <div class="sky-bg">
+    <div class="stars">
+      <div class="star"></div><div class="star"></div><div class="star"></div>
+      <div class="star"></div><div class="star"></div><div class="star"></div>
+      <div class="star"></div><div class="star"></div><div class="star"></div>
+      <div class="star"></div><div class="star"></div><div class="star"></div>
+      <div class="star"></div><div class="star"></div><div class="star"></div>
+      <div class="star"></div><div class="star"></div><div class="star"></div>
+      <div class="star"></div><div class="star"></div><div class="star"></div>
+      <div class="star"></div><div class="star"></div><div class="star"></div>
+      <div class="star"></div><div class="star"></div><div class="star"></div>
+      <div class="star"></div><div class="star"></div><div class="star"></div>
+    </div>
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+    <div class="cloud cloud-4"></div>
+    <div class="plane-wrap">
+      <div class="plane-trail"></div>
+      <div class="plane-icon"><i class="fa-solid fa-plane"></i></div>
+    </div>
+    <div class="hero-overlay"></div>
   </div>
 
-  <div class="mt-4" *ngIf="role === 'PASSENGER'">
-    <a routerLink="/search_flight" class="btn btn-primary me-2">Search Flights</a>
-    <a routerLink="/my_booking" class="btn btn-secondary me-2">My Bookings</a>
-    <a routerLink="/my_profile" class="btn btn-info">My Profile</a>
+  <!-- Hero content -->
+  <div class="hero-content">
+    <div class="hero-badge">
+      <i class="fa-solid fa-shield-check"></i>
+      Welcome back
+    </div>
+    <h1 class="hero-title">
+      Hello, <span class="hero-name">{{ username }}</span>
+    </h1>
+    <p class="hero-subtitle">
+      <span class="role-chip">
+        <i class="fa-solid fa-circle-user"></i>
+        {{ role }}
+      </span>
+      Logged in to Bharat Airlines
+    </p>
+    <p class="hero-tagline">Where every journey begins with comfort &amp; care</p>
   </div>
 
-  <div class="mt-4" *ngIf="role === 'PILOT'">
-    <a routerLink="/assign_pilot" class="btn btn-primary me-2">My Schedule</a>
-    <a routerLink="/my_profile" class="btn btn-info">My Profile</a>
+  <!-- Decorative bottom wave -->
+  <div class="hero-wave">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 80" preserveAspectRatio="none">
+      <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="#f2f4f8"/>
+    </svg>
+  </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="dash-actions-section">
+  <div class="dash-container">
+
+    <!-- ADMIN actions -->
+    <div class="actions-grid" *ngIf="role === 'ADMIN'">
+      <a routerLink="/add_flights" class="action-card action-primary">
+        <div class="action-icon-wrap">
+          <i class="fa-solid fa-plane-circle-plus"></i>
+        </div>
+        <div class="action-info">
+          <span class="action-title">Manage Flights</span>
+          <span class="action-desc">Add & view all flights</span>
+        </div>
+        <i class="fa-solid fa-chevron-right action-arrow"></i>
+      </a>
+      <a routerLink="/view_all_user" class="action-card action-accent">
+        <div class="action-icon-wrap">
+          <i class="fa-solid fa-ticket"></i>
+        </div>
+        <div class="action-info">
+          <span class="action-title">All Bookings</span>
+          <span class="action-desc">View every reservation</span>
+        </div>
+        <i class="fa-solid fa-chevron-right action-arrow"></i>
+      </a>
+      <a routerLink="/assign_pilot" class="action-card action-info">
+        <div class="action-icon-wrap">
+          <i class="fa-solid fa-user-pilot"></i>
+        </div>
+        <div class="action-info">
+          <span class="action-title">Assign Pilots</span>
+          <span class="action-desc">Manage flight crew</span>
+        </div>
+        <i class="fa-solid fa-chevron-right action-arrow"></i>
+      </a>
+      <a routerLink="/my_profile" class="action-card action-muted">
+        <div class="action-icon-wrap">
+          <i class="fa-solid fa-circle-user"></i>
+        </div>
+        <div class="action-info">
+          <span class="action-title">My Profile</span>
+          <span class="action-desc">Account details</span>
+        </div>
+        <i class="fa-solid fa-chevron-right action-arrow"></i>
+      </a>
+    </div>
+
+    <!-- PASSENGER actions -->
+    <div class="actions-grid" *ngIf="role === 'PASSENGER'">
+      <a routerLink="/search_flight" class="action-card action-primary">
+        <div class="action-icon-wrap">
+          <i class="fa-solid fa-magnifying-glass-location"></i>
+        </div>
+        <div class="action-info">
+          <span class="action-title">Search Flights</span>
+          <span class="action-desc">Find your next journey</span>
+        </div>
+        <i class="fa-solid fa-chevron-right action-arrow"></i>
+      </a>
+      <a routerLink="/my_booking" class="action-card action-accent">
+        <div class="action-icon-wrap">
+          <i class="fa-solid fa-suitcase-rolling"></i>
+        </div>
+        <div class="action-info">
+          <span class="action-title">My Bookings</span>
+          <span class="action-desc">Track & manage trips</span>
+        </div>
+        <i class="fa-solid fa-chevron-right action-arrow"></i>
+      </a>
+      <a routerLink="/my_profile" class="action-card action-muted">
+        <div class="action-icon-wrap">
+          <i class="fa-solid fa-circle-user"></i>
+        </div>
+        <div class="action-info">
+          <span class="action-title">My Profile</span>
+          <span class="action-desc">Account details</span>
+        </div>
+        <i class="fa-solid fa-chevron-right action-arrow"></i>
+      </a>
+    </div>
+
+    <!-- PILOT actions -->
+    <div class="actions-grid" *ngIf="role === 'PILOT'">
+      <a routerLink="/assign_pilot" class="action-card action-primary">
+        <div class="action-icon-wrap">
+          <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <div class="action-info">
+          <span class="action-title">My Schedule</span>
+          <span class="action-desc">Upcoming flight duties</span>
+        </div>
+        <i class="fa-solid fa-chevron-right action-arrow"></i>
+      </a>
+      <a routerLink="/my_profile" class="action-card action-muted">
+        <div class="action-icon-wrap">
+          <i class="fa-solid fa-circle-user"></i>
+        </div>
+        <div class="action-info">
+          <span class="action-title">My Profile</span>
+          <span class="action-desc">Account details</span>
+        </div>
+        <i class="fa-solid fa-chevron-right action-arrow"></i>
+      </a>
+    </div>
+
+    <!-- Info strip -->
+    <div class="info-strip">
+      <div class="info-item">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>Secure & Encrypted</span>
+      </div>
+      <div class="info-sep"></div>
+      <div class="info-item">
+        <i class="fa-solid fa-headset"></i>
+        <span>24/7 Support</span>
+      </div>
+      <div class="info-sep"></div>
+      <div class="info-item">
+        <i class="fa-solid fa-award"></i>
+        <span>Best Fare Guarantee</span>
+      </div>
+    </div>
   </div>
 </div>

@@ -1,91 +1,171 @@
+/* ============================================================
+   SEAT MAP — Professional Aircraft Layout
+   ============================================================ */
 
-.mt-3 {
-  h6 {
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--ai-text-secondary);
-    margin-bottom: 1rem;
-  }
+.seat-map-wrap {
+  margin-top: 1.25rem;
+  background: #f8fafd;
+  border-radius: 14px;
+  border: 1px solid #e0e8f4;
+  overflow: hidden;
 }
 
-// Seat row
-.d-flex.gap-2.mb-2 {
-  flex-wrap: wrap;
-  gap: 6px !important;
-  margin-bottom: 6px !important;
-}
-
-// Individual seat button
-.btn.btn-sm {
-  width: 44px;
-  height: 40px;
-  padding: 0;
-  font-size: 0.7rem;
-  font-weight: 700;
-  border-radius: var(--ai-r-xs) !important;
-  border-width: 2px;
-  cursor: pointer;
-  transition: all 0.14s ease;
+.seat-map-header {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.1rem;
+  background: linear-gradient(135deg, #0a1628, #1e3a6e);
+  color: #fff;
+}
+.seat-map-title {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em;
+  i { color: #c9a227; }
+}
+.seat-map-counter {
+  font-size: 0.82rem; color: rgba(255,255,255,0.8);
+  display: flex; align-items: center; gap: 0.25rem;
+}
+.seat-selected { font-weight: 700; color: #c9a227; font-size: 1rem; }
+.seat-max { font-weight: 600; }
+.seat-sep { color: rgba(255,255,255,0.5); }
+
+/* Cabin */
+.seat-cabin {
+  padding: 1.25rem 1rem 0.5rem;
+  overflow-x: auto;
+}
+.cabin-nose {
+  text-align: center;
+  color: #c9a227;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  opacity: 0.7;
+}
+
+/* Rows */
+.seat-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 5px;
+  align-items: flex-end;
+}
+.seat-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+/* Emergency label */
+.emergency-label {
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: #c0392b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: flex; align-items: center; gap: 2px;
+  i { font-size: 0.5rem; }
+}
+
+/* Seat button */
+.seat-btn {
+  width: 42px; height: 38px;
+  border-radius: 8px 8px 5px 5px;
+  border: 2px solid transparent;
+  font-size: 0.65rem; font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  transition: all 0.18s cubic-bezier(0.4,0,0.2,1);
   letter-spacing: 0.03em;
 
-  // Override global button hover lift for seats
-  &:hover:not(:disabled) { transform: scale(1.1); }
-  &:active              { transform: scale(0.95) !important; }
+  &:hover:not(:disabled) { transform: scale(1.12); z-index: 2; }
+  &:active:not(:disabled) { transform: scale(0.95); }
+  &:disabled { cursor: not-allowed; }
 }
 
-// Available — green
-.btn.btn-success {
-  background: linear-gradient(135deg, #166534, #14532D) !important;
-  border-color: #14532D !important;
-  color: #FFF !important;
-  box-shadow: 0 2px 4px rgba(22,101,52,0.2);
-
-  &:hover {
-    background: linear-gradient(135deg, #14532D, #0F3F21) !important;
-    box-shadow: 0 3px 8px rgba(22,101,52,0.35);
-  }
+/* Available */
+.seat-available {
+  background: linear-gradient(180deg, #22a06b 0%, #1a7a4e 100%);
+  border-color: #1a7a4e;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(26,122,78,0.25);
+  &:hover { box-shadow: 0 4px 12px rgba(26,122,78,0.4); }
 }
 
-// Selected — gold
-.btn.btn-warning {
-  background: linear-gradient(135deg, var(--ai-gold), var(--ai-gold-dark)) !important;
-  border-color: var(--ai-gold-dark) !important;
-  color: #1A0F0F !important;
-  box-shadow: 0 2px 6px rgba(201,168,76,0.4);
-  transform: scale(1.08);
+/* Selected */
+.seat-selected {
+  background: linear-gradient(180deg, #f0d070 0%, #c9a227 100%);
+  border-color: #a07800;
+  color: #0a1628;
+  box-shadow: 0 2px 8px rgba(201,162,39,0.4);
+  transform: scale(1.1) !important;
 }
 
-// Booked — red/muted
-.btn.btn-danger {
-  background: linear-gradient(135deg, #991B1B, #7F1D1D) !important;
-  border-color: #7F1D1D !important;
-  color: rgba(255,255,255,0.65) !important;
-  opacity: 0.65;
-  cursor: not-allowed;
-
-  &:hover { transform: none !important; box-shadow: none; }
+/* Booked */
+.seat-booked {
+  background: linear-gradient(180deg, #e57a70, #c0392b);
+  border-color: #922b21;
+  color: rgba(255,255,255,0.7);
+  opacity: 0.6;
+  cursor: not-allowed !important;
+  &:hover { transform: none !important; box-shadow: none !important; }
 }
 
-// Legend badges
-small.text-muted {
+/* Blocked */
+.seat-blocked {
+  background: #c8d0dc;
+  border-color: #9aacbf;
+  color: #6b7f99;
+  opacity: 0.7;
+  cursor: not-allowed !important;
+}
+
+/* Emergency exit */
+.seat-emergency { border-color: #e67e22 !important; box-shadow: 0 0 0 1px #e67e22 !important; }
+
+/* XL badge */
+.seat-xl-badge {
+  position: absolute;
+  top: -5px; right: -6px;
+  background: #1a6ea8; color: #fff;
+  font-size: 0.45rem; font-weight: 800;
+  padding: 1px 3px; border-radius: 3px;
+  letter-spacing: 0.03em;
+}
+
+/* Legend */
+.seat-legend {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-
-  .badge {
-    font-size: 0.7rem;
-    padding: 0.3em 0.7em;
-    border-radius: var(--ai-r-full);
-  }
+  gap: 0.5rem 1.1rem;
+  padding: 0.85rem 1.1rem;
+  border-top: 1px solid #e0e8f4;
+  background: #fff;
 }
-/* Emergency exit seat — orange border */
-.emergency-seat {
-  border: 2px solid #fd7e14 !important;
+.legend-item {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.78rem; color: #3d5470; font-weight: 500;
+}
+.legend-dot {
+  width: 14px; height: 14px;
+  border-radius: 4px; flex-shrink: 0;
+  border: 2px solid transparent;
+}
+.legend-available  { background: #22a06b; border-color: #1a7a4e; }
+.legend-selected   { background: #c9a227; border-color: #a07800; }
+.legend-booked     { background: #c0392b; border-color: #922b21; opacity: 0.7; }
+.legend-blocked    { background: #c8d0dc; border-color: #9aacbf; }
+.legend-emergency  { background: #22a06b; border: 2px solid #e67e22; }
+.legend-xl         { background: #22a06b; border: 2px solid #1a6ea8; }
+
+/* Empty */
+.seat-empty {
+  text-align: center; padding: 2rem 1rem;
+  color: #6b7f99; margin-top: 1rem;
+  i { font-size: 1.5rem; color: #c0cce0; display: block; margin-bottom: 0.5rem; }
+  small { font-size: 0.82rem; }
 }

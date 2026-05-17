@@ -1,50 +1,77 @@
 
-<div class="mt-3" *ngIf="seatMap.length > 0">
-  <h6>Select Seats
-    <small class="text-muted ms-2">({{ selectedSeats.length }}/{{ maxSelectable }} selected)</small>
-  </h6>
+<div class="seat-map-wrap" *ngIf="seatMap.length > 0">
+  <div class="seat-map-header">
+    <span class="seat-map-title">
+      <i class="fa-solid fa-chair"></i>
+      Select Seats
+    </span>
+    <span class="seat-map-counter">
+      <span class="seat-selected">{{ selectedSeats.length }}</span>
+      <span class="seat-sep">/</span>
+      <span class="seat-max">{{ maxSelectable }}</span>
+      selected
+    </span>
+  </div>
 
-  <div *ngFor="let row of seatMap" class="d-flex gap-2 mb-2 align-items-center">
-    <div *ngFor="let seat of row" class="position-relative">
-      <div *ngIf="seat.isEmergencyExist"
-           class="text-center"
-           title="Emergency Exit Row"
-           style="font-size:0.6rem; color:#dc3545; font-weight:600; line-height:1;">
-        🚪EXIT
+  <!-- Airplane cabin visual -->
+  <div class="seat-cabin">
+    <div class="cabin-nose">
+      <i class="fa-solid fa-plane"></i>
+    </div>
+
+    <div *ngFor="let row of seatMap" class="seat-row">
+      <div *ngFor="let seat of row" class="seat-cell">
+        <div *ngIf="seat.isEmergencyExist" class="emergency-label">
+          <i class="fa-solid fa-door-open"></i> EXIT
+        </div>
+        <button
+          type="button"
+          class="seat-btn"
+          [class.seat-available]="!seat.booked && !seat.isBlocked && !isSelected(seat.seatNumber)"
+          [class.seat-selected]="isSelected(seat.seatNumber)"
+          [class.seat-booked]="seat.booked"
+          [class.seat-blocked]="seat.isBlocked && !seat.booked"
+          [class.seat-emergency]="seat.isEmergencyExist && !seat.booked && !seat.isBlocked"
+          [disabled]="seat.booked || seat.isBlocked"
+          (click)="selectSeat(seat)"
+          [title]="getSeatTooltip(seat)">
+          {{ seat.seatNumber }}
+          <span *ngIf="seat.isXL" class="seat-xl-badge">XL</span>
+        </button>
       </div>
-      <button
-        type="button"
-        class="btn btn-sm position-relative"
-        [class.btn-success]="!seat.booked && !seat.isBlocked && !isSelected(seat.seatNumber)"
-        [class.btn-warning]="isSelected(seat.seatNumber)"
-        [class.btn-danger]="seat.booked"
-        [class.btn-secondary]="seat.isBlocked && !seat.booked"
-        [class.emergency-seat]="seat.isEmergencyExist && !seat.booked && !seat.isBlocked"
-        [disabled]="seat.booked || seat.isBlocked"
-        (click)="selectSeat(seat)"
-        [title]="getSeatTooltip(seat)">
-        {{ seat.seatNumber }}
-        <span *ngIf="seat.isXL"
-              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-info"
-              style="font-size:0.5rem;">XL</span>
-      </button>
     </div>
   </div>
 
-  <div class="mt-2 d-flex flex-wrap gap-2">
-    <small><span class="badge bg-success me-1">Available</span></small>
-    <small><span class="badge bg-warning text-dark me-1">Selected</span></small>
-    <small><span class="badge bg-danger me-1">Booked</span></small>
-    <small><span class="badge bg-secondary me-1">Blocked</span></small>
-    <small *ngIf="hasEmergencySeats">
-      <span class="badge me-1" style="background:#fd7e14;">🚪 Emergency Exit Row</span>
-    </small>
-    <small *ngIf="hasXLSeats">
-      <span class="badge bg-info me-1">XL = Extra Legroom</span>
-    </small>
+  <!-- Legend -->
+  <div class="seat-legend">
+    <div class="legend-item">
+      <span class="legend-dot legend-available"></span>
+      <span>Available</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot legend-selected"></span>
+      <span>Selected</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot legend-booked"></span>
+      <span>Booked</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot legend-blocked"></span>
+      <span>Blocked</span>
+    </div>
+    <div class="legend-item" *ngIf="hasEmergencySeats">
+      <span class="legend-dot legend-emergency"></span>
+      <span>Emergency Exit</span>
+    </div>
+    <div class="legend-item" *ngIf="hasXLSeats">
+      <span class="legend-dot legend-xl"></span>
+      <span>XL Legroom</span>
+    </div>
   </div>
 </div>
 
-<div class="mt-3 text-muted text-center" *ngIf="seatMap.length === 0">
-  <small>No seat map available for this flight.</small>
+<div class="seat-empty" *ngIf="seatMap.length === 0">
+  <i class="fa-solid fa-chair"></i>
+  <small>No seat map available for this flight</small>
 </div>

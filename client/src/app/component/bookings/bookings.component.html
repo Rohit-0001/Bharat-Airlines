@@ -1,82 +1,156 @@
+<div class="bk-page">
 
-<div class="container">
-  <h3 class="mb-3">My Bookings</h3>
-
-  <div class="alert alert-success" *ngIf="showMessage">{{ responseMessage }}</div>
-  <div class="alert alert-danger" *ngIf="showError">{{ errorMessage }}</div>
-
-  <div *ngIf="isLoading" class="text-center py-4">
-    <div class="spinner-border text-primary" role="status"></div>
-    <p class="mt-2 text-muted">Loading bookings...</p>
+  <!-- Header -->
+  <div class="bk-page-header">
+    <div class="bk-header-inner">
+      <h2 class="bk-title">
+        <i class="fa-solid fa-suitcase-rolling"></i>
+        My Bookings
+      </h2>
+      <p class="bk-subtitle">Manage and track your reservations</p>
+    </div>
   </div>
 
-  <div class="card p-3" *ngIf="!isLoading">
-    <h6>Booking Information</h6>
-    <div class="table-responsive">
-      <table class="table table-hover bookings-table">
-        <thead class="table-dark">
-          <tr>
-            <th>Sr#</th><th>PNR</th><th>Flight No</th><th>Seats</th>
-            <th>Source</th><th>Destination</th><th>Date</th><th>Departure</th><th>Arrival</th>
-            <th>Booked On</th>
-            <th>Price/Seat</th><th>Seats Booked</th><th>Total Price</th>
-            <th>Status</th><th>Payment</th><th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let b of bookings; let i = index"
-              [class.booking-row-cancelled]="isCancelled(b)"
-              [class.booking-row-active]="isConfirmed(b)">
-            <td>{{ i+1 }}</td>
-            <td><small>{{ b.pnr }}</small></td>
-            <td>{{ b.flight?.flight_number }}</td>
-            <td>{{ b.seatNumbers }}</td>
-            <td>{{ b.flight?.source }}</td>
-            <td>{{ b.flight?.destination }}</td>
-            <td>{{ b.flight?.departureDate }}</td>
-            <td>{{ b.flight?.departureTime }}</td>
-            <td>{{ b.flight?.arrivalTime }}</td>
-            <td>{{ b.bookingDate | date:'medium' }}</td>
-            <td>₹{{ b.flight?.price }}</td>
-            <td class="text-center">{{ getSeatCount(b.seatNumbers) }}</td>
-            <td><strong>₹{{ getTotalPrice(b) }}</strong></td>
-            <td>
-              <span class="badge status-badge"
-                [class.bg-success]="isConfirmed(b)"
-                [class.bg-danger]="isCancelled(b)"
-                [class.bg-secondary]="!isConfirmed(b) && !isCancelled(b)">
-                {{ isCancelled(b) ? 'Cancelled' : b.status }}
-              </span>
-            </td>
-            <td>
-              <span class="badge bg-info text-dark">{{ b.paymentStatus }}</span>
-            </td>
-            <td class="action-cell">
-              <button class="btn btn-sm btn-warning me-1"
-                      *ngIf="canCancel(b)"
-                      [disabled]="cancellingId === b.id || downloadingId === b.id"
-                      (click)="cancelBooking(b.id)">
-                <span *ngIf="cancellingId === b.id" class="spinner-border spinner-border-sm"></span>
-                <span *ngIf="cancellingId !== b.id">Cancel</span>
-              </button>
+  <div class="bk-container">
 
-              <span class="d-inline-block me-1"
-                    [attr.title]="!canDownload(b) ? cancelledTooltip : null"
-                    tabindex="0">
-                <button class="btn btn-sm btn-success"
-                        [disabled]="!canDownload(b) || downloadingId === b.id || cancellingId === b.id"
-                        (click)="downloadTicket(b.id)">
-                  <span *ngIf="downloadingId === b.id" class="spinner-border spinner-border-sm"></span>
-                  <span *ngIf="downloadingId !== b.id">Download Ticket</span>
+    <div class="bk-alert bk-alert-success" *ngIf="showMessage">
+      <i class="fa-solid fa-circle-check"></i> {{ responseMessage }}
+    </div>
+    <div class="bk-alert bk-alert-danger" *ngIf="showError">
+      <i class="fa-solid fa-triangle-exclamation"></i> {{ errorMessage }}
+    </div>
+
+    <!-- Loading -->
+    <div class="bk-loading" *ngIf="isLoading">
+      <div class="bk-spinner"></div>
+      <p>Loading your bookings…</p>
+    </div>
+
+    <!-- Content card -->
+    <div class="bk-card" *ngIf="!isLoading">
+      <div class="bk-card-header">
+        <i class="fa-solid fa-ticket"></i>
+        <span>Booking Information</span>
+        <span class="bk-total-badge">{{ bookings.length }} booking{{ bookings.length !== 1 ? 's' : '' }}</span>
+      </div>
+
+      <!-- Empty state -->
+      <div class="bk-empty" *ngIf="bookings.length === 0">
+        <i class="fa-solid fa-ticket-simple"></i>
+        <p>No bookings found</p>
+        <small>Book a flight to get started</small>
+      </div>
+
+      <!-- Mobile booking cards -->
+      <div class="bk-mobile-cards" *ngIf="bookings.length > 0">
+        <div class="bk-booking-card" *ngFor="let b of bookings; let i = index"
+          [class.bk-bc-cancelled]="isCancelled(b)"
+          [class.bk-bc-active]="isConfirmed(b)">
+          <div class="bk-bc-top">
+            <div class="bk-bc-flight">
+              <i class="fa-solid fa-plane"></i>
+              {{ b.flight?.flight_number }}
+            </div>
+            <span class="bk-status-badge"
+              [class.bk-badge-success]="isConfirmed(b)"
+              [class.bk-badge-danger]="isCancelled(b)"
+              [class.bk-badge-muted]="!isConfirmed(b) && !isCancelled(b)">
+              {{ isCancelled(b) ? 'Cancelled' : b.status }}
+            </span>
+          </div>
+          <div class="bk-bc-route">
+            <span>{{ b.flight?.source }}</span>
+            <i class="fa-solid fa-arrow-right bk-arrow"></i>
+            <span>{{ b.flight?.destination }}</span>
+          </div>
+          <div class="bk-bc-details">
+            <span><i class="fa-solid fa-hashtag"></i> {{ b.pnr }}</span>
+            <span><i class="fa-solid fa-calendar"></i> {{ b.flight?.departureDate }}</span>
+            <span><i class="fa-solid fa-chair"></i> {{ b.seatNumbers }}</span>
+            <span><i class="fa-solid fa-clock"></i> {{ b.flight?.departureTime }} → {{ b.flight?.arrivalTime }}</span>
+            <span class="bk-bc-price"><i class="fa-solid fa-indian-rupee-sign"></i> {{ getTotalPrice(b) }}</span>
+            <span><span class="bk-pay-badge">{{ b.paymentStatus }}</span></span>
+          </div>
+          <div class="bk-bc-actions">
+            <button class="bk-btn-cancel"
+              *ngIf="canCancel(b)"
+              [disabled]="cancellingId === b.id || downloadingId === b.id"
+              (click)="cancelBooking(b.id)">
+              <span *ngIf="cancellingId === b.id" class="spinner-border spinner-border-sm"></span>
+              <i *ngIf="cancellingId !== b.id" class="fa-solid fa-ban"></i>
+              Cancel
+            </button>
+            <span [attr.title]="!canDownload(b) ? cancelledTooltip : null" tabindex="0">
+              <button class="bk-btn-download"
+                [disabled]="!canDownload(b) || downloadingId === b.id || cancellingId === b.id"
+                (click)="downloadTicket(b.id)">
+                <span *ngIf="downloadingId === b.id" class="spinner-border spinner-border-sm"></span>
+                <i *ngIf="downloadingId !== b.id" class="fa-solid fa-download"></i>
+                Ticket
+              </button>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop table -->
+      <div class="bk-table-wrap" *ngIf="bookings.length > 0">
+        <table class="bk-table">
+          <thead>
+            <tr>
+              <th>#</th><th>PNR</th><th>Flight</th><th>Seats</th>
+              <th>From</th><th>To</th><th>Date</th><th>Departure</th><th>Arrival</th>
+              <th>Booked On</th><th>Price/Seat</th><th>Qty</th><th>Total</th>
+              <th>Status</th><th>Payment</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let b of bookings; let i = index"
+              [class.bk-row-cancelled]="isCancelled(b)"
+              [class.bk-row-active]="isConfirmed(b)">
+              <td>{{ i+1 }}</td>
+              <td><span class="bk-pnr">{{ b.pnr }}</span></td>
+              <td><span class="bk-flt-num">{{ b.flight?.flight_number }}</span></td>
+              <td>{{ b.seatNumbers }}</td>
+              <td>{{ b.flight?.source }}</td>
+              <td>{{ b.flight?.destination }}</td>
+              <td>{{ b.flight?.departureDate }}</td>
+              <td>{{ b.flight?.departureTime }}</td>
+              <td>{{ b.flight?.arrivalTime }}</td>
+              <td><small class="bk-date">{{ b.bookingDate | date:'medium' }}</small></td>
+              <td>₹{{ b.flight?.price }}</td>
+              <td class="text-center">{{ getSeatCount(b.seatNumbers) }}</td>
+              <td><strong class="bk-total-price">₹{{ getTotalPrice(b) }}</strong></td>
+              <td>
+                <span class="bk-status-badge"
+                  [class.bk-badge-success]="isConfirmed(b)"
+                  [class.bk-badge-danger]="isCancelled(b)"
+                  [class.bk-badge-muted]="!isConfirmed(b) && !isCancelled(b)">
+                  {{ isCancelled(b) ? 'Cancelled' : b.status }}
+                </span>
+              </td>
+              <td><span class="bk-pay-badge">{{ b.paymentStatus }}</span></td>
+              <td class="bk-action-cell">
+                <button class="bk-btn-cancel bk-btn-sm"
+                  *ngIf="canCancel(b)"
+                  [disabled]="cancellingId === b.id || downloadingId === b.id"
+                  (click)="cancelBooking(b.id)">
+                  <span *ngIf="cancellingId === b.id" class="spinner-border spinner-border-sm"></span>
+                  <span *ngIf="cancellingId !== b.id">Cancel</span>
                 </button>
-              </span>
-            </td>
-          </tr>
-          <tr *ngIf="bookings.length === 0">
-            <td colspan="16" class="text-center text-muted py-3">No bookings found.</td>
-          </tr>
-        </tbody>
-      </table>
+                <span [attr.title]="!canDownload(b) ? cancelledTooltip : null" tabindex="0">
+                  <button class="bk-btn-download bk-btn-sm"
+                    [disabled]="!canDownload(b) || downloadingId === b.id || cancellingId === b.id"
+                    (click)="downloadTicket(b.id)">
+                    <span *ngIf="downloadingId === b.id" class="spinner-border spinner-border-sm"></span>
+                    <span *ngIf="downloadingId !== b.id"><i class="fa-solid fa-download"></i></span>
+                  </button>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>

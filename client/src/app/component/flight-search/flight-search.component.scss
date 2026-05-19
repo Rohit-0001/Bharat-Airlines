@@ -349,3 +349,24 @@
   .fs-modal-content { border-radius: 14px; }
   .fs-flight-info-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* ── Razorpay Pay Button ── */
+.razorpay-btn {
+  background: linear-gradient(135deg, #2d6a4f, #1b4332) !important;
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #40916c, #2d6a4f) !important;
+    box-shadow: 0 8px 22px rgba(29,90,57,0.45) !important;
+  }
+  .fa-indian-rupee-sign { margin-right: 4px; }
+}
+
+/* ── Payment alert info variant ── */
+.fs-alert-info {
+  background: linear-gradient(135deg, #e8f4fd, #d0eaf8);
+  border-left: 4px solid #2196f3;
+  color: #0d47a1;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}

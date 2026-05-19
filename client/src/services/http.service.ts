@@ -121,6 +121,14 @@ export class HttpService {
       { headers: this.getHeaders() });
   }
 
+  updatePaymentStatus(bookingId: number, paymentStatus: 'SUCCESS' | 'FAILED', paymentId?: string): Observable<any> {
+    return this.http.put(
+      `${this.serverName}/api/booking/${bookingId}/payment-status`,
+      { paymentStatus, paymentId },
+      { headers: this.getHeaders() }
+    );
+  }
+
   cancelBooking(id: number): Observable<any> {
     return this.http.delete(`${this.serverName}/api/booking/bookings/${id}`,
       { headers: this.getHeaders() });

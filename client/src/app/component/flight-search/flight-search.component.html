@@ -322,16 +322,50 @@
           </div>
 
           <div class="modal-footer fs-modal-footer">
-            <button class="fs-close-btn" (click)="closeModal()" [disabled]="isBooking">
+
+            <!-- Payment status banners -->
+            <div class="w-100 mb-2" *ngIf="paymentState === 'processing'">
+              <div class="fs-alert fs-alert-info">
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                Processing your payment, please wait…
+              </div>
+            </div>
+            <div class="w-100 mb-2" *ngIf="paymentState === 'success'">
+              <div class="fs-alert fs-alert-success">
+                <i class="fa-solid fa-circle-check me-2"></i>
+                Payment confirmed! Redirecting…
+              </div>
+            </div>
+            <div class="w-100 mb-2" *ngIf="paymentState === 'failed'">
+              <div class="fs-alert fs-alert-danger">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                {{ errorMessage }}
+              </div>
+            </div>
+
+            <button class="fs-close-btn"
+              (click)="closeModal()"
+              [disabled]="isBooking || paymentState === 'processing'">
               <i class="fa-solid fa-xmark"></i> Close
             </button>
-            <button class="fs-confirm-btn"
+
+            <!-- Pay Now button (replaces Confirm Booking) -->
+            <button class="fs-confirm-btn razorpay-btn"
               (click)="bookSelectedFlight()"
-              [disabled]="isBooking || selectedSeatNumbers.length < totalTravelers">
-              <span *ngIf="isBooking" class="spinner-border spinner-border-sm"></span>
-              <i *ngIf="!isBooking" class="fa-solid fa-check-circle"></i>
-              {{ isBooking ? 'Booking…' : 'Confirm Booking' }}
+              [disabled]="isBooking || paymentState === 'processing' || paymentState === 'success' || selectedSeatNumbers.length < totalTravelers">
+              <span *ngIf="isBooking || paymentState === 'processing'" class="spinner-border spinner-border-sm"></span>
+              <ng-container *ngIf="paymentState === 'idle' || paymentState === 'failed'">
+                <i class="fa-solid fa-indian-rupee-sign"></i>
+                Pay ₹{{ totalPrice }} with Razorpay
+              </ng-container>
+              <ng-container *ngIf="paymentState === 'processing'">
+                Processing…
+              </ng-container>
+              <ng-container *ngIf="paymentState === 'success'">
+                <i class="fa-solid fa-check-circle"></i> Paid!
+              </ng-container>
             </button>
+
           </div>
         </div>
       </div>

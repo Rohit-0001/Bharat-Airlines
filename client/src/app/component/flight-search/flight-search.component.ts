@@ -2,7 +2,10 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpService } from '../../../services/http.service';
+import { AuthService } from '../../../services/auth.service';
+
 import { differentCitiesValidator } from '../../validators/custom.validators';
+import { RazorpayService } from '../../../services/razorpay.service';
 
 @Component({
   selector: 'app-flight-search',
@@ -29,9 +32,15 @@ export class FlightSearchComponent implements OnInit {
   isSearching = false;
   searchAttempted = false;
 
+  // Payment state
+  paymentState: 'idle' | 'processing' | 'success' | 'failed' = 'idle';
+  paymentId: string = '';
+
   constructor(
     private fb: FormBuilder,
     private httpService: HttpService,
+    private authService: AuthService,
+    private razorpayService: RazorpayService,
     private router: Router
   ) {}
 
@@ -161,6 +170,7 @@ export class FlightSearchComponent implements OnInit {
     this.totalPrice = 0;
     this.showMessage = false;
     this.showError = false;
+    this.paymentState = 'idle';
     this.httpService.getSeats(flight.id).subscribe({
       next: (data) => { this.seats = data; },
       error: () => {
@@ -175,6 +185,7 @@ export class FlightSearchComponent implements OnInit {
     this.selectedSeatNumbers = [];
     this.totalPrice = 0;
     this.modalTravellerOpen = false;
+    this.paymentState = 'idle';
   }
 
   recalculateTotalPrice(): void {
@@ -219,6 +230,7 @@ export class FlightSearchComponent implements OnInit {
     return this.selectedSeatNumbers.join(', ');
   }
 
+  // ─── STEP 1: Validate → create booking (PENDING) → open Razorpay ──────────
   bookSelectedFlight(): void {
     if (this.isBooking) return;
 
@@ -235,28 +247,82 @@ export class FlightSearchComponent implements OnInit {
 
     this.isBooking = true;
     this.showError = false;
+    this.paymentState = 'processing';
 
     const infantCount = this.searchForm.get('infant')?.value || 0;
+
+    // Create booking first (paymentStatus: PENDING)
     this.httpService.bookSeats(
       this.selectedFlight.id,
       this.selectedSeatNumbers,
       this.totalPrice,
       infantCount
     ).subscribe({
-      next: () => {
-        this.showMessage = true;
-        this.responseMessage = `Booking confirmed! Total: ₹${this.totalPrice}. Redirecting to My Bookings…`;
-        setTimeout(() => {
-          this.isBooking = false;
-          this.closeModal();
-          this.router.navigate(['/my_booking']);
-        }, 1500);
+      next: (booking: any) => {
+        this.isBooking = false;
+        this.openRazorpay(booking);
       },
       error: (err) => {
         this.isBooking = false;
+        this.paymentState = 'failed';
         this.showError = true;
-        this.errorMessage = err?.error?.message || 'Booking failed. Seats may no longer be available.';
+        this.errorMessage = err?.error?.message || 'Booking creation failed. Seats may no longer be available.';
       }
     });
+  }
+
+  // ─── STEP 2: Open Razorpay checkout ───────────────────────────────────────
+  private openRazorpay(booking: any): void {
+    const username = this.authService.getUsername();
+
+    this.razorpayService.openCheckout({
+      amount: this.totalPrice,
+      flightNumber: this.selectedFlight.flight_number,
+      source: this.selectedFlight.source,
+      destination: this.selectedFlight.destination,
+      userName: username || 'Passenger',
+      userEmail: '',
+      userContact: '',
+      onSuccess: (response) => this.onPaymentSuccess(booking.id, response.razorpay_payment_id),
+      onFailure: (error) => this.onPaymentFailure(booking.id, error)
+    });
+  }
+
+  // ─── STEP 3a: Payment success → update backend → redirect ─────────────────
+  private onPaymentSuccess(bookingId: number, paymentId: string): void {
+    this.paymentId = paymentId;
+    this.paymentState = 'processing';
+
+    this.httpService.updatePaymentStatus(bookingId, 'SUCCESS', paymentId).subscribe({
+      next: () => {
+        this.paymentState = 'success';
+        this.showMessage = true;
+        this.showError = false;
+        this.responseMessage = `Payment successful! ID: ${paymentId}. Redirecting to My Bookings…`;
+        setTimeout(() => {
+          this.closeModal();
+          this.router.navigate(['/my_booking']);
+        }, 2000);
+      },
+      error: () => {
+        // Payment went through even if status update failed — still redirect
+        this.paymentState = 'success';
+        this.showMessage = true;
+        this.responseMessage = `Payment received (ID: ${paymentId}). Booking will be confirmed shortly.`;
+        setTimeout(() => {
+          this.closeModal();
+          this.router.navigate(['/my_booking']);
+        }, 2500);
+      }
+    });
+  }
+
+  // ─── STEP 3b: Payment failed / dismissed → update backend ─────────────────
+  private onPaymentFailure(bookingId: number, error: any): void {
+    this.paymentState = 'failed';
+    this.showError = true;
+    this.errorMessage = error?.description || 'Payment was cancelled or failed. Your booking has not been confirmed.';
+
+    this.httpService.updatePaymentStatus(bookingId, 'FAILED').subscribe();
   }
 }

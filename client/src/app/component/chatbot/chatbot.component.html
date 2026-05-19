@@ -1,0 +1,91 @@
+
+<!-- ========== FLOATING CHAT BUTTON ========== -->
+<div class="cb-fab" [class.cb-fab--open]="isOpen" (click)="toggleChat()" title="Bharat Airlines Support">
+  <div class="cb-fab-pulse"></div>
+  <div class="cb-fab-inner">
+    <i class="fa-solid fa-headset cb-fab-icon cb-fab-icon--chat" [class.cb-hidden]="isOpen"></i>
+    <i class="fa-solid fa-xmark cb-fab-icon cb-fab-icon--close" [class.cb-hidden]="!isOpen"></i>
+  </div>
+</div>
+
+<!-- ========== CHAT WINDOW ========== -->
+<div class="cb-window" [class.cb-window--open]="isOpen">
+
+  <!-- Header -->
+  <div class="cb-header">
+    <div class="cb-header-brand">
+      <div class="cb-header-avatar">
+        <i class="fa-solid fa-plane"></i>
+      </div>
+      <div class="cb-header-info">
+        <div class="cb-header-title">Bharat Airlines Assistant</div>
+        <div class="cb-header-status">
+          <span class="cb-online-dot"></span> Online · Ready to help
+        </div>
+      </div>
+    </div>
+    <button class="cb-close-btn" (click)="closeChat()" title="Close">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <!-- Chat Body -->
+  <div class="cb-body" #chatBody>
+
+    <!-- Messages -->
+    <div
+      *ngFor="let msg of messages"
+      class="cb-msg-row"
+      [class.cb-msg-row--user]="msg.sender === 'user'"
+      [class.cb-msg-row--bot]="msg.sender === 'bot'"
+    >
+      <div class="cb-avatar" *ngIf="msg.sender === 'bot'">
+        <i class="fa-solid fa-plane"></i>
+      </div>
+      <div class="cb-bubble-wrap">
+        <div class="cb-bubble" [class.cb-bubble--user]="msg.sender === 'user'" [class.cb-bubble--bot]="msg.sender === 'bot'">
+          {{ msg.text }}
+        </div>
+        <div class="cb-time">{{ msg.time }}</div>
+      </div>
+    </div>
+
+    <!-- Typing Indicator -->
+    <div class="cb-msg-row cb-msg-row--bot" *ngIf="isTyping">
+      <div class="cb-avatar">
+        <i class="fa-solid fa-plane"></i>
+      </div>
+      <div class="cb-bubble-wrap">
+        <div class="cb-bubble cb-bubble--bot cb-typing">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Quick Chips -->
+  <div class="cb-chips">
+    <button
+      *ngFor="let chip of chips"
+      class="cb-chip"
+      (click)="sendChip(chip.query)"
+    >{{ chip.label }}</button>
+  </div>
+
+  <!-- Input Area -->
+  <div class="cb-footer">
+    <input
+      class="cb-input"
+      type="text"
+      placeholder="Type your message..."
+      [(ngModel)]="userInput"
+      (keydown)="onKeyDown($event)"
+      maxlength="300"
+    />
+    <button class="cb-send-btn" (click)="sendMessage()" [disabled]="!userInput.trim()">
+      <i class="fa-solid fa-paper-plane"></i>
+    </button>
+  </div>
+
+</div>

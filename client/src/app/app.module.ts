@@ -22,13 +22,14 @@ import { HttpService } from '../services/http.service';
 import { AuthService } from '../services/auth.service';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
+import { ChatbotComponent } from './component/chatbot/chatbot.component';
 
 @NgModule({
   declarations: [
     AppComponent, LoginComponent, RegisterComponent, ForgotPasswordComponent,
     ResetPasswordComponent, DashboardComponent, FlightComponent, FlightSearchComponent,
     BookingsComponent, AssignPilotComponent, ProfilComponent,
-    ViewuserComponent, SeatSelectionComponent, LandingComponent
+    ViewuserComponent, SeatSelectionComponent, LandingComponent, ChatbotComponent
   ],
   imports: [
     BrowserModule, AppRoutingModule, FormsModule,

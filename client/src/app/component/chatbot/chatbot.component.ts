@@ -93,12 +93,12 @@ export const chatbotResponses: ChatbotResponse[] = [
 const FALLBACK = "I'm sorry, I could not understand your request. Please contact Bharat Airlines support at +91 1800-XXX-XXXX or email bharat.airline@gmail.com. Is there anything else I can assist you with?";
 
 const QUICK_CHIPS = [
-  { label: '🧳 Baggage Policy', query: 'baggage policy' },
-  { label: '❌ Flight Cancellation', query: 'flight cancellation' },
-  { label: '💰 Refund Status', query: 'refund status' },
-  { label: '💺 Seat Booking', query: 'seat booking' },
-  { label: '✅ Web Check-in', query: 'web check-in' },
-  { label: '📞 Contact Support', query: 'contact support' }
+  { label: ' Baggage Policy', query: 'baggage policy' },
+  { label: ' Flight Cancellation', query: 'flight cancellation' },
+  { label: ' Refund Status', query: 'refund status' },
+  { label: ' Seat Booking', query: 'seat booking' },
+  { label: ' Web Check-in', query: 'web check-in' },
+  { label: ' Contact Support', query: 'contact support' }
 ];
 
 @Component({

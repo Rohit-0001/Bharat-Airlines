@@ -46,7 +46,7 @@
 /* Fields row */
 .fs-fields {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 1rem;
   flex-wrap: wrap;
   overflow: visible;
@@ -79,8 +79,9 @@
 
 /* Swap icon */
 .fs-swap-icon {
-  color: #c9a227; font-size: 0.85rem; padding-bottom: 0.2rem;
-  flex: 0 0 auto; align-self: flex-end; margin-bottom: 0.4rem;
+  color: #c9a227; font-size: 0.85rem;
+  flex: 0 0 auto; align-self: flex-start;
+  margin-top: 1.45rem;
 }
 
 /* Traveller button */

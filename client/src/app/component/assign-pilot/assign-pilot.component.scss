@@ -85,9 +85,11 @@
 .ap-badge-success { background: rgba(26,122,78,0.1); color: #1a7a4e; }
 .ap-badge-danger  { background: rgba(192,57,43,0.1); color: #c0392b; }
 .ap-badge-warning { background: rgba(230,168,23,0.15); color: #a07800; }
-.ap-badge-primary { background: rgba(30,58,110,0.1); color: #1e3a6e; }
+.ap-badge-primary { background: rgba(30,58,110,0.2); color: #1e3a6e; border: 1px solid rgba(30,58,110,0.32); }
 .ap-badge-muted   { background: rgba(74,85,104,0.1); color: #4a5568; }
-.ap-assign-badge  { background: rgba(10,22,40,0.08); color: #3d5470; }
+.ap-assign-badge:not(.ap-badge-warning):not(.ap-badge-success):not(.ap-badge-danger) {
+  background: rgba(10,22,40,0.08); color: #3d5470;
+}
 .ap-status-inline { font-size: 0.72rem !important; }
 
 /* Buttons */

@@ -65,9 +65,15 @@ export class BookingsService {
       { headers: this.getHeaders() });
   }
 
-  bookSeats(flightId: number, seatNumbers: string[], userId: number): Observable<any> {
+  bookSeats(
+    flightId: number,
+    seatNumbers: string[],
+    userId: number,
+    totalPrice: number,
+    infantCount: number
+  ): Observable<any> {
     return this.http.post(`${this.baseUrl}/api/booking/book-seats`,
-      { flightId, seatNumbers, userId },
+      { flightId, seatNumbers, userId, totalPrice, infantCount },
       { headers: this.getHeaders() });
   }
 }

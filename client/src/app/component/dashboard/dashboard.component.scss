@@ -269,11 +269,12 @@
   flex-shrink: 0;
   transition: transform 0.3s ease;
 }
-.action-info {
+.action-body {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
+  min-width: 0;
 }
 .action-title {
   font-size: 0.95rem;
@@ -310,7 +311,7 @@
   }
   .action-title { color: #0a1628; }
 }
-.action-info {
+.action-pilot {
   border-top: 3px solid #1a6ea8;
   &::before { background: linear-gradient(135deg, rgba(26,110,168,0.05), transparent); }
   .action-icon-wrap {

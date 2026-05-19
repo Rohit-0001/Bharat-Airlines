@@ -2,6 +2,7 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpService } from '../../../services/http.service';
+import { differentCitiesValidator } from '../../validators/custom.validators';
 
 @Component({
   selector: 'app-flight-search',
@@ -43,7 +44,7 @@ export class FlightSearchComponent implements OnInit {
       child: [0, [Validators.min(0)]],
       infant: [0, [Validators.min(0)]],
       travelClass: ['Economy']
-    });
+    }, { validators: differentCitiesValidator });
 
     this.httpService.suggestSource().subscribe({
       next: (data: string[]) => { this.sourceList = data || []; }
@@ -132,13 +133,13 @@ export class FlightSearchComponent implements OnInit {
   }
 
   search(): void {
+    this.searchAttempted = true;
     if (this.searchForm.invalid) {
       this.searchForm.markAllAsTouched();
       return;
     }
     this.closeDropdown();
     this.isSearching = true;
-    this.searchAttempted = true;
     const { source, destination, date } = this.searchForm.value;
     this.httpService.searchFlights(source.trim(), destination.trim(), date).subscribe({
       next: (data) => {
@@ -235,7 +236,13 @@ export class FlightSearchComponent implements OnInit {
     this.isBooking = true;
     this.showError = false;
 
-    this.httpService.bookSeats(this.selectedFlight.id, this.selectedSeatNumbers).subscribe({
+    const infantCount = this.searchForm.get('infant')?.value || 0;
+    this.httpService.bookSeats(
+      this.selectedFlight.id,
+      this.selectedSeatNumbers,
+      this.totalPrice,
+      infantCount
+    ).subscribe({
       next: () => {
         this.showMessage = true;
         this.responseMessage = `Booking confirmed! Total: ₹${this.totalPrice}. Redirecting to My Bookings…`;

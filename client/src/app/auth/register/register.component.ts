@@ -2,6 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpService } from '../../../services/http.service';
+import {
+  getActivePasswordMessages,
+  indianMobileValidator,
+  strongPasswordValidator
+} from '../../validators/custom.validators';
 
 @Component({
   selector: 'app-register',
@@ -22,6 +27,7 @@ export class RegisterComponent implements OnInit {
   otpTimerInterval: any;
   showPassword = false;
   resendLoading = false;
+  passwordHintActive = false;
 
   constructor(
     private fb: FormBuilder,
@@ -33,8 +39,8 @@ export class RegisterComponent implements OnInit {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      contactNumber: [''],
+      password: ['', [Validators.required, strongPasswordValidator]],
+      contactNumber: ['', indianMobileValidator],
       role: ['PASSENGER', Validators.required]
     });
 
@@ -45,6 +51,7 @@ export class RegisterComponent implements OnInit {
 
   onSubmit(): void {
     if (this.registerForm.invalid) {
+      this.passwordHintActive = true;
       this.registerForm.markAllAsTouched();
       return;
     }
@@ -122,4 +129,25 @@ export class RegisterComponent implements OnInit {
   }
 
   get canResend(): boolean { return this.otpTimer <= 0; }
+
+  get passwordMessages(): string[] {
+    const ctrl = this.registerForm?.get('password');
+    const showFeedback = this.passwordHintActive || !!ctrl?.touched || !!ctrl?.dirty;
+    return getActivePasswordMessages(ctrl?.value, showFeedback);
+  }
+
+  get showPasswordHints(): boolean {
+    return this.passwordMessages.length > 0;
+  }
+
+  onPasswordInteraction(): void {
+    this.passwordHintActive = true;
+  }
+
+  onContactInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const digits = input.value.replace(/\D/g, '').slice(0, 10);
+    input.value = digits;
+    this.registerForm.get('contactNumber')?.setValue(digits || '', { emitEvent: false });
+  }
 }

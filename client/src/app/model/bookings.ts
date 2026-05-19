@@ -21,6 +21,8 @@ export interface Bookings {
   paymentStatus?: PaymentStatus;
   pnr?: string;
   status?: string;
+  totalPrice?: number;
+  infantCount?: number;
 }
 
 export { User };

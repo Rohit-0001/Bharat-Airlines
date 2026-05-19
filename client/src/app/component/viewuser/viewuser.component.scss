@@ -32,7 +32,7 @@
 
 /* Badges */
 .vu-status-badge { display: inline-flex; align-items: center; padding: 0.25rem 0.65rem; border-radius: 50px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
-  &.vu-badge-success { background: rgba(26,122,78,0.1); color: #1a7a4e; }
+  &.vu-badge-success { background: rgba(26,122,78,0.2); color: #1a7a4e; border: 1px solid rgba(26,122,78,0.35); }
   &.vu-badge-danger  { background: rgba(192,57,43,0.1); color: #c0392b; }
   &.vu-badge-muted   { background: rgba(74,85,104,0.1); color: #4a5568; }
 }

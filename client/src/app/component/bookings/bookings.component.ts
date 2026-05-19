@@ -77,9 +77,13 @@ export class BookingsComponent implements OnInit {
   }
 
   getTotalPrice(booking: any): number {
+    if (booking?.totalPrice != null && booking.totalPrice > 0) {
+      return booking.totalPrice;
+    }
     const pricePerSeat: number = booking.flight?.price || 0;
     const count = this.getSeatCount(booking.seatNumbers);
-    return pricePerSeat * count;
+    const infants = booking?.infantCount || 0;
+    return pricePerSeat * count + infants * pricePerSeat * 0.5;
   }
 
   cancelBooking(id: number): void {

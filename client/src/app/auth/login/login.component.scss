@@ -228,11 +228,16 @@ form { padding: 0.25rem 2.25rem 1.5rem; }
       &:hover { background: #f0f4f8; transform: rotate(90deg); }
     }
   }
-  .captcha-success { color: $success; font-size: 0.8rem; font-weight: 700; margin-top: 0.5rem; }
-  .captcha-error   { color: $danger;  font-size: 0.8rem; font-weight: 600; margin-top: 0.5rem; }
+  .captcha-success, .captcha-error {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-size: 0.8rem; font-weight: 600; margin-top: 0.5rem;
+  }
+  .captcha-success { color: $success; font-weight: 700; }
+  .captcha-error   { color: $danger; }
 }
 
 .fail-hint {
+  display: flex; align-items: center; gap: 0.45rem;
   font-size: 0.78rem; color: #906000;
   background: rgba(201,162,39,0.1);
   border-radius: 8px; padding: 0.5rem 0.75rem;

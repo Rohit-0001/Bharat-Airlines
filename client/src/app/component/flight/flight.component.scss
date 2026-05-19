@@ -1,15 +1,22 @@
 /* ============================================================
    MANAGE FLIGHTS — Admin
    ============================================================ */
-.container { max-width: 1200px; }
+.fl-page { min-height: calc(100vh - 68px); background: #f2f4f8; }
 
-h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.6rem; font-weight: 700;
-  color: #0a1628; margin-bottom: 1.5rem;
-  display: flex; align-items: center; gap: 0.75rem;
-  &::before { content: '\f5b0'; font-family: 'Font Awesome 6 Free'; font-weight: 900; color: #c9a227; font-size: 1.3rem; }
+.fl-page-header {
+  background: linear-gradient(135deg, #0a1628 0%, #122244 50%, #1e3a6e 100%);
+  padding: 2rem 1.5rem 1.75rem;
 }
+.fl-header-inner { max-width: 1200px; margin: 0 auto; }
+.fl-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.7rem; font-weight: 700; color: #fff; margin: 0 0 0.3rem;
+  display: flex; align-items: center; gap: 0.75rem;
+  i { color: #c9a227; font-size: 1.4rem; }
+}
+.fl-subtitle { color: rgba(255,255,255,0.6); font-size: 0.875rem; margin: 0; }
+
+.fl-container { max-width: 1200px; margin: 0 auto; padding: 1.75rem 1.25rem 3rem; }
 
 .card {
   border: 1px solid #e0e8f4 !important;
@@ -89,9 +96,12 @@ button.btn-success[type="submit"] {
 }
 
 /* Status badge overrides */
-.badge.bg-success { background: rgba(26,122,78,0.12) !important; color: #1a7a4e !important; font-size: 0.75rem; }
-.badge.bg-warning { background: rgba(230,168,23,0.15) !important; color: #a07800 !important; font-size: 0.75rem; }
-.badge.bg-danger  { background: rgba(192,57,43,0.12) !important; color: #c0392b !important; font-size: 0.75rem; }
+.badge.bg-success   { background: rgba(26,122,78,0.12) !important; color: #1a7a4e !important; font-size: 0.75rem; }
+.badge.bg-warning   { background: rgba(230,168,23,0.15) !important; color: #a07800 !important; font-size: 0.75rem; }
+.badge.bg-danger    { background: rgba(192,57,43,0.12) !important; color: #c0392b !important; font-size: 0.75rem; }
+.badge.bg-primary   { background: rgba(30,58,110,0.18) !important; color: #1e3a6e !important; border: 1px solid rgba(30,58,110,0.3) !important; font-size: 0.75rem; }
+.badge.bg-info      { background: rgba(26,110,168,0.15) !important; color: #1a6ea8 !important; border: 1px solid rgba(26,110,168,0.28) !important; font-size: 0.75rem; }
+.badge.bg-secondary { background: rgba(74,85,104,0.12) !important; color: #4a5568 !important; border: 1px solid rgba(74,85,104,0.22) !important; font-size: 0.75rem; }
 
 @media (max-width: 992px) {
   .table { display: block; overflow-x: auto; white-space: nowrap; }

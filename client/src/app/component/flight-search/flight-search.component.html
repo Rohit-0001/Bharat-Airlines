@@ -25,11 +25,14 @@
           <div class="fs-field">
             <label class="fs-label"><i class="fa-solid fa-plane-departure"></i> From</label>
             <input class="fs-input" formControlName="source" list="sourceList"
-              placeholder="Source city"
-              [class.is-invalid]="searchForm.get('source')?.invalid && searchForm.get('source')?.touched">
+              placeholder="e.g. Delhi"
+              [class.is-invalid]="searchForm.get('source')?.invalid && (searchForm.get('source')?.touched || searchAttempted)">
             <datalist id="sourceList">
               <option *ngFor="let s of sourceList" [value]="s"></option>
             </datalist>
+            <div class="ba-field-error" *ngIf="searchForm.get('source')?.errors?.['required'] && (searchForm.get('source')?.touched || searchAttempted)">
+              Please enter a departure city
+            </div>
           </div>
 
           <div class="fs-swap-icon"><i class="fa-solid fa-right-left"></i></div>
@@ -37,17 +40,26 @@
           <div class="fs-field">
             <label class="fs-label"><i class="fa-solid fa-plane-arrival"></i> To</label>
             <input class="fs-input" formControlName="destination" list="destList"
-              placeholder="Destination city"
-              [class.is-invalid]="searchForm.get('destination')?.invalid && searchForm.get('destination')?.touched">
+              placeholder="e.g. Mumbai"
+              [class.is-invalid]="searchForm.get('destination')?.invalid && (searchForm.get('destination')?.touched || searchAttempted)">
             <datalist id="destList">
               <option *ngFor="let d of destinationList" [value]="d"></option>
             </datalist>
+            <div class="ba-field-error" *ngIf="searchForm.get('destination')?.errors?.['required'] && (searchForm.get('destination')?.touched || searchAttempted)">
+              Please enter a destination city
+            </div>
+            <div class="ba-field-error" *ngIf="searchForm.errors?.['sameCity'] && (searchForm.get('destination')?.touched || searchAttempted)">
+              Source and destination cannot be the same city. Please choose different cities.
+            </div>
           </div>
 
           <div class="fs-field fs-field-date">
             <label class="fs-label"><i class="fa-solid fa-calendar"></i> Date</label>
             <input type="date" class="fs-input" formControlName="date" [min]="minDate"
-              [class.is-invalid]="searchForm.get('date')?.invalid && searchForm.get('date')?.touched">
+              [class.is-invalid]="searchForm.get('date')?.invalid && (searchForm.get('date')?.touched || searchAttempted)">
+            <div class="ba-field-error" *ngIf="searchForm.get('date')?.errors?.['required'] && (searchForm.get('date')?.touched || searchAttempted)">
+              Please select a travel date
+            </div>
           </div>
 
           <div class="fs-field fs-field-travellers">

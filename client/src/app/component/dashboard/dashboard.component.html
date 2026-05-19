@@ -27,7 +27,7 @@
   <!-- Hero content -->
   <div class="hero-content">
     <div class="hero-badge">
-      <i class="fa-solid fa-shield-check"></i>
+      <i class="fa-solid fa-shield-halved"></i>
       Welcome back
     </div>
     <h1 class="hero-title">
@@ -59,9 +59,9 @@
     <div class="actions-grid" *ngIf="role === 'ADMIN'">
       <a routerLink="/add_flights" class="action-card action-primary">
         <div class="action-icon-wrap">
-          <i class="fa-solid fa-plane-circle-plus"></i>
+          <i class="fa-solid fa-plane-departure"></i>
         </div>
-        <div class="action-info">
+        <div class="action-body">
           <span class="action-title">Manage Flights</span>
           <span class="action-desc">Add & view all flights</span>
         </div>
@@ -71,17 +71,17 @@
         <div class="action-icon-wrap">
           <i class="fa-solid fa-ticket"></i>
         </div>
-        <div class="action-info">
+        <div class="action-body">
           <span class="action-title">All Bookings</span>
           <span class="action-desc">View every reservation</span>
         </div>
         <i class="fa-solid fa-chevron-right action-arrow"></i>
       </a>
-      <a routerLink="/assign_pilot" class="action-card action-info">
+      <a routerLink="/assign_pilot" class="action-card action-pilot">
         <div class="action-icon-wrap">
-          <i class="fa-solid fa-user-pilot"></i>
+          <i class="fa-solid fa-user-tie"></i>
         </div>
-        <div class="action-info">
+        <div class="action-body">
           <span class="action-title">Assign Pilots</span>
           <span class="action-desc">Manage flight crew</span>
         </div>
@@ -91,7 +91,7 @@
         <div class="action-icon-wrap">
           <i class="fa-solid fa-circle-user"></i>
         </div>
-        <div class="action-info">
+        <div class="action-body">
           <span class="action-title">My Profile</span>
           <span class="action-desc">Account details</span>
         </div>
@@ -103,9 +103,9 @@
     <div class="actions-grid" *ngIf="role === 'PASSENGER'">
       <a routerLink="/search_flight" class="action-card action-primary">
         <div class="action-icon-wrap">
-          <i class="fa-solid fa-magnifying-glass-location"></i>
+          <i class="fa-solid fa-magnifying-glass"></i>
         </div>
-        <div class="action-info">
+        <div class="action-body">
           <span class="action-title">Search Flights</span>
           <span class="action-desc">Find your next journey</span>
         </div>
@@ -115,7 +115,7 @@
         <div class="action-icon-wrap">
           <i class="fa-solid fa-suitcase-rolling"></i>
         </div>
-        <div class="action-info">
+        <div class="action-body">
           <span class="action-title">My Bookings</span>
           <span class="action-desc">Track & manage trips</span>
         </div>
@@ -125,7 +125,7 @@
         <div class="action-icon-wrap">
           <i class="fa-solid fa-circle-user"></i>
         </div>
-        <div class="action-info">
+        <div class="action-body">
           <span class="action-title">My Profile</span>
           <span class="action-desc">Account details</span>
         </div>
@@ -139,7 +139,7 @@
         <div class="action-icon-wrap">
           <i class="fa-solid fa-calendar-check"></i>
         </div>
-        <div class="action-info">
+        <div class="action-body">
           <span class="action-title">My Schedule</span>
           <span class="action-desc">Upcoming flight duties</span>
         </div>
@@ -149,7 +149,7 @@
         <div class="action-icon-wrap">
           <i class="fa-solid fa-circle-user"></i>
         </div>
-        <div class="action-info">
+        <div class="action-body">
           <span class="action-title">My Profile</span>
           <span class="action-desc">Account details</span>
         </div>

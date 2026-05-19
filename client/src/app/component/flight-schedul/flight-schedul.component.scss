@@ -81,7 +81,7 @@
   &.sch-badge-success { background: rgba(26,122,78,0.1); color: #1a7a4e; }
   &.sch-badge-danger  { background: rgba(192,57,43,0.1); color: #c0392b; }
   &.sch-badge-warning { background: rgba(230,168,23,0.15); color: #a07800; }
-  &.sch-badge-primary { background: rgba(30,58,110,0.1); color: #1e3a6e; }
+  &.sch-badge-primary { background: rgba(30,58,110,0.2); color: #1e3a6e; border: 1px solid rgba(30,58,110,0.32); }
   &.sch-badge-muted   { background: rgba(74,85,104,0.1); color: #4a5568; }
 }
 

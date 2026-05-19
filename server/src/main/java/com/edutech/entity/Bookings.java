@@ -40,6 +40,12 @@ public class Bookings {
 
     private String status;
 
+    /** Final amount charged at booking time (seat-specific prices + infant fare). */
+    private Double totalPrice;
+
+    /** Number of infants included in totalPrice (no seat assigned). */
+    private Integer infantCount;
+
     public Long getId() {
         return id;
     }
@@ -102,5 +108,21 @@ public class Bookings {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public Integer getInfantCount() {
+        return infantCount;
+    }
+
+    public void setInfantCount(Integer infantCount) {
+        this.infantCount = infantCount;
     }
 }

@@ -99,9 +99,9 @@ export class HttpService {
       { headers: this.getHeaders(), params });
   }
 
-  bookSeats(flightId: number, seatNumbers: string[]): Observable<any> {
+  bookSeats(flightId: number, seatNumbers: string[], totalPrice: number, infantCount: number): Observable<any> {
     return this.http.post(`${this.serverName}/api/booking/book-seats`,
-      { flightId, seatNumbers },
+      { flightId, seatNumbers, totalPrice, infantCount },
       { headers: this.getHeaders() });
   }
 

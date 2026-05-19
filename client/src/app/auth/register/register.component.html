@@ -3,13 +3,13 @@
 
     <ng-container *ngIf="step === 'form'">
       <div class="auth-header">
-        <div class="brand-icon">✈</div>
+        <div class="brand-icon"><i class="fa-solid fa-plane"></i></div>
         <h2>Create Account</h2>
         <p>Join Bharat Airlines today</p>
       </div>
 
       <div class="alert alert-danger" *ngIf="showError">
-        <span>⚠</span> {{ errorMessage }}
+        <i class="fa-solid fa-triangle-exclamation"></i> {{ errorMessage }}
       </div>
 
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate class="form-body">
@@ -17,7 +17,7 @@
         <div class="form-group">
           <label class="form-label">Username</label>
           <div class="input-wrapper">
-            <span class="input-icon">👤</span>
+            <span class="input-icon"><i class="fa-solid fa-user"></i></span>
             <input type="text" class="form-control" formControlName="username" placeholder="Choose a username">
           </div>
           <div class="field-error" *ngIf="registerForm.get('username')?.errors?.['required'] && registerForm.get('username')?.touched">
@@ -31,7 +31,7 @@
         <div class="form-group">
           <label class="form-label">Email Address</label>
           <div class="input-wrapper">
-            <span class="input-icon">📧</span>
+            <span class="input-icon"><i class="fa-solid fa-envelope"></i></span>
             <input type="email" class="form-control" formControlName="email" placeholder="you@email.com">
           </div>
           <div class="field-error" *ngIf="registerForm.get('email')?.errors?.['required'] && registerForm.get('email')?.touched">
@@ -45,33 +45,36 @@
         <div class="form-group">
           <label class="form-label">Password</label>
           <div class="input-wrapper">
-            <span class="input-icon">🔑</span>
+            <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
             <input [type]="showPassword ? 'text' : 'password'" class="form-control"
-              formControlName="password" placeholder="Min. 6 characters">
-            <button type="button" class="toggle-pw" (click)="showPassword = !showPassword">
-              {{ showPassword ? '🙈' : '👁' }}
+              formControlName="password" placeholder="e.g. Abc@1234"
+              (focus)="onPasswordInteraction()" (input)="onPasswordInteraction()">
+            <button type="button" class="toggle-pw" (click)="showPassword = !showPassword" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+              <i class="fa-solid" [class.fa-eye-slash]="showPassword" [class.fa-eye]="!showPassword"></i>
             </button>
           </div>
-          <div class="field-error" *ngIf="registerForm.get('password')?.errors?.['required'] && registerForm.get('password')?.touched">
-            Password is required
-          </div>
-          <div class="field-error" *ngIf="registerForm.get('password')?.errors?.['minlength'] && registerForm.get('password')?.touched">
-            Minimum 6 characters
+          <div class="password-feedback" *ngIf="showPasswordHints">
+            <div class="field-error" *ngFor="let msg of passwordMessages">{{ msg }}</div>
           </div>
         </div>
 
         <div class="form-group">
           <label class="form-label">Contact Number <span class="optional">(optional)</span></label>
           <div class="input-wrapper">
-            <span class="input-icon">📱</span>
-            <input type="number" class="form-control" formControlName="contactNumber" placeholder="1234567890">
+            <span class="input-icon"><i class="fa-solid fa-phone"></i></span>
+            <input type="tel" class="form-control" formControlName="contactNumber"
+              placeholder="e.g. 9876543210" maxlength="10" inputmode="numeric"
+              (input)="onContactInput($event)">
+          </div>
+          <div class="field-error" *ngIf="registerForm.get('contactNumber')?.errors?.['invalidPhone'] && registerForm.get('contactNumber')?.touched">
+            Enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9
           </div>
         </div>
 
         <div class="form-group">
           <label class="form-label">Role</label>
           <div class="input-wrapper">
-            <span class="input-icon">🎭</span>
+            <span class="input-icon"><i class="fa-solid fa-user-tag"></i></span>
             <select class="form-control form-select" formControlName="role">
               <option value="PASSENGER">Passenger</option>
               <option value="PILOT">Pilot</option>
@@ -80,8 +83,8 @@
         </div>
 
         <button type="submit" class="btn-primary" [disabled]="loading">
-          <span class="btn-spinner" *ngIf="loading">⟳</span>
-          {{ loading ? 'Sending OTP...' : 'Continue →' }}
+          <span class="spinner-border spinner-border-sm" *ngIf="loading" role="status" aria-hidden="true"></span>
+          {{ loading ? 'Sending OTP...' : 'Continue' }}
         </button>
       </form>
 
@@ -94,13 +97,13 @@
     <!-- ===== STEP 2: OTP VERIFICATION ===== -->
     <ng-container *ngIf="step === 'otp'">
       <div class="auth-header">
-        <div class="brand-icon">📬</div>
+        <div class="brand-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
         <h2>Verify Your Email</h2>
         <p>OTP sent to <strong>{{ registeredEmail }}</strong></p>
       </div>
 
       <div class="alert alert-danger" *ngIf="showError">
-        <span>⚠</span> {{ errorMessage }}
+        <i class="fa-solid fa-triangle-exclamation"></i> {{ errorMessage }}
       </div>
 
       <form [formGroup]="otpForm" (ngSubmit)="onVerifyOtp()" class="form-body">
@@ -111,7 +114,7 @@
         <div class="form-group">
           <label class="form-label">One-Time Password (OTP)</label>
           <div class="input-wrapper">
-            <span class="input-icon">🔢</span>
+            <span class="input-icon"><i class="fa-solid fa-hashtag"></i></span>
             <input type="text" class="form-control otp-field" formControlName="otp"
               placeholder="000000" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
           </div>
@@ -124,7 +127,7 @@
         </div>
 
         <button type="submit" class="btn-primary" [disabled]="loading">
-          <span class="btn-spinner" *ngIf="loading">⟳</span>
+          <span class="spinner-border spinner-border-sm" *ngIf="loading" role="status" aria-hidden="true"></span>
           {{ loading ? 'Verifying...' : 'Verify & Activate Account' }}
         </button>
 
@@ -132,7 +135,8 @@
           <span *ngIf="otpTimer > 0" class="resend-timer">Resend in {{ otpTimer }}s</span>
           <button type="button" class="btn-resend" *ngIf="canResend"
             (click)="resendOtp()" [disabled]="resendLoading">
-            {{ resendLoading ? 'Sending...' : '↻ Resend OTP' }}
+            <ng-container *ngIf="resendLoading"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...</ng-container>
+            <ng-container *ngIf="!resendLoading"><i class="fa-solid fa-rotate"></i> Resend OTP</ng-container>
           </button>
         </div>
       </form>
@@ -141,7 +145,7 @@
     <!-- ===== STEP 3: SUCCESS ===== -->
     <ng-container *ngIf="step === 'success'">
       <div class="success-screen">
-        <div class="success-icon">🎉</div>
+        <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
         <h2>Account Verified!</h2>
         <p>Welcome to Bharat Airlines! A welcome email has been sent to your inbox.</p>
         <p class="redirect-hint">Redirecting to login in 3 seconds...</p>

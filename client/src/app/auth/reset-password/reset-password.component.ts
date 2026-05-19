@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpService } from '../../../services/http.service';
+import {
+  getActivePasswordMessages,
+  strongPasswordValidator
+} from '../../validators/custom.validators';
 
 @Component({
   selector: 'app-reset-password',
@@ -15,9 +19,12 @@ export class ResetPasswordComponent implements OnInit {
   success = false;
   showError = false;
   errorMessage = '';
+  showPassword = false;
+  showConfirmPassword = false;
+  otpTouched = false;
+  passwordHintActive = false;
 
   email = '';
-  otp = '';
 
   constructor(
     private fb: FormBuilder,
@@ -37,7 +44,8 @@ export class ResetPasswordComponent implements OnInit {
     });
 
     this.form = this.fb.group({
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      otp: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
+      password: ['', [Validators.required, strongPasswordValidator]],
       confirmPassword: ['', Validators.required]
     }, { validators: this.passwordMatch });
   }
@@ -48,103 +56,54 @@ export class ResetPasswordComponent implements OnInit {
     return p === c ? null : { mismatch: true };
   }
 
+  get passwordMessages(): string[] {
+    const ctrl = this.form?.get('password');
+    const showFeedback = this.passwordHintActive || !!ctrl?.touched || !!ctrl?.dirty;
+    return getActivePasswordMessages(ctrl?.value, showFeedback);
+  }
+
+  get showPasswordHints(): boolean {
+    return this.passwordMessages.length > 0;
+  }
+
+  onPasswordInteraction(): void {
+    this.passwordHintActive = true;
+  }
 
   onSubmit(): void {
+    this.otpTouched = true;
 
-  if (!this.otp) {
-    this.showError = true;
-    this.errorMessage = 'Please enter OTP';
-    return;
-  }
-
-  if (this.form.invalid) {
-    this.form.markAllAsTouched();
-    return;
-  }
-
-  this.loading = true;
-  this.showError = false;
-
-  // ✅ DEBUG LOG
-  console.log("OTP being sent:", this.otp);
-
-  this.httpService.verifyResetOtp({
-    email: this.email,
-    otp: this.otp.trim(),   // ✅ important
-    newPassword: this.form.value.password
-  }).subscribe({
-
-    next: (res: any) => {
-      console.log("SUCCESS RESPONSE:", res);
-
-      this.loading = false;
-      this.success = true;
-
-      setTimeout(() => {
-        this.router.navigate(['/login']);
-      }, 3000);
-    },
-
-    error: (err: any) => {
-      console.log("FULL ERROR:", err);
-
-      this.loading = false;
-      this.showError = true;
-
-      this.errorMessage =
-        err?.error?.message ||
-        err?.message ||
-        "Invalid or expired OTP";
+    if (this.form.invalid) {
+      this.passwordHintActive = true;
+      this.form.markAllAsTouched();
+      return;
     }
 
-  });
-}
+    this.loading = true;
+    this.showError = false;
 
-  // onSubmit(): void {
+    const otp = this.form.get('otp')?.value?.trim();
 
-  //   if (!this.otp) {
-  //     this.showError = true;
-  //     this.errorMessage = 'Please enter OTP';
-  //     return;
-  //   }
-
-  //   if (this.form.invalid) {
-  //     this.form.markAllAsTouched();
-  //     return;
-  //   }
-
-  //   this.loading = true;
-  //   this.showError = false;
-
-  //   this.httpService.verifyResetOtp({
-  //     email: this.email,
-  //     otp: this.otp,
-  //     newPassword: this.form.value.password
-  //   }).subscribe({
-
-  //     next: () => {
-  //       this.loading = false;
-  //       this.success = true;
-
-  //       setTimeout(() => {
-  //         this.router.navigate(['/login']);
-  //       }, 3000);
-  //     },
-
-  //     error: (err) => {
-  //       this.loading = false;
-  //       this.showError = true;
-
-  //       console.log("FULL ERROR:", err);
-
-  //       if (!err.error) {
-  //         this.errorMessage = "Server error (proxy issue)";
-  //       } else if (err.error.message) {
-  //         this.errorMessage = err.error.message;
-  //       } else {
-  //         this.errorMessage = "Invalid or expired OTP";
-  //       }
-  //     }
-  //   });
-  // }
+    this.httpService.verifyResetOtp({
+      email: this.email,
+      otp,
+      newPassword: this.form.value.password
+    }).subscribe({
+      next: () => {
+        this.loading = false;
+        this.success = true;
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 3000);
+      },
+      error: (err: any) => {
+        this.loading = false;
+        this.showError = true;
+        this.errorMessage =
+          err?.error?.message ||
+          err?.message ||
+          'Invalid or expired OTP';
+      }
+    });
+  }
 }

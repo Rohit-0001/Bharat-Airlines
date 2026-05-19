@@ -22,7 +22,7 @@
         <ng-container *ngIf="isLoggedIn && role === 'ADMIN'">
           <li class="ba-nav-item">
             <a class="ba-nav-link" routerLink="/add_flights" routerLinkActive="active">
-              <i class="fa-solid fa-plane-circle-plus"></i> Manage Flights
+              <i class="fa-solid fa-plane-departure"></i> Manage Flights
             </a>
           </li>
           <li class="ba-nav-item">
@@ -32,7 +32,7 @@
           </li>
           <li class="ba-nav-item">
             <a class="ba-nav-link" routerLink="/assign_pilot" routerLinkActive="active">
-              <i class="fa-solid fa-user-pilot"></i> Assign Pilots
+              <i class="fa-solid fa-user-tie"></i> Assign Pilots
             </a>
           </li>
           <li class="ba-nav-item">
@@ -75,17 +75,17 @@
 
         <ng-container *ngIf="!isLoggedIn">
           <li class="ba-nav-item">
-            <a class="ba-nav-link" href="#home" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+            <a class="ba-nav-link" href="#home" [class.active]="activeSection === 'home'" (click)="navigateToSection('home', $event)">
               <i class="fa-solid fa-house"></i> Home
             </a>
           </li>
           <li class="ba-nav-item">
-            <a class="ba-nav-link" href="#about">
+            <a class="ba-nav-link" href="#about" [class.active]="activeSection === 'about'" (click)="navigateToSection('about', $event)">
               <i class="fa-solid fa-circle-info"></i> About Us
             </a>
           </li>
           <li class="ba-nav-item">
-            <a class="ba-nav-link" href="#contact">
+            <a class="ba-nav-link" href="#contact" [class.active]="activeSection === 'contact'" (click)="navigateToSection('contact', $event)">
               <i class="fa-solid fa-envelope"></i> Contact
             </a>
           </li>

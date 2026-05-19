@@ -44,26 +44,67 @@
             <div class="text-danger small"
               *ngIf="flightForm.get('destination')?.invalid && flightForm.get('destination')?.touched">Required</div>
           </div>
-          <div class="col-md-4">
-            <label class="form-label">Departure Date</label>
-            <input type="date" class="form-control" formControlName="departureDate" [min]="today">
-            <div class="text-danger small"
-              *ngIf="flightForm.get('departureDate')?.invalid && flightForm.get('departureDate')?.touched">Required
+          <div class="col-12">
+            <div class="fl-schedule-panel">
+              <div class="fl-schedule-head">
+                <i class="fa-solid fa-clock"></i>
+                <span>Flight schedule</span>
+              </div>
+              <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                  <label class="form-label">Departure Date</label>
+                  <input type="date" class="form-control" formControlName="departureDate" [min]="today">
+                  <div class="text-danger small"
+                    *ngIf="flightForm.get('departureDate')?.invalid && flightForm.get('departureDate')?.touched">Required
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Departure Time</label>
+            <div class="fl-time-selects">
+              <select class="form-select" [(ngModel)]="depHour" [ngModelOptions]="{standalone: true}"
+                (ngModelChange)="syncDepartureTime()">
+                <option value="" disabled>Hour</option>
+                <option *ngFor="let h of hourOptions" [value]="h">{{ h }}</option>
+              </select>
+              <span class="fl-time-sep">:</span>
+              <select class="form-select" [(ngModel)]="depMinute" [ngModelOptions]="{standalone: true}"
+                (ngModelChange)="syncDepartureTime()">
+                <option value="" disabled>Min</option>
+                <option *ngFor="let m of minuteOptions" [value]="m">{{ m }}</option>
+              </select>
             </div>
-          </div>
-          <div class="col-md-4">
-            <label class="form-label">Departure Time</label>
-            <input type="time" class="form-control" formControlName="departureTime">
             <div class="text-danger small"
               *ngIf="flightForm.get('departureTime')?.invalid && flightForm.get('departureTime')?.touched">Departure
               time is required</div>
           </div>
           <div class="col-md-4">
             <label class="form-label">Arrival Time</label>
-            <input type="time" class="form-control" formControlName="arrivalTime">
+            <div class="fl-time-selects">
+              <select class="form-select" [(ngModel)]="arrHour" [ngModelOptions]="{standalone: true}"
+                (ngModelChange)="syncArrivalTime()">
+                <option value="" disabled>Hour</option>
+                <option *ngFor="let h of hourOptions" [value]="h">{{ h }}</option>
+              </select>
+              <span class="fl-time-sep">:</span>
+              <select class="form-select" [(ngModel)]="arrMinute" [ngModelOptions]="{standalone: true}"
+                (ngModelChange)="syncArrivalTime()">
+                <option value="" disabled>Min</option>
+                <option *ngFor="let m of minuteOptions" [value]="m">{{ m }}</option>
+              </select>
+            </div>
             <div class="text-danger small"
               *ngIf="flightForm.get('arrivalTime')?.invalid && flightForm.get('arrivalTime')?.touched">Arrival time is
               required</div>
+                </div>
+              </div>
+              <div class="fl-schedule-preview"
+                *ngIf="flightForm.get('departureTime')?.value && flightForm.get('arrivalTime')?.value">
+                <i class="fa-solid fa-plane"></i>
+                {{ flightForm.get('departureTime')?.value }}
+                <i class="fa-solid fa-arrow-right-long"></i>
+                {{ flightForm.get('arrivalTime')?.value }}
+              </div>
+            </div>
           </div>
           <div class="col-md-4">
             <label class="form-label">Total Seats</label>

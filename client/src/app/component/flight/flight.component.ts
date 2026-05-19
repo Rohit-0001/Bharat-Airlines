@@ -21,6 +21,15 @@ export class FlightComponent implements OnInit {
   today = new Date().toISOString().split('T')[0];
   private readonly seatsPerRow = 6;
 
+  readonly hourOptions = Array.from({ length: 24 }, (_, i) =>
+    String(i).padStart(2, '0'));
+  readonly minuteOptions = ['00', '15', '30', '45'];
+
+  depHour = '';
+  depMinute = '';
+  arrHour = '';
+  arrMinute = '';
+
   constructor(private fb: FormBuilder, private httpService: HttpService, public authService: AuthService) {}
 
   ngOnInit(): void {
@@ -152,7 +161,28 @@ export class FlightComponent implements OnInit {
     });
   }
 
+  syncDepartureTime(): void {
+    const time = this.depHour && this.depMinute ? `${this.depHour}:${this.depMinute}` : '';
+    this.flightForm.patchValue({ departureTime: time }, { emitEvent: false });
+    this.flightForm.get('departureTime')?.markAsTouched();
+  }
+
+  syncArrivalTime(): void {
+    const time = this.arrHour && this.arrMinute ? `${this.arrHour}:${this.arrMinute}` : '';
+    this.flightForm.patchValue({ arrivalTime: time }, { emitEvent: false });
+    this.flightForm.get('arrivalTime')?.markAsTouched();
+  }
+
+  private resetTimePickers(): void {
+    this.depHour = '';
+    this.depMinute = '';
+    this.arrHour = '';
+    this.arrMinute = '';
+  }
+
   onSubmit(): void {
+    this.syncDepartureTime();
+    this.syncArrivalTime();
     this.formSubmitted = true;
     if (this.flightForm.invalid) {
       this.flightForm.markAllAsTouched();
@@ -174,6 +204,7 @@ export class FlightComponent implements OnInit {
         this.showMessage = true;
         this.showError = false;
         this.flightForm.reset({ status: 'SCHEDULED' });
+        this.resetTimePickers();
         this.seats.clear();
         this.formSubmitted = false;
         this.loadFlights();

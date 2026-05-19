@@ -46,6 +46,59 @@
   transition: all 0.2s;
   &:focus { border-color: #1e3a6e; background: #fff; box-shadow: 0 0 0 4px rgba(30,58,110,0.09); outline: none; }
 }
+
+.fl-schedule-panel {
+  background: #f8fafd;
+  border: 1.5px solid #dde3ee;
+  border-radius: 12px;
+  padding: 1rem 1.1rem 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.fl-schedule-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #0a1628;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.85rem;
+  i { color: #c9a227; }
+}
+
+.fl-time-selects {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  .form-select {
+    flex: 1;
+    min-width: 0;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+}
+
+.fl-time-sep {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #c9a227;
+  line-height: 1;
+  padding: 0 0.1rem;
+}
+
+.fl-schedule-preview {
+  margin-top: 0.85rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(30, 58, 110, 0.08);
+  color: #1e3a6e;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  i { color: #c9a227; margin: 0 0.35rem; }
+}
 .text-danger.small { font-size: 0.78rem; margin-top: 0.3rem; }
 
 hr { border-color: #edf0f8; margin: 1.5rem 0; }
